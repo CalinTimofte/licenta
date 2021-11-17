@@ -22,6 +22,9 @@
 
 .content{
     width: 70vw;
-    margin-top: 1.5em;
+    margin-top: 10vh;
 }
 
+i:hover{
+    color: blue;
+}

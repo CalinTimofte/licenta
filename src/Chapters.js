@@ -8,11 +8,11 @@ function Chapters(){
 
     return(
         <div className = "chapters">
-            <ul id = "chapters" className = "collapsible nav nav-pills">
+            <ul className = "nav nav-pills" style = {!open? {display:'none'} : {display: 'flex'}}>
                 <li className = "nav-item"><a class="nav-link active" href="#">Link</a></li>
                 <li className = "nav-item"><a class="nav-link" href="#">Link</a></li>
             </ul>
-            <a href = "#chapters" data-bs-toggle="collapse" onClick = {reverseMenu}><i className={open? "fa fa-arrow-up" : "fa fa-arrow-down"} aria-hidden="true"></i></a>
+            <i className={open? "fa fa-arrow-up" : "fa fa-arrow-down"} aria-hidden="true" data-bs-toggle="tooltip"  title="Chapters" onClick = {reverseMenu}/>
         </div>
     )
 }
