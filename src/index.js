@@ -1,8 +1,8 @@
 import ReactDOM from 'react-dom';
 import './index.css';
-import Chapters from './Chapters'
+import App from './App'
 
 ReactDOM.render(
-  <Chapters/>,
+  <App/>,
   document.getElementById('root')
 );
