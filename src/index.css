@@ -1,15 +1,23 @@
-#root, .menu-up,.content{
+#root, .chapters,.content, .subchapters{
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
 }
 
-.menu-up{
+.chapters{
     position: fixed;
     top: 0;
-    border-top: thin red solid;
-    background-color: blue;
+}
+
+.subchapters{
+    position: fixed;
+    top: 50vh;
+    left: 0;
+    flex-direction: row;
+}
+.chapters i{
+    border-top:-1em;
 }
 
 .content{
