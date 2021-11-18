@@ -16,11 +16,8 @@
     left: 0;
     flex-direction: row;
 }
-.chapters i{
-    border-top:-1em;
-}
 
 .content{
     width: 70vw;
-    margin-top: 10vh;
+    margin-top: 20vh;
 }
