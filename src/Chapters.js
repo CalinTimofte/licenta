@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import ArrowButton from './Reusables/ArrowButton';
 
 function Chapters(){
 
@@ -12,7 +13,7 @@ function Chapters(){
                 <li className = "nav-item"><a class="nav-link active" href="#">Link</a></li>
                 <li className = "nav-item"><a class="nav-link" href="#">Link</a></li>
             </ul>
-            <i className={open? "fa fa-arrow-up" : "fa fa-arrow-down"} aria-hidden="true" data-bs-toggle="tooltip"  title="Chapters" onClick = {reverseMenu}/>
+            <ArrowButton iconNames = {{open: "up", closed: "down"}} tooltipName = "Chapters" menuStateVar = {open} menuStateHandler = {reverseMenu}/>
         </div>
     )
 }

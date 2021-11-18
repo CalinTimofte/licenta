@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import ArrowButton from './Reusables/ArrowButton';
 
 export default function SubChapters(){
 
@@ -12,7 +13,7 @@ export default function SubChapters(){
                 <li className = "nav-item"><a class="nav-link active" href="#">SubLink</a></li>
                 <li className = "nav-item"><a class="nav-link" href="#">SubLink</a></li>
             </ul>
-            <i className={open? "fa fa-arrow-left" : "fa fa-arrow-right"} aria-hidden="true" aria-hidden="true" data-bs-toggle="tooltip"  title="Subchapters" onClick = {reverseMenu}/>
+            <ArrowButton iconNames = {{open:"left", closed:"right"}} tooltipName = "Subchapters" menuStateVar = {open} menuStateHandler = {reverseMenu}/>
         </div>
     )
 }
