@@ -6,30 +6,37 @@ import {LPIntroducere} from './Chapters/LP/Introducere';
 import {LP1Introducere} from './Chapters/LP1/Introducere';
 
 export default function App(){
-    let [chapter, changeChapter] = useState("LP");
+    let chapters = {
+        lp : {subchapter1: [
+                {name: "Section1", content: <p>Section1 Text</p>},
+                {name: "Exercises-Section1", content: <div style = {{display: "flex", flexDirection: "column"}}><p>Exercise1</p><p>Exercise2</p></div>}
+            ]},
+        lp1 : {subchapter1: LP1Introducere}
+    }
 
-    let lp = {subchapter1: LPIntroducere};
-    let lp1 = {subchapter1: LP1Introducere};
+    let [activeChapter, changeActiveChapter] = useState("LP");
 
-    let selectChapter = (chapterName)=>{
-        changeChapter(chapterName);
+    let selectActiveChapter = (chapterName)=>{
+        changeActiveChapter(chapterName);
+    }
+
+    let [activeSubChapter, changeActiveSubchapter] = useState("Section1");
+
+    let findActiveSubchapter = () => (chapters.lp.subchapter1.find(section => section.name === activeSubChapter))
+    let getSubchapterNames = () => (chapters.lp.subchapter1.map(obj => obj.name))
+
+    let selectActiveSubchapter = (subchapterName)=>{
+        changeActiveSubchapter(subchapterName);
     }
 
     let displayContent = () => {
-        switch(chapter){
-            case "LP":
-                return lp.subchapter1;
-            case "LP1":
-                return lp1.subchapter1;
-            default:
-                return lp.subchapter1;
-        }
-    }
+        return(findActiveSubchapter().content)
+    } 
 
     return(
         <>
-            <Chapters chapterHandler = {selectChapter} activeChapter = {chapter}/>
-            <SubChapters/>
+            <Chapters chapterHandler = {selectActiveChapter} activeChapter = {activeChapter}/>
+            <SubChapters subchapterNames = {getSubchapterNames()} subchapterHandler = {selectActiveSubchapter} activeSubChapter = {activeSubChapter}/>
             <Content content = {displayContent()}/>
         </>
     )
