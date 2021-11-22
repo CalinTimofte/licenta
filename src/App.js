@@ -40,6 +40,11 @@ export default function App(){
         }
     }
 
+    let subchapterNameArray = () => (findActiveChapter().map(subchapter => ({
+        suchapterName: subchapter.name,
+        sectionNames: subchapter.content.map(section => section.name)
+    })))
+
     let selectActiveChapter = (chapterName)=>{
         changeActiveChapter(chapterName);
     }
@@ -47,7 +52,6 @@ export default function App(){
     let [activeSubChapter, changeActiveSubchapter] = useState("Introducere");
 
     let findActiveSubchapter = () => (findActiveChapter().find(subchapter => subchapter.name === activeSubChapter))
-    let getSubchapterNames = () => (findActiveChapter().map(obj => obj.name))
 
     let selectActiveSubchapter = (subchapterName)=>{
         changeActiveSubchapter(subchapterName);
@@ -69,13 +73,13 @@ export default function App(){
         <>
             <Chapters chapterHandler = {selectActiveChapter} activeChapter = {activeChapter}/>
             <SubChapters 
-                subchapterNames = {getSubchapterNames()} 
+                subchapterAndSectionNames = {subchapterNameArray()} 
                 subchapterHandler = {selectActiveSubchapter} 
                 activeSubChapter = {activeSubChapter}
                 sectionHandler = {selectActiveSection}
                 activeSection = {activeSection}
             />
-            <Content content = {displayContent()}/>
+            {/* <Content content = {displayContent()}/> */}
         </>
     )
 }

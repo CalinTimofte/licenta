@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import ArrowButton from './Reusables/ArrowButton';
 
-export default function SubChapters({subchapterNames, subchapterHandler, activeSubChapter, sectionHandler, activeSection}){
+export default function SubChapters({subchapterAndSectionNames, subchapterHandler, activeSubChapter, sectionHandler, activeSection}){
 
     let [open, reverseArrow] = useState(false)
 
@@ -13,30 +13,28 @@ export default function SubChapters({subchapterNames, subchapterHandler, activeS
         )
     )
 
-    let activeSubChapterState = activeLinkState(activeSubChapter) + "btn";
+    let activeSubChapterState = (name) => (activeLinkState(activeSubChapter)(name) + " btn");
     let activeSectionState = activeLinkState(activeSection);
-
-    let sectionNames = (subchapter) => (subchapter.content.map(obj => obj.name))()
 
     return(
         <div className = "subchapters">
             <ul className = "nav nav-pills flex-column" style = {!open? {display:'none'} : {display: 'flex'}}>
-                {subchapterNames.map(subchapterName => (
-                    <li className = "card nav-item" id = {subchapterNames.indexOf(subchapterName)}>
-                        <a class= {activeSubChapterState(subchapterName)} data-bs-toggle="collapse" href="#collapseOne"> 
-                            {subchapterName} 
+                {subchapterAndSectionNames.map(subchapter => (
+                    <li className = "card nav-item" id = {subchapterAndSectionNames.indexOf(subchapter)}>
+                        <a class= {activeSubChapterState(subchapter.subchapterName)} data-bs-toggle="collapse" href={"#collapse-" + subchapterAndSectionNames.indexOf(subchapter)}> 
+                            {subchapter.subchapterName} 
                         </a>
-                        <ul className = "nav nav-pills flex-column">
-                            <div id="collapseOne" class="collapse" data-bs-parent="#accordion">
-                                {sectionNames.map(sectionName => (
-                                        <li className = "nav-item" id = {sectionNames.indexOf(sectionName)}>
-                                            <a className = {activeSectionState(sectionName)} onClick = {() => {sectionHandler(sectionName); subchapterHandler(subchapterName)}} href="#">
-                                                {sectionName}
-                                            </a>
-                                        </li>
-                                    ))}
-                            </div>
-                        </ul>
+                        <div id={"collapse-" + subchapterAndSectionNames.indexOf(subchapter)} class="collapse" data-bs-parent="#accordion">
+                            <ul className = "nav nav-pills flex-column">
+                                    {subchapter.sectionNames.map(sectionName => (
+                                            <li className = "nav-item" id = {subchapter.sectionNames.indexOf(sectionName)}>
+                                                <a className = {activeSectionState(sectionName)} onClick = {() => {sectionHandler(sectionName); subchapterHandler(subchapter.subchapterName)}} href="#">
+                                                    {sectionName}
+                                                </a>
+                                            </li>
+                                        ))}
+                            </ul>
+                        </div>
                     </li>
                 ))}
             </ul>
