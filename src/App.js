@@ -40,14 +40,16 @@ export default function App(){
         }
     }
 
-    let subchapterNameArray = () => (findActiveChapter().map(subchapter => ({
-        suchapterName: subchapter.name,
-        sectionNames: subchapter.content.map(section => section.name)
-    })))
-
     let selectActiveChapter = (chapterName)=>{
         changeActiveChapter(chapterName);
+        changeActiveSubchapter(findActiveChapter()[0].name);
+        changeActiveSection(findActiveChapter()[0].content[0].name);
     }
+
+    let subchapterNameArray = () => (findActiveChapter().map(subchapter => ({
+        subchapterName: subchapter.name,
+        sectionNames: subchapter.content.map(section => section.name)
+    })))
 
     let [activeSubChapter, changeActiveSubchapter] = useState("Introducere");
 
@@ -59,7 +61,7 @@ export default function App(){
 
     let [activeSection, changeActiveSection] = useState("Intro");
 
-    let findActiveSection = () => (findActiveSubchapter().content.find(section => section.name === activeSubChapter))
+    let findActiveSection = () => (findActiveSubchapter().content.find(section => section.name === activeSection))
 
     let selectActiveSection = (sectionName)=>{
         changeActiveSection(sectionName);
@@ -79,7 +81,7 @@ export default function App(){
                 sectionHandler = {selectActiveSection}
                 activeSection = {activeSection}
             />
-            {/* <Content content = {displayContent()}/> */}
+            <Content content = {displayContent()}/>
         </>
     )
 }
