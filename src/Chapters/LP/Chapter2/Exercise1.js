@@ -1,15 +1,18 @@
-import React from "react";
+import React, {useState} from "react";
+import SelectableText from "../../../Reusables/SelectableText";
 
 export default function Exercise1(){
+    let [selectedText, changeSelectedText] = useState("");
+
+    function changeText(text){
+        changeSelectedText(text);
+    }
+
     return(
         <div>
-            <span>ma</span>
-            <span>joc</span>
-            <span>acasa</span>
-            <span>si</span>
-            <span>invat</span>
-            <span>la</span>
-            <span>scoala</span>
+            <SelectableText words = "ma joc acasa si invat la scoala" sentenceHandler = {changeText}/>
+            <br/>
+            {selectedText}
         </div>
     )
 }
