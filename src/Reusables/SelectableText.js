@@ -21,13 +21,13 @@ function SelectableText({sentenceHandler, words}){
 
     function recompileSelection(){
         changeSelectedText("");
+        sentenceHandler("");
         clickedWords.activeArr.forEach((active, index) => {
                 if(active){
                     changeSelectedText(selectedText => selectedText += clickedWords.words[index]);
-                    changeSelectedText(selectedText => selectedText += " ");
+                    changeSelectedText(selectedText => {let s = selectedText += " "; sentenceHandler(s); return s;});
                 }
             })
-        sentenceHandler(selectedText);
     }
 
     function changeClickedWords(index){
