@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import SelectableText from "../../../Reusables/SelectableText";
+import SelectableText from "../SelectableText";
 
 export default function Exercise1(){
     let [selectedText, changeSelectedText] = useState("");

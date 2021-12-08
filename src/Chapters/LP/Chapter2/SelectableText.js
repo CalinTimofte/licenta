@@ -1,17 +1,33 @@
 import React, {useState} from "react";
 
-function SelectableWord({word}){
+function SelectableWord({word, active}){
     let [selected, changeSelect] = useState(false);
 
     let selectedStyle = {backgroundColor: "yellow"}
     let unselectedStytle = {}
 
+    function changeActive(){
+        active = !active
+    }
+
+    
     function toggle(){
         changeSelect(!selected)
     }
 
+    let activeWord = <span
+    onClick = {toggle}
+    style = {selected? selectedStyle : unselectedStytle}>{word}</span>
+
+    let inactiveWord = <span
+    data-bs-toggle="tooltip"
+    data-bs-placement="bottom"
+    title= "Double click to disable; Part of prop1"
+    onDoubleClick = {changeActive}
+    style = {{backgroundColor: "gray"}}>{word}</span>
+
     return(
-        <span onClick = {toggle} style = {selected? selectedStyle : unselectedStytle}>{word}</span>
+        <>{active? activeWord : inactiveWord}</>
     )
 }
 
@@ -40,7 +56,7 @@ function SelectableText({sentenceHandler, words}){
     return(
         <div>
             {clickedWords.words.map((word, index) => (
-                <span key = {index} onClick = {() => changeClickedWords(index)}><SelectableWord word = {word}/>&nbsp;</span>
+                <span key = {index} onClick = {() => changeClickedWords(index)}><SelectableWord active = {false} word = {word}/>&nbsp;</span>
             ))}
         </div>
     )
