@@ -33,30 +33,30 @@ function SelectableWord({word, active}){
 
 function SelectableText({sentenceHandler, words}){
     let [selectedText, changeSelectedText] = useState("");
-    let [clickedWords, modifyClickedWordsArr] = useState({words: words.split(" "), activeArr: words.split(" ").map(() => false)})
+    let [clickedWords, modifyClickedWordsArr] = useState(words.split(" ").map(word => ({word: word, active: false, partOfSomething: false, partOf: null})))
 
     function recompileSelection(){
         changeSelectedText("");
         sentenceHandler("");
-        clickedWords.activeArr.forEach((active, index) => {
-                if(active){
-                    changeSelectedText(selectedText => selectedText += clickedWords.words[index]);
+        clickedWords.forEach((word, index) => {
+                if(word.active){
+                    changeSelectedText(selectedText => selectedText += clickedWords[index].word);
                     changeSelectedText(selectedText => {let s = selectedText += " "; sentenceHandler(s); return s;});
                 }
             })
     }
 
     function changeClickedWords(index){
-        let newActiveArr = clickedWords.activeArr
-        newActiveArr[index] = !(newActiveArr[index])
-        modifyClickedWordsArr({words: clickedWords.words, activeArr: newActiveArr})
+        let newActiveArr = [...clickedWords]
+        newActiveArr[index].active = !(newActiveArr[index].active)
+        modifyClickedWordsArr(newActiveArr)
         recompileSelection()
     }
 
     return(
         <div>
-            {clickedWords.words.map((word, index) => (
-                <span key = {index} onClick = {() => changeClickedWords(index)}><SelectableWord active = {false} word = {word}/>&nbsp;</span>
+            {clickedWords.map((wordObj, index) => (
+                <span key = {index} onClick = {() => changeClickedWords(index)}><SelectableWord active = {true} word = {wordObj.word}/>&nbsp;</span>
             ))}
         </div>
     )
