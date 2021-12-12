@@ -1,39 +1,18 @@
 import React, {useState} from "react";
 
-function SelectableWord({word, active}){
-    let [selected, changeSelect] = useState(false);
-
+function SelectableWord({word, highlighted, inactive}){
     let selectedStyle = {backgroundColor: "yellow"}
     let unselectedStytle = {}
-
-    function changeActive(){
-        active = !active
-    }
-
-    
-    function toggle(){
-        changeSelect(!selected)
-    }
-
-    let activeWord = <span
-    onClick = {toggle}
-    style = {selected? selectedStyle : unselectedStytle}>{word}</span>
-
-    let inactiveWord = <span
-    data-bs-toggle="tooltip"
-    data-bs-placement="bottom"
-    title= "Double click to disable; Part of prop1"
-    onDoubleClick = {changeActive}
-    style = {{backgroundColor: "gray"}}>{word}</span>
+    let inactiveStyle = {backgroundColor: "gray"}
 
     return(
-        <>{active? activeWord : inactiveWord}</>
+        <span style = {inactive? inactiveStyle: highlighted? selectedStyle : unselectedStytle}>{word}</span>
     )
 }
 
 function SelectableText({sentenceHandler, words}){
     let [selectedText, changeSelectedText] = useState("");
-    let [clickedWords, modifyClickedWordsArr] = useState(words.split(" ").map(word => ({word: word, active: false, partOfSomething: false, partOf: null})))
+    let [clickedWords, modifyClickedWordsArr] = useState(words.split(" ").map(word => ({word: word, active: false, partOfSomething: true, partOf: null})))
 
     function recompileSelection(){
         changeSelectedText("");
@@ -46,18 +25,46 @@ function SelectableText({sentenceHandler, words}){
             })
     }
 
-    function changeClickedWords(index){
+    function selectClickedWords(index){
         let newActiveArr = [...clickedWords]
         newActiveArr[index].active = !(newActiveArr[index].active)
         modifyClickedWordsArr(newActiveArr)
         recompileSelection()
     }
 
+    function toggleClickedWords(index){
+        let newActiveArr = [...clickedWords]
+        newActiveArr[index].partOfSomething = !(newActiveArr[index].partOfSomething)
+        modifyClickedWordsArr(newActiveArr)
+        recompileSelection()
+    }
+
+    let returnWordWithStyle = (wordObj) => (<><SelectableWord word= {wordObj.word} highlighted = {wordObj.active} inactive = {wordObj.partOfSomething}/> &nbsp;</>)
+
+    let activeWord = (wordObj, index) => (
+        <span
+        key = {index}
+        onClick = {() => {selectClickedWords(index)}}>
+            {returnWordWithStyle(wordObj)}
+        </span>
+    )
+
+    let inactiveWord = (wordObj, index) => (<span
+        key = {index}
+        data-bs-toggle="tooltip"
+        data-bs-placement="bottom"
+        title= "Double click to disable; Part of prop1"
+        onDoubleClick = {() => {toggleClickedWords(index)}}
+        >{returnWordWithStyle(wordObj)}</span>
+    )
+
+    let returnWord = (wordObj, index) => (wordObj.partOfSomething? inactiveWord(wordObj, index) : activeWord(wordObj, index))
+
     return(
         <div>
-            {clickedWords.map((wordObj, index) => (
-                <span key = {index} onClick = {() => changeClickedWords(index)}><SelectableWord active = {true} word = {wordObj.word}/>&nbsp;</span>
-            ))}
+            {clickedWords.map(
+                (wordObj, index) => (returnWord(wordObj, index))
+                )}
         </div>
     )
 
