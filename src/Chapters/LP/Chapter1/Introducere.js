@@ -37,3 +37,41 @@ export const LPIntroducere =
         din superior) au aplicat,ii ˆın teoria limbajelor de programare, ˆın fundamentele
         matematicii, teoria tipurilor etc.</p>
     </>
+
+export const LPIntroduction = 
+    <>
+        <h1>Chapter 1</h1>
+        <h2>Introduction</h2>
+        <p>If Arithmetic is the science that studies numbers and operations with num-
+            bers, then Logic is the science that studies propositions and operations with
+            propositions.
+            For example, if in Arithmetic we notice that the sum of two even numbers
+            is an even number, then in Logic we could notice that the disjunction of two
+            true sentences is also true.
+            Logic sits at the intersection of philosophy, mathematics and computer
+            science and has experienced its greatest development starting with the 1950s,
+            because of its numerous applications in Computer Science.
+            In this course, we will study at an introductory level propositional logic
+            and first-order logic.
+            Propositional logic is extremely simple, but the concepts that we study, the
+            methods that we learn and the issues that we face in propositional logic gener-
+            alize to other more complex logics. Moreover, propositional logic corresponds
+            intimally to the internal organization of computers at an abstract level, in
+            the sense that electronic circuits can be modeled as formulae in propositional
+            logic. Propositional logic has a rich and mathematically interesting theory
+            (examples: compactness theorem, Craig’s interpolation theorem). The sat-
+            isfiability problem for propositional logic has many applications in computer
+            science. It is especially important both from a theoretical viewpoint (being
+            the canonical NP-complete problem) and from a practical viewpoint as well
+            (with applications in program verification, circuit verification, combinatorial
+            optimization, and others).
+            First-order logic is an extension of propositional logic and also has numer-
+            ous application in computer science, but also in mathematics. For example,
+            all of the math that you have studied in highschool is based on a so-called first-
+            order logic theory called ZFC (the Zermelo–Fraenkel set theory, together with
+            the Axiom of Choice). In Computer Science, applications of first-order logic
+            appear in the fields of descriptive complexity, relational databases, software
+            and hardware verification, and others. Additionally, several other logics (for
+            example, higher-order logics) have applications in programming languages,
+            the fundamentals of mathematics, type theory, etc.</p>
+    </>

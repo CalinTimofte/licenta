@@ -62,3 +62,66 @@ export const LP1Introducere =
             Orice om este muritor s,i din faptul c ̆a Socrate este om.
         </p>
     </>
+
+export const LP1Introduction = 
+    <>
+        <h1>Chapter 1</h1>
+        <h2>Motivation and Introduction</h2>
+        <p>
+                    First-order logic, what we will be studying next, is an extension of propo-
+            sitional logic, extension that brings more expressivity. The additional ex-
+            pressivity is necessary in order to model certain statements that cannot be
+            expressed in propositional logic.
+            In propositional logic, we cannot express naturally the following statement:
+            All men are mortal.
+            To model a statement in propositional logic, we identify the atomic propo-
+            sitions. Then we associate to each atomic proposition a propositional variable.
+            The atomic propositions are the propositions that cannot be split into one or
+            more smaller propositions, linked among them by the logical connectives of
+            propositional logic: ¬, ∧, ∨, → and ↔.
+            We notice that the statement All men are mortal cannot be decomposed
+            into smaller statements linked among them by the logical connectives of propo-
+            sitional logic, as is described above. Therefore, in propositional logic, the
+            statement is atomic. So we associate to the entire statement a propositional
+            variable p ∈ A.
+            Let us now model the statement Socrates is a man. Obviously, to this
+            second statement we must associate another propositional variable q ∈ A.
+            Let us assume that p and q are true. Formally, we work in a truth assignment
+            τ : A → B where τ (p) = 1 and τ (q) = 1. Can we draw the conclusion that
+            Socrates is mortal in the truth assignment τ ?
+            No, because to the statement Socrates is mortal we should associate a
+            third propositional variable r ∈ A. We cannot draw any conclusion on τ (r)
+            from τ (p) = 1 and τ (q) = 1. So, from the semantics of propositional logic, we
+            cannot draw the conclusion that r is true in any truth assignment that makes
+            both p and q true. This is despite the fact that, in any world where All men
+            are mortal and Socrates is a man, we can draw the conclusion that Socrates
+            is mortal without failure. This difference between reality and our modelling
+            indicates that our modelling is not sufficient for our purposes.
+            First-order logic includes, in addition to propositional logic, the notion of
+            quantifier and the notion of predicate. The universal quantifier is denoted by
+            ∀ and the existential quantifier is denoted by ∃.
+            A predicate is a statement whose truth value depends on zero or more
+            parameters. For example, for the statements above, we will be using two
+            predicates: Man and Mortal. The predicate Man is the predicate that denotes
+            the quality of being a man: Man(x) is true iff x is a man. The predicate Mortal
+            is true when its argument is mortal. As the predicates above have only one
+            argument/parameter, they are called unary predicates. Predicates generalize
+            propositional variables by the fact that they can take arguments. Actually,
+            propositional variable can be regarded as predicates with no arguments.
+            In this way, the statement All men are mortal will be modelled by the
+            formula (∀x.(Man(x) → Mortal(x))),
+            which is read as follows: for any x, if Man of x, then Mortal of x. The
+            statement Socrate is a men shall be modelled by the formula Man(s), where
+            s is a constant that denotes Socrates, just like 0 denotes the natural number
+            zero. For example, Man(s) is true (as s stands for a particular man – Socrates),
+            but Man(l) is false if l is a constant standing for the dog Lassie.
+            The statement Socrates is mortal shall be represented by Mortal(s) (recall
+            that the constant s stands for Socrates). The statement Mortal(s) is true, as
+            Socrates is mortal; likewise, the statement Mortal(l) is also true.
+            We shall see that in first-order logic, the formula Mortal(s) is a logical con-
+            sequence of the formulae (∀x.(Man(x) → Mortal(x))) and respectively Man(s).
+            Therefore, first-order logic is sufficiently expressive to explain theoretically the
+            argument by which we deduce that Socrates is mortal from the facts that All
+            men are mortal and Socrates is a man.
+        </p>
+    </>

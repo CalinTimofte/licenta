@@ -2,8 +2,10 @@ import React, {useState} from 'react';
 import Content from './Content';
 import Chapters from './Chapters';
 import SubChapters from './Subchapters';
-import {LPIntroducere} from './Chapters/LP/Introducere';
-import {LP1Introducere} from './Chapters/LP1/Introducere';
+import {LPIntroducere, LPIntroduction} from './Chapters/LP/Chapter1/Introducere';
+import {LP1Introducere, LP1Introduction} from './Chapters/LP1/Chapter1/Introducere';
+import { LP2_0 } from './Chapters/LP/Chapter2/2/2.0';
+import { LP2_1 } from './Chapters/LP/Chapter2/2/2.1';
 
 export default function App(){
     let chapters = {
@@ -11,21 +13,21 @@ export default function App(){
             {
                 name: "Introducere",
                 content:[
-                    {name:"Intro", content: LPIntroducere}
+                    {name:"Intro", content: LPIntroduction}
                 ]
             },
             {
                 name: "Subchapter2",
                 content:[
-                {name: "Section1", content: <p>Section1 Text</p>},
-                {name: "Exercises-Section1", content: <div style = {{display: "flex", flexDirection: "column"}}><p>Exercise1</p><p>Exercise2</p></div>}
+                {name: "Introduction", content: LP2_0},
+                {name: "Propositions", content: LP2_1}
                 ]
             }
             ],
         lp1 : [
             {
                 name: "Introducere",
-                content:[{name:"Intro", content: LP1Introducere}]
+                content:[{name:"Intro", content: LP1Introduction}]
             }
         ]
     }
