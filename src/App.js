@@ -6,6 +6,8 @@ import {LPIntroducere, LPIntroduction} from './Chapters/LP/Chapter1/Introducere'
 import {LP1Introducere, LP1Introduction} from './Chapters/LP1/Chapter1/Introducere';
 import { LP2_0 } from './Chapters/LP/Chapter2/2/2.0';
 import { LP2_1 } from './Chapters/LP/Chapter2/2/2.1';
+import { LP2_2 } from './Chapters/LP/Chapter2/2/2.2';
+import { LP2_3 } from './Chapters/LP/Chapter2/2/2.3';
 
 export default function App(){
     let chapters = {
@@ -20,9 +22,11 @@ export default function App(){
                 name: "Subchapter2",
                 content:[
                 {name: "Introduction", content: LP2_0},
-                {name: "Propositions", content: LP2_1}
+                {name: "Propositions", content: LP2_1},
+                {name: "Atomic Propositions", content: LP2_2},
+                {name: "Conjunctions", content: LP2_3}
                 ]
-            }
+            },
             ],
         lp1 : [
             {
