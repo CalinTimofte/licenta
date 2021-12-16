@@ -5,7 +5,7 @@ export default function Exercise1(){
 
     return(
         <div>
-            <SelectableText inputWords = "Ma joc acasa si invat la scoala"/>
+            <SelectableText inputWords = "I play at home and I study at school"/>
         </div>
     )
 }

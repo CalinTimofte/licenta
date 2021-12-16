@@ -8,6 +8,7 @@ import { LP2_0 } from './Chapters/LP/Chapter2/2/2.0';
 import { LP2_1 } from './Chapters/LP/Chapter2/2/2.1';
 import { LP2_2 } from './Chapters/LP/Chapter2/2/2.2';
 import { LP2_3 } from './Chapters/LP/Chapter2/2/2.3';
+import { LP2_4 } from './Chapters/LP/Chapter2/2/2.4';
 
 export default function App(){
     let chapters = {
@@ -24,7 +25,8 @@ export default function App(){
                 {name: "Introduction", content: LP2_0},
                 {name: "Propositions", content: LP2_1},
                 {name: "Atomic Propositions", content: LP2_2},
-                {name: "Conjunctions", content: LP2_3}
+                {name: "Conjunctions", content: LP2_3},
+                {name: "Disjunctions", content: LP2_4}
                 ]
             },
             ],
