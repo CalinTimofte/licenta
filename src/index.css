@@ -23,3 +23,9 @@
     width: 70vw;
     margin-top: 20vh;
 }
+
+.subchapter-section{
+    overflow: auto;
+    max-height: 30vh;
+    flex-wrap: nowrap;
+}

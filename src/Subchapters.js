@@ -25,7 +25,7 @@ export default function SubChapters({subchapterAndSectionNames, subchapterHandle
                             {subchapter.subchapterName} 
                         </a>
                         <div id={"collapse-" + subchapterAndSectionNames.indexOf(subchapter)} class="collapse" data-bs-parent="#accordion">
-                            <ul className = "nav nav-pills flex-column">
+                            <ul className = "subchapter-section nav nav-pills flex-column">
                                     {subchapter.sectionNames.map(sectionName => (
                                             <li className = "nav-item" id = {subchapter.sectionNames.indexOf(sectionName)}>
                                                 <a className = {activeSectionState(sectionName)} onClick = {() => {sectionHandler(sectionName); subchapterHandler(subchapter.subchapterName)}} href="#">

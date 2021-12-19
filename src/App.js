@@ -9,6 +9,12 @@ import { LP2_1 } from './Chapters/LP/Chapter2/2/2.1';
 import { LP2_2 } from './Chapters/LP/Chapter2/2/2.2';
 import { LP2_3 } from './Chapters/LP/Chapter2/2/2.3';
 import { LP2_4 } from './Chapters/LP/Chapter2/2/2.4';
+import { LP2_5 } from './Chapters/LP/Chapter2/2/2.5';
+import { LP2_6 } from './Chapters/LP/Chapter2/2/2.6';
+import { LP2_7 } from './Chapters/LP/Chapter2/2/2.7';
+import { LP2_8 } from './Chapters/LP/Chapter2/2/2.8';
+import { LP2_9 } from './Chapters/LP/Chapter2/2/2.9';
+import { LP2_10 } from './Chapters/LP/Chapter2/2/2.10';
 
 export default function App(){
     let chapters = {
@@ -26,7 +32,13 @@ export default function App(){
                 {name: "Propositions", content: LP2_1},
                 {name: "Atomic Propositions", content: LP2_2},
                 {name: "Conjunctions", content: LP2_3},
-                {name: "Disjunctions", content: LP2_4}
+                {name: "Disjunctions", content: LP2_4},
+                {name: "Implications", content: LP2_5},
+                {name: "Negations", content: LP2_6},
+                {name: "Equivalences", content: LP2_7},
+                {name: "Logical Connectives", content: LP2_8},
+                {name: "Ambiguities in Natural Language", content: LP2_9},
+                {name: "Exercise Sheet", content: LP2_10}
                 ]
             },
             ],

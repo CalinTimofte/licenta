@@ -44,4 +44,5 @@ export const LP2_4 =
 
         <p><b>Exercise 5.</b><i>When is a disjunction φ or ψ false (depending on the truth value
             of φ and ψ)?</i></p>
+        <br/>
     </>
