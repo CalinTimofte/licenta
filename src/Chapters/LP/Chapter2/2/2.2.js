@@ -1,13 +1,15 @@
-export const LP2_2 = 
-    <>
-        <h1>2.2 Atomic Propositions</h1>
-        <p>Some propositions are atomic, in that they cannot be decomposed further
-            into smaller propositions:</p>
-        <br/>
+import { Document, Page, pdfjs } from "react-pdf";
+import React from 'react';
+import pdf from "../Chapter2.pdf";
+pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
-        <ol>
-            <li> <i> I wear a blue shirt.</i></li>
-            <li> <i> You own a laptop computer.</i></li>
-            <li> 2 + 2 = 4. (<i>Two plus two is four.</i>)</li>
-        </ol>
-    </>
+const PdfLayout = () => {
+    return (
+        <Document file= {pdf}>
+            <Page pageNumber = {5} width={window.screen.availWidth * 0.5}/>
+            <Page pageNumber = {3} width={window.screen.availWidth * 0.5}/>
+        </Document>
+    );
+  }
+
+export const LP2_2 = <PdfLayout/> ;

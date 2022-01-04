@@ -1,30 +1,17 @@
-export const LP2_10 =
-    <>
-        <h1>2.10 Exercise Sheet</h1>
-        <p>
-            <b>Exercise 9.</b> Establish which of the following phrases are propositions:
-            <ol>
-                <li>You own a laptop computer.</li>
-                <li>Snow is white</li>
-                <li>Example</li>
-                <li>Example</li>
-                <li>Example</li>
-                <li>Example</li>
-                <li>Example</li>
-                <li>Example</li>
-                <li>Example</li>
-                <li>Example</li>
-                <li>Example</li>
-                <li>Example</li>
-                <li>Example</li>
-                <li>Example</li>
-            </ol>
-        </p>
-        <br/>
+import { Document, Page, pdfjs } from "react-pdf";
+import React from 'react';
+import pdf from "../Chapter2.pdf";
+pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
-        <p>
-            <b>Exercise 10.</b> <i> For all propositions that you identified, establish whether they
-            are atomic or molecular. If molecular, establish whether they are conjunctions,
-            negations, etc.</i>
-        </p>
-    </>
+const PdfLayout = () => {
+    return (
+        <Document file= {pdf}>
+            <Page pageNumber = {24} width={window.screen.availWidth * 0.5}/>
+            <Page pageNumber = {25} width={window.screen.availWidth * 0.5}/>
+            <Page pageNumber = {26} width={window.screen.availWidth * 0.5}/>
+            <Page pageNumber = {3} width={window.screen.availWidth * 0.5}/>
+        </Document>
+    );
+  }
+
+export const LP2_10 = <PdfLayout/> ;

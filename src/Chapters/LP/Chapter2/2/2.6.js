@@ -1,16 +1,16 @@
-export const LP2_6 =
-    <>
-        <h1>2.6 Negations</h1>
-        <p>
-            A proposition of the form it is not the case that φ (or simply not ψ) is the
-            negation of φ. For example, It is not raining is the negation of It is raining.
-            The negation of a proposition takes the opposite truth value. For example,
-            as I am writing this text, the proposition It is raining is false, and therefore
-            the proposition It is not raining is true.
-        </p>
+import { Document, Page, pdfjs } from "react-pdf";
+import React from 'react';
+import pdf from "../Chapter2.pdf";
+pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
-        <p>
-            <b>Exercise 7.</b> Give an example of a false proposition that uses both a negation
-            and a conjunction.
-        </p>
-    </>
+const PdfLayout = () => {
+    return (
+        <Document file= {pdf}>
+            <Page pageNumber = {17} width={window.screen.availWidth * 0.5}/>
+            <Page pageNumber = {18} width={window.screen.availWidth * 0.5}/>
+            <Page pageNumber = {3} width={window.screen.availWidth * 0.5}/>
+        </Document>
+    );
+  }
+
+export const LP2_6 = <PdfLayout/> ;
