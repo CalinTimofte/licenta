@@ -30,6 +30,12 @@ import { LP3_7 } from './Chapters/LP/Chapter3/Layouts/3.7';
 import { LP3_8 } from './Chapters/LP/Chapter3/Layouts/3.8';
 import { LP3_9 } from './Chapters/LP/Chapter3/Layouts/3.9';
 
+import { LP4_0 } from './Chapters/LP/Chapter4/Layouts/4.0';
+import { LP4_1 } from './Chapters/LP/Chapter4/Layouts/4.1';
+import { LP4_2 } from './Chapters/LP/Chapter4/Layouts/4.2';
+import { LP4_3 } from './Chapters/LP/Chapter4/Layouts/4.3';
+import { LP4_4 } from './Chapters/LP/Chapter4/Layouts/4.4';
+
 export default function App(){
     let chapters = {
         lp : [
@@ -68,6 +74,16 @@ export default function App(){
                     {name: "Unique Readability", content: LP3_7},
                     {name: "Object-Language and Meta-Language", content: LP3_8},
                     {name: "Exercise Sheet", content: LP3_9}
+                ]
+            },
+            {
+                name: "Subchapter4",
+                content:[
+                    {name: "Introduction", content: LP4_0},
+                    {name: "The Abstract Syntax Tree of a Formula", content: LP4_1},
+                    {name: "Other Examples of Recursively Defined Functions", content: LP4_2},
+                    {name: "Proofs by Structural Induction", content: LP4_3},
+                    {name: "Exercise Sheet", content: LP4_4}
                 ]
             }
             ],
