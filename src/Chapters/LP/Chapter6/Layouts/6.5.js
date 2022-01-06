@@ -6,12 +6,10 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/$
 const PdfLayout = () => {
     return (
         <Document file= {pdf}>
-            <Page pageNumber = {2} width={window.screen.availWidth * 0.5}/>
-            <Page pageNumber = {4} width={window.screen.availWidth * 0.5}/>
-            <Page pageNumber = {5} width={window.screen.availWidth * 0.5}/>
+            <Page pageNumber = {14} width={window.screen.availWidth * 0.5}/>
             <Page pageNumber = {3} width={window.screen.availWidth * 0.5}/>
         </Document>
     );
   }
 
-export const LP6_1 = <PdfLayout/> ;
+export const LP6_5 = <PdfLayout/> ;

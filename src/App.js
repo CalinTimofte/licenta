@@ -49,6 +49,11 @@ import { LP5_9 } from './Chapters/LP/Chapter5/Layouts/5.9';
 import { LP5_10 } from './Chapters/LP/Chapter5/Layouts/5.10';
 
 import { LP6_0 } from './Chapters/LP/Chapter6/Layouts/6.0';
+import { LP6_1 } from './Chapters/LP/Chapter6/Layouts/6.1';
+import { LP6_2 } from './Chapters/LP/Chapter6/Layouts/6.2';
+import { LP6_3 } from './Chapters/LP/Chapter6/Layouts/6.3';
+import { LP6_4 } from './Chapters/LP/Chapter6/Layouts/6.4';
+import { LP6_5 } from './Chapters/LP/Chapter6/Layouts/6.5';
 
 export default function App(){
     let chapters = {
@@ -113,13 +118,18 @@ export default function App(){
                     {name: "Semantical Consequence", content: LP5_7},
                     {name: "Consistent set of formulae", content: LP5_8},
                     {name: "Application 1", content: LP5_9},
-                    {name: "Exercise Sheet", content: LP5_10},
+                    {name: "Exercise Sheet", content: LP5_10}
                 ]
             },
             {
                 name: "Logical Connectives",
                 content:[
                     {name: "Introduction", content: LP6_0},
+                    {name: "Several Propositional Logics", content: LP6_1},
+                    {name: "The relation between implications and semantical consequence", content: LP6_2},
+                    {name: "Translating propositions from English into PL", content: LP6_3},
+                    {name: "Application 2", content: LP6_4},
+                    {name: "Exercise Sheet", content: LP6_5}
                 ]
             }
             ],
