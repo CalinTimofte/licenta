@@ -55,6 +55,22 @@ import { LP6_3 } from './Chapters/LP/Chapter6/Layouts/6.3';
 import { LP6_4 } from './Chapters/LP/Chapter6/Layouts/6.4';
 import { LP6_5 } from './Chapters/LP/Chapter6/Layouts/6.5';
 
+import { LP7_0 } from './Chapters/LP/Chapter7/Layouts/7.0';
+import { LP7_1 } from './Chapters/LP/Chapter7/Layouts/7.1';
+import { LP7_2 } from './Chapters/LP/Chapter7/Layouts/7.2';
+import { LP7_3 } from './Chapters/LP/Chapter7/Layouts/7.3';
+import { LP7_4 } from './Chapters/LP/Chapter7/Layouts/7.4';
+import { LP7_5 } from './Chapters/LP/Chapter7/Layouts/7.5';
+import { LP7_5_1 } from './Chapters/LP/Chapter7/Layouts/7.5.1';
+import { LP7_5_2 } from './Chapters/LP/Chapter7/Layouts/7.5.2';
+import { LP7_5_3 } from './Chapters/LP/Chapter7/Layouts/7.5.3';
+import { LP7_5_4 } from './Chapters/LP/Chapter7/Layouts/7.5.4';
+import { LP7_5_5 } from './Chapters/LP/Chapter7/Layouts/7.5.5';
+import { LP7_6 } from './Chapters/LP/Chapter7/Layouts/7.6';
+import { LP7_7 } from './Chapters/LP/Chapter7/Layouts/7.7';
+import { LP7_8 } from './Chapters/LP/Chapter7/Layouts/7.8';
+import { LP7_9 } from './Chapters/LP/Chapter7/Layouts/7.9';
+
 export default function App(){
     let chapters = {
         lp : [
@@ -130,6 +146,26 @@ export default function App(){
                     {name: "Translating propositions from English into PL", content: LP6_3},
                     {name: "Application 2", content: LP6_4},
                     {name: "Exercise Sheet", content: LP6_5}
+                ]
+            },
+            {
+                name: "Natural Deduction",
+                content:[
+                    {name: "Introduction", content: LP7_0},
+                    {name: "Sequents", content: LP7_1},
+                    {name: "Inference Rules", content: LP7_2},
+                    {name: "Proof System", content: LP7_3},
+                    {name: "Formal Proofs", content: LP7_4},
+                    {name: "Natural Deduction", content: LP7_5},
+                    {name: "The Rules for Conjunction", content: LP7_5_1},
+                    {name: "The Rules for Implications", content: LP7_5_2},
+                    {name: "The Rules for Disjunctions", content: LP7_5_3},
+                    {name: "The Rules for Negations", content: LP7_5_4},
+                    {name: "Other Rules", content: LP7_5_5},
+                    {name: "Natural Deduction Conclusion", content: LP7_6},
+                    {name: "Derived Rules", content: LP7_7},
+                    {name: "Soundness and Completeness for Natural Deduction", content: LP7_8},
+                    {name: "Exercise Sheet", content: LP7_9}
                 ]
             }
             ],
