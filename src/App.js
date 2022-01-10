@@ -71,6 +71,27 @@ import { LP7_7 } from './Chapters/LP/Chapter7/Layouts/7.7';
 import { LP7_8 } from './Chapters/LP/Chapter7/Layouts/7.8';
 import { LP7_9 } from './Chapters/LP/Chapter7/Layouts/7.9';
 
+import { LP8_0 } from './Chapters/LP/Chapter8/Layouts/8.0';
+import { LP8_1 } from './Chapters/LP/Chapter8/Layouts/8.1';
+import { LP8_2 } from './Chapters/LP/Chapter8/Layouts/8.2';
+import { LP8_3 } from './Chapters/LP/Chapter8/Layouts/8.3';
+import { LP8_4 } from './Chapters/LP/Chapter8/Layouts/8.4';
+import { LP8_5 } from './Chapters/LP/Chapter8/Layouts/8.5';
+import { LP8_6 } from './Chapters/LP/Chapter8/Layouts/8.6';
+import { LP8_7 } from './Chapters/LP/Chapter8/Layouts/8.7';
+import { LP8_8 } from './Chapters/LP/Chapter8/Layouts/8.8';
+
+import { LP9_0 } from './Chapters/LP/Chapter9/Layouts/9.0';
+import { LP9_1 } from './Chapters/LP/Chapter9/Layouts/9.1';
+import { LP9_1_1 } from './Chapters/LP/Chapter9/Layouts/9.1.1';
+import { LP9_1_2 } from './Chapters/LP/Chapter9/Layouts/9.1.2';
+import { LP9_2 } from './Chapters/LP/Chapter9/Layouts/9.2';
+import { LP9_3 } from './Chapters/LP/Chapter9/Layouts/9.3';
+import { LP9_4 } from './Chapters/LP/Chapter9/Layouts/9.4';
+import { LP9_5 } from './Chapters/LP/Chapter9/Layouts/9.5';
+import { LP9_6 } from './Chapters/LP/Chapter9/Layouts/9.6';
+import { LP9_7 } from './Chapters/LP/Chapter9/Layouts/9.7';
+
 export default function App(){
     let chapters = {
         lp : [
@@ -166,6 +187,35 @@ export default function App(){
                     {name: "Derived Rules", content: LP7_7},
                     {name: "Soundness and Completeness for Natural Deduction", content: LP7_8},
                     {name: "Exercise Sheet", content: LP7_9}
+                ]
+            },
+            {
+                name: "Normal Forms",
+                content:[
+                    {name: "Introduction", content: LP8_0},
+                    {name: "Replacement Theorem", content: LP8_1},
+                    {name: "Literal", content: LP8_2},
+                    {name: "Clauses", content: LP8_3},
+                    {name: "Conjunctive Normal Form", content: LP8_4},
+                    {name: "Bringing a Formula into CNF", content: LP8_5},
+                    {name: "Disjunctive Normal Form", content: LP8_6},
+                    {name: "The Link between DNF and CNF", content: LP8_7},
+                    {name: "Exercise Sheet", content: LP8_8}
+                ]
+            },
+            {
+                name: "Resolution in Propositional Logic",
+                content:[
+                    {name: "Introduction", content: LP9_0},
+                    {name: "Reminder on Conjunctive Normal Forms", content: LP9_1},
+                    {name: "Clauses as Sets of Literals", content: LP9_1_1},
+                    {name: "CNFs as Sets of Clauses", content: LP9_1_2},
+                    {name: "Resolution", content: LP9_2},
+                    {name: "Formal Proofs", content: LP9_3},
+                    {name: "Soundness", content: LP9_4},
+                    {name: "Completeness", content: LP9_5},
+                    {name: "Proving Validity and Logical Consequences by Resolution", content: LP9_6},
+                    {name: "Exercise Sheet", content: LP9_7}
                 ]
             }
             ],
