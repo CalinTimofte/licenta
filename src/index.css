@@ -31,3 +31,8 @@
     max-height: 30vh;
     flex-wrap: nowrap;
 }
+
+.exercise{
+    z-index: 100;
+    position: relative;
+}
