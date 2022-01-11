@@ -5,13 +5,14 @@ import Exercise1 from "../Exercise1/Exercise1.js"
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 const PdfLayout = () => {
+    
     return (
         <Document file= {pdf}>
             <Page pageNumber = {6} width={window.screen.availWidth * 0.5}/>
             <Page pageNumber = {7} width={window.screen.availWidth * 0.5}/>
             
             <br/>
-            <Exercise1/>
+                <Exercise1/>
             <br/>
             
             <Page pageNumber = {8} width={window.screen.availWidth * 0.5}/>
