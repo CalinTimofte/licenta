@@ -1,5 +1,5 @@
 import React from "react";
-import SelectableText from "../SelectableText";
+import SelectableText from "./SelectableText";
 
 export default function Exercise1(){
 
