@@ -12,12 +12,12 @@ function SelectableWord({word, highlighted, inactive, hover}){
 }
 
 
-
 function SelectableText({inputWords}){
     let [heighlightedText, changeHeighlightedText] = useState("");
     let [words, modifyWordsArr] = useState(inputWords.split(" ").map(word => ({word: word, heighlighted: false, partOfSomething: false, partOf: null, hovering: false})))
     let [partsCounter, changePartsCounter] = useState({props: 0, conjunctions: 0});
     let [hoveringBUtton, changeHoveringButtonState] = useState(false);
+    let [finished, changeFinished] = useState("unchecked")
 
     let incProps = () => (changePartsCounter(partsCounter => ({...partsCounter, props: partsCounter.props + 1})))
     let incConjunctions = () => (changePartsCounter(partsCounter => ({...partsCounter, conjunctions: partsCounter.conjunctions + 1})))
@@ -129,22 +129,41 @@ function SelectableText({inputWords}){
         </button>
     )
 
+    function checkifFinished(){
+        if((words[0].partOf === words[1].partOf && words[2].partOf === words[3].partOf && words[1].partOf === words[2].partOf) &&
+            (words[4].partType === "conjunction") &&
+            (words[5].partOf === words[6].partOf && words[7].partOf === words[8].partOf &&  words[6].partOf === words[7].partOf) &&
+            (words[0].partType === words[5].partType && words[5].partType === "prop"))
+            return true;
+        else
+            return false;
+    }
+
+    let checkAction = () => {
+        if (checkifFinished())
+            changeFinished("finished");
+        else
+            changeFinished("unfinished");
+    }
+
     return(
         <div>
-        <div>
-            {words.map(
-                (wordObj, index) => (returnWord(wordObj, index))
-                )}
-        </div>
-        <br/>
-        
-        <span style = {hoveringBUtton? {border: "thick solid yellow"} : {}}>{heighlightedText}</span>
-        <br/><br/>
+            <div>
+                {words.map(
+                    (wordObj, index) => (returnWord(wordObj, index))
+                    )}
+            </div>
+            <br/>
+            
+            <span style = {hoveringBUtton? {border: "thick solid yellow"} : {}}>{heighlightedText}</span>
+            <br/><br/>
 
-        <div>
-            {buttonFunc("prop")}
-            {buttonFunc("conjunction")}
-        </div>
+            <div>
+                {buttonFunc("prop")}
+                {buttonFunc("conjunction")}
+                <button onClick={checkAction}>Done</button>
+                <span style = {{color: finished === "unfinished"? "red" : "green", visibility: (finished === "unfinished" || finished === "finished")? "visible" : "hidden"}}>{finished === "unfinished"? "Try Again." : "Congratulations!"}</span>
+            </div>
         </div>
     )
 
