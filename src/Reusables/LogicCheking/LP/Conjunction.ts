@@ -1,5 +1,10 @@
+import AtomicProp from "./AtomicProp";
+
 export default class Conjunction{
-    constructor(atomicProp1, atomicProp2){
+    _atomicProp1: AtomicProp;
+    _atomicProp2: AtomicProp;
+
+    constructor(atomicProp1: AtomicProp, atomicProp2: AtomicProp){
         this._atomicProp1 = atomicProp1;
         this._atomicProp2 = atomicProp2;
     }

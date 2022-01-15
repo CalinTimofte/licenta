@@ -1,5 +1,8 @@
 export default class AtomicProp{
-    constructor(content, truthValue){
+    _content: string;
+    _truthValue: boolean;
+
+    constructor(content: string, truthValue: boolean){
         this._content = content;
         this._truthValue = truthValue;
     }
