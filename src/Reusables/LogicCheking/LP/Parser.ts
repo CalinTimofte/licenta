@@ -17,39 +17,47 @@ function computeShuntingYard(input: Array<AtomicProp|string>){
     let queue : Array<AtomicProp|string> = [];
     let stack : Array<AtomicProp|string> = [];
     for(let i = 0; i < input.length; i++){
-        if(typeof input[i] !== "string")
+        // Not an operation
+        if(typeof input[i] === "object")
             queue.push(input[i]);
         else{
+            // Start of stack, no other operations to compare to
             if(input.length === 0)
                 stack.unshift(input[i]);
             else{
-                if(priorityOfOperations.indexOf(input[i]) > priorityOfOperations.indexOf(stack[0]))
+                // Can cast to string freely, already checked if not string earlier
+                if(priorityOfOperations.indexOf(input[i] as string) > priorityOfOperations.indexOf(stack[0] as string))
                     stack.unshift(input[i]);
                 else{
-                    while(priorityOfOperations.indexOf(input[i]) <= priorityOfOperations.indexOf(stack[0]))
-                        queue.push(stack.shift());
+                    while((priorityOfOperations.indexOf(input[i] as string) <= priorityOfOperations.indexOf(stack[0] as string)) && stack.length > 0)
+                        // Can't be null, we check if stack is empty
+                        queue.push(stack.shift() as string);
                         stack.unshift(input[i]);
                 }
             }
         }
     }
     while(stack.length > 0)
-        queue.push(stack.shift());
+        // Can't be null, we check if stack is empty
+        queue.push(stack.shift() as (AtomicProp | string));
     return queue
 }
 
 function computeTruthValue(input: Array<AtomicProp|string>){
-    let queue = computeShuntingYard(input);
-    let operations = ["and"];
+    let queue : Array<AtomicProp|string> = computeShuntingYard(input);
+    let operations : Array<string> = ["and"];
     let operationFunctions = [computeConjuncton];
     while(queue.length > 1){
         for(let i = 0; i < queue.length; i++){
-            if (operations.includes(queue[i])){
-                let result = operationFunctions[operations.indexOf(queue[i])](queue[i-1], queue[i-2]);
-                queue.splice(i-2, 3, {name: "aux", truthValue:result});
+            // If is operation
+            if (typeof queue[i] === "string"){
+                // We can cast because we know that if it's an operation it has two atomic props behind
+                let result = operationFunctions[operations.indexOf(queue[i] as string)](queue[i-1] as AtomicProp, queue[i-2] as AtomicProp);
+                queue.splice(i-2, 3, new AtomicProp("aux", result));
                 break;
             }
         }
     }
-    return(queue[0].truthValue);
+    // Last element must be an atomic prop
+    return((queue[0] as AtomicProp).truthValue);
 }
