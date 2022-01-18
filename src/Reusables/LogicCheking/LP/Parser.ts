@@ -43,7 +43,7 @@ function computeShuntingYard(input: Array<AtomicProp|string>){
     return queue
 }
 
-function computeTruthValue(input: Array<AtomicProp|string>){
+export default function computeTruthValue(input: Array<AtomicProp|string>){
     let queue : Array<AtomicProp|string> = computeShuntingYard(input);
     let operations : Array<string> = ["and"];
     let operationFunctions = [computeConjuncton];
