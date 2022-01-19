@@ -28,9 +28,9 @@ export default function SubChapters({subchapterAndSectionNames, subchapterHandle
                             <ul className = "subchapter-section nav nav-pills flex-column">
                                     {subchapter.sectionNames.map(sectionName => (
                                             <li className = "nav-item" id = {subchapter.sectionNames.indexOf(sectionName)}>
-                                                <a className = {activeSectionState(sectionName)} onClick = {() => {sectionHandler(sectionName); subchapterHandler(subchapter.subchapterName)}} href="#">
+                                                <button className = {activeSectionState(sectionName) + " section"} onClick = {() => {sectionHandler(sectionName); subchapterHandler(subchapter.subchapterName)}}>
                                                     {sectionName}
-                                                </a>
+                                                </button>
                                             </li>
                                         ))}
                             </ul>

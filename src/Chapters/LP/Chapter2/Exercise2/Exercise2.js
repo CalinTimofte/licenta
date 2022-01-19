@@ -70,7 +70,7 @@ export default function Exercise2(){
                         {exercisePart === 0?
                             "Please enter a false sentence":
                             exercisePart === 1?
-                                "Please enter a true sentence":
+                                "Please enter a trueclear sentence":
                                 "Exercise finished!"}
                     </div>
                     <div>

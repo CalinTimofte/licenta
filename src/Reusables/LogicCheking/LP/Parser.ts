@@ -5,10 +5,10 @@ import computeDisjunction from "./Disjunction";
 function checkFormatting(input: Array<AtomicProp|string>){
     // Does not take not into account yet
     if(typeof input[0] === "string" || typeof input[input.length-1] === "string")
-        throw("Malformed input");
+        throw new Error("Malformed input");
     for(let i = 0; i < input.length - 1; i++){
         if(typeof(input[i]) === typeof(input[i+1]))
-            throw ("Malformed input");
+            throw new Error("Malformed input");
     }
 }
 

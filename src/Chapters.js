@@ -14,8 +14,8 @@ function Chapters({chapterHandler, activeChapter}){
     return(
         <div className = "chapters">
             <ul className = "nav nav-pills" style = {!open? {display:'none'} : {display: 'flex'}}>
-                <li className = "nav-item"><a className = {activeLinkState("LP")} href="#" onClick = {() => chapterHandler("LP")}>LP</a></li>
-                <li className = "nav-item"><a className = {activeLinkState("LP1")} href="#" onClick = {() => chapterHandler("LP1")}>LP1</a></li>
+                <li className = "nav-item"><button className = {activeLinkState("LP")} onClick = {() => chapterHandler("LP")}>LP</button></li>
+                <li className = "nav-item"><button className = {activeLinkState("LP1")} onClick = {() => chapterHandler("LP1")}>LP1</button></li>
             </ul>
             <ArrowButton iconNames = {{open: "up", closed: "down"}} tooltipName = "Chapters" menuStateVar = {open} menuStateHandler = {reverseMenu}/>
         </div>

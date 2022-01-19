@@ -36,3 +36,7 @@
     z-index: 100;
     position: relative;
 }
+
+.nav-link.active.section{
+    background-color: #0dc1fd;
+}
