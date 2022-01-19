@@ -14,7 +14,7 @@ export default function SubChapters({subchapterAndSectionNames, subchapterHandle
     )
 
     let activeSubChapterState = (name) => (activeLinkState(activeSubChapter)(name) + " btn");
-    let activeSectionState = activeLinkState(activeSection);
+    let activeSectionState = (sectionName, subchapterName) => (activeSubChapter === subchapterName? activeLinkState(sectionName)(activeSection) + " section": "nav-link section");
 
     return(
         <div className = "subchapters">
@@ -28,7 +28,7 @@ export default function SubChapters({subchapterAndSectionNames, subchapterHandle
                             <ul className = "subchapter-section nav nav-pills flex-column">
                                     {subchapter.sectionNames.map(sectionName => (
                                             <li className = "nav-item" id = {subchapter.sectionNames.indexOf(sectionName)}>
-                                                <button className = {activeSectionState(sectionName) + " section"} onClick = {() => {sectionHandler(sectionName); subchapterHandler(subchapter.subchapterName)}}>
+                                                <button className = {activeSectionState(sectionName, subchapter.subchapterName)} onClick = {() => {sectionHandler(sectionName); subchapterHandler(subchapter.subchapterName)}}>
                                                     {sectionName}
                                                 </button>
                                             </li>
