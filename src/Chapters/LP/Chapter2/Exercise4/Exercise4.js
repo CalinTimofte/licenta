@@ -3,7 +3,7 @@ import React, {useState} from "react";
 import AtomicProp from "../../../../Reusables/LogicCheking/LP/AtomicProp";
 import computeTruthValue from "../../../../Reusables/LogicCheking/LP/Parser";
 
-export default function Exercise2(){
+export default function Exercise4(){
     let [currentSentence, changeCurrentSentence] = useState("");
     let [formalSentence, changeFormalSentence] = useState([]);
     let [truthValue, changeTruthValue] = useState(undefined);
@@ -18,8 +18,8 @@ export default function Exercise2(){
             case "q":
                 changeFormalSentence(formalSentence => [...formalSentence, new AtomicProp("q", false)])
                 break;
-            case "∧":
-                changeFormalSentence(formalSentence => [...formalSentence, "and"])
+            case "∨":
+                changeFormalSentence(formalSentence => [...formalSentence, "or"])
                 break;
             default:
                 changeFormalSentence(formalSentence => [...formalSentence, word])
@@ -76,7 +76,7 @@ export default function Exercise2(){
                     <div>
                         <button onClick={buttonWordFunctionGenerator("p")}>p</button>
                         <button onClick={buttonWordFunctionGenerator("q")}>q</button>
-                        <button onClick={buttonWordFunctionGenerator("∧")}>and</button>
+                        <button onClick={buttonWordFunctionGenerator("∨")}>or</button>
                         <button onClick={deleteSentence}>Delete</button>
                         <button onClick = {backspace}>Backspace</button>
                         <button onClick={checkAction}>Done</button>
