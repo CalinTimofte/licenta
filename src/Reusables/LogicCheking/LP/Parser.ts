@@ -1,5 +1,6 @@
 import AtomicProp from "./AtomicProp";
 import computeConjuncton from "./Conjunction";
+import computeDisjunction from "./Disjunction";
 
 function checkFormatting(input: Array<AtomicProp|string>){
     // Does not take not into account yet
@@ -13,7 +14,8 @@ function checkFormatting(input: Array<AtomicProp|string>){
 
 function computeShuntingYard(input: Array<AtomicProp|string>){
     checkFormatting(input);
-    let priorityOfOperations : Array<string> = ["and"];
+    let operations : Array<string> = ["and", "or"];
+    let priorityOfOperations : Array<number> = [1,1]
     let queue : Array<AtomicProp|string> = [];
     let stack : Array<AtomicProp|string> = [];
     for(let i = 0; i < input.length; i++){
@@ -26,10 +28,10 @@ function computeShuntingYard(input: Array<AtomicProp|string>){
                 stack.unshift(input[i]);
             else{
                 // Can cast to string freely, already checked if not string earlier
-                if(priorityOfOperations.indexOf(input[i] as string) > priorityOfOperations.indexOf(stack[0] as string))
+                if(priorityOfOperations[operations.indexOf(input[i] as string)] > priorityOfOperations[operations.indexOf(stack[0] as string)])
                     stack.unshift(input[i]);
                 else{
-                    while((priorityOfOperations.indexOf(input[i] as string) <= priorityOfOperations.indexOf(stack[0] as string)) && stack.length > 0)
+                    while((priorityOfOperations[operations.indexOf(input[i] as string)] <= priorityOfOperations[operations.indexOf(stack[0] as string)]) && stack.length > 0)
                         // Can't be null, we check if stack is empty
                         queue.push(stack.shift() as string);
                         stack.unshift(input[i]);
@@ -45,8 +47,8 @@ function computeShuntingYard(input: Array<AtomicProp|string>){
 
 export default function computeTruthValue(input: Array<AtomicProp|string>){
     let queue : Array<AtomicProp|string> = computeShuntingYard(input);
-    let operations : Array<string> = ["and"];
-    let operationFunctions = [computeConjuncton];
+    let operations : Array<string> = ["and", "or"];
+    let operationFunctions = [computeConjuncton, computeDisjunction];
     while(queue.length > 1){
         for(let i = 0; i < queue.length; i++){
             // If is operation
