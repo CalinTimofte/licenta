@@ -227,8 +227,15 @@ export default function App(){
             }
         ]
     }
+    // Set local storage variables
+    if(localStorage.getItem("activeChapter") === null)
+        localStorage.setItem("activeChapter", "LP");
+    if(localStorage.getItem("activeSubchapter") === null)
+        localStorage.setItem("activeSubchapter", "Introduction");
+    if(localStorage.getItem("activeSection") === null)
+        localStorage.setItem("activeSection", "Introduction");
 
-    let [activeChapter, changeActiveChapter] = useState("LP");
+    let [activeChapter, changeActiveChapter] = useState(localStorage.getItem("activeChapter"));
 
     let findActiveChapter = () => {
         switch(activeChapter){
@@ -240,8 +247,13 @@ export default function App(){
 
     let selectActiveChapter = (chapterName)=>{
         changeActiveChapter(chapterName);
+        localStorage.setItem("activeChapter", chapterName);
+
         changeActiveSubchapter(findActiveChapter()[0].name);
+        localStorage.setItem("activeSubchapter", findActiveChapter()[0].name);
+
         changeActiveSection(findActiveChapter()[0].content[0].name);
+        localStorage.setItem("activeSection", findActiveChapter()[0].content[0].name);
     }
 
     let subchapterNameArray = () => (findActiveChapter().map(subchapter => ({
@@ -249,20 +261,22 @@ export default function App(){
         sectionNames: subchapter.content.map(section => section.name)
     })))
 
-    let [activeSubChapter, changeActiveSubchapter] = useState("Introduction");
+    let [activeSubChapter, changeActiveSubchapter] = useState(localStorage.getItem("activeSubchapter"));
 
     let findActiveSubchapter = () => (findActiveChapter().find(subchapter => subchapter.name === activeSubChapter))
 
     let selectActiveSubchapter = (subchapterName)=>{
         changeActiveSubchapter(subchapterName);
+        localStorage.setItem("activeSubchapter", subchapterName);
     }
 
-    let [activeSection, changeActiveSection] = useState("Introduction");
+    let [activeSection, changeActiveSection] = useState(localStorage.getItem("activeSection"));
 
     let findActiveSection = () => (findActiveSubchapter().content.find(section => section.name === activeSection))
 
     let selectActiveSection = (sectionName)=>{
         changeActiveSection(sectionName);
+        localStorage.setItem("activeSection", sectionName);
     }
 
     let displayContent = () => {
