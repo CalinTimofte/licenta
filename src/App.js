@@ -1,5 +1,5 @@
 import React, {useState, useContext} from 'react';
-import {LocalStorageContext} from "./index.js"
+import {LocalStorageContext} from "./LocalStorageContext.js"
 import Content from './Content';
 import Chapters from './Chapters';
 import SubChapters from './Subchapters';
