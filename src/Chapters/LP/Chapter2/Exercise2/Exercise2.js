@@ -27,10 +27,15 @@ export default function Exercise2(){
 
     let buttonWordFunctionGenerator = (word) => (() => addToSentence(word))
 
-    function deleteSentence(word){
+    function deleteSentence(){
         changeCurrentSentence("");
         changeFormalSentence([]);
         changeTruthValue(undefined);
+    }
+
+    function backspace(){
+        changeCurrentSentence(currentSentence => currentSentence.slice(0, -2));
+        changeFormalSentence(formalSentence => formalSentence.slice(0, formalSentence.length-1))
     }
 
     let checkAction = () => {
@@ -53,6 +58,7 @@ export default function Exercise2(){
                         <button onClick={buttonWordFunctionGenerator("q")}>q</button>
                         <button onClick={buttonWordFunctionGenerator("∧")}>and</button>
                         <button onClick={deleteSentence}>Delete</button>
+                        <button onClick = {backspace}>Backspace</button>
                         <button onClick={checkAction}>Done</button>
                     </div>
 
