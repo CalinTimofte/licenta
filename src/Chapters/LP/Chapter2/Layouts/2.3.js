@@ -1,8 +1,8 @@
 import { Document, Page, pdfjs } from "react-pdf";
 import React from 'react';
 import pdf from "../Chapter2.pdf";
-import Exercise1 from "../Exercise1/Exercise1.js"
-import Exercise2 from "../Exercise2/Exercise2.js"
+import Exercise1 from "../../Exercises/Exercise1/Exercise1.js"
+import Exercise2 from "../../Exercises/Exercise2/Exercise2.js"
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 const PdfLayout = () => {
