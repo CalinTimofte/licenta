@@ -52,7 +52,7 @@ export default function SentenceCreator({operations}){
             }
         }
         catch(e){
-            changeTruthValue(e)
+            throw(e)
         }
     }
 

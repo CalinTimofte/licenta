@@ -2,7 +2,7 @@ import React from "react";
 
 import SentenceCreator from "../Exercise2/SentenceCreator.js";
 
-export default function Exercise2(){
+export default function Exercise4(){
     return(
         <div className="exercise">
             <div className="card">

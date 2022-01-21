@@ -1,15 +1,13 @@
 import React from "react";
-import SelectableText from "./SelectableText";
 
-export default function Exercise1(){
+import SentenceCreator from "../Exercise2/SentenceCreator.js";
 
+export default function Exercise7(){
     return(
         <div className="exercise">
             <div className="card">
                 <div className="card-body bg-light">
-                    <SelectableText inputWords = "I play at home and I study at school"
-                        
-                    />
+                    <SentenceCreator operations={[{name: "and", symbol: "∧"}, {name: "not", symbol: "¬"}]}/>
                 </div>
             </div>
         </div>
