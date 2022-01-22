@@ -26,7 +26,8 @@ function computeShuntingYard(input: Array<AtomicProp|string>){
             queue.push(input[i]);
         else{
             // Start of stack, no other operations to compare to
-            if(input.length === 0)
+            // If the operation is not, just add it to the stack
+            if(input.length === 0 || input[i] === "not")
                 stack.unshift(input[i]);
             else{
                 // Can cast to string freely, already checked if not string earlier
@@ -52,7 +53,7 @@ export default function computeTruthValue(input: Array<AtomicProp|string>){
     let operations : Array<string> = ["and", "or", "not"];
     let operationFunctions = [computeConjuncton, computeDisjunction];
     let arityOfOperations : Array<number> = [2,2,1];
-    debugger
+    debugger;
     while(queue.length > 1){
         for(let i = 0; i < queue.length; i++){
             // If is operation
