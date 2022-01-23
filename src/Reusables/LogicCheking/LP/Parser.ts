@@ -2,6 +2,8 @@ import AtomicProp from "./AtomicProp";
 import computeConjuncton from "./Conjunction";
 import computeDisjunction from "./Disjunction";
 import computeNegation from "./Negation";
+import computeImplication from "./Implication";
+import computeEquivalence from "./Equivalence";
 
 function checkFormatting(input: Array<AtomicProp|string>){
     // Does not take not into account yet
@@ -16,8 +18,8 @@ function checkFormatting(input: Array<AtomicProp|string>){
 
 function computeShuntingYard(input: Array<AtomicProp|string>){
     checkFormatting(input);
-    let operations : Array<string> = ["and", "or", "not"];
-    let priorityOfOperations : Array<number> = [1, 1, 1];
+    let operations : Array<string> = ["and", "or", "not", "implication", "equivalence"];
+    let priorityOfOperations : Array<number> = [1, 1, 1, 1, 1];
     let queue : Array<AtomicProp|string> = [];
     let stack : Array<AtomicProp|string> = [];
     for(let i = 0; i < input.length; i++){
@@ -50,17 +52,16 @@ function computeShuntingYard(input: Array<AtomicProp|string>){
 
 export default function computeTruthValue(input: Array<AtomicProp|string>){
     let queue : Array<AtomicProp|string> = computeShuntingYard(input);
-    let operations : Array<string> = ["and", "or", "not"];
-    let operationFunctions = [computeConjuncton, computeDisjunction];
-    let arityOfOperations : Array<number> = [2,2,1];
-    debugger;
+    let operations : Array<string> = ["and", "or", "not", "implication", "equivalence"];
+    let operationFunctions = [computeConjuncton, computeDisjunction, computeNegation, computeImplication, computeEquivalence];
+    let arityOfOperations : Array<number> = [2, 2, 1, 2, 2];
     while(queue.length > 1){
         for(let i = 0; i < queue.length; i++){
             // If is operation
             if (typeof queue[i] === "string"){
                 // We can cast because we know that if it's an operation it has two atomic props behind
                 if(arityOfOperations[operations.indexOf(queue[i] as string)] === 2){
-                    let result = operationFunctions[operations.indexOf(queue[i] as string)](queue[i-1] as AtomicProp, queue[i-2] as AtomicProp);
+                    let result = operationFunctions[operations.indexOf(queue[i] as string)](queue[i-2] as AtomicProp, queue[i-1] as AtomicProp);
                     queue.splice(i-2, 3, new AtomicProp("aux", result));
                 }
                 else{
