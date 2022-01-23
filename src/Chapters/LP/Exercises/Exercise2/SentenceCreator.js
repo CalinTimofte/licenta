@@ -68,15 +68,15 @@ export default function SentenceCreator({operations}){
                         "Exercise finished!"}
             </div>
             <div>
-                <button onClick={buttonWordFunctionGenerator("p")}>p</button>
-                <button onClick={buttonWordFunctionGenerator("q")}>q</button>
+                <button type="button" className="btn btn-outline-dark" onClick={buttonWordFunctionGenerator("p")}>p</button>
+                <button type="button" className="btn btn-outline-dark" onClick={buttonWordFunctionGenerator("q")}>q</button>
                 {/* Map the operations from param */}
                 {operations.map((operation, index) => (
-                    <button key={index} onClick={buttonWordFunctionGenerator(operation.symbol)}>{operation.name}</button>
+                    <button type="button" className="btn btn-outline-dark" key={index} onClick={buttonWordFunctionGenerator(operation.symbol)}>{operation.name}</button>
                 ))}
-                <button onClick={deleteSentence}>Delete</button>
-                <button onClick = {backspace}>Backspace</button>
-                <button onClick={checkAction}>Done</button>
+                <button type="button" className="btn btn-outline-dark" onClick={deleteSentence}>Delete</button>
+                <button type="button" className="btn btn-outline-dark" onClick = {backspace}>Backspace</button>
+                <button type="button" className="btn btn-outline-dark" onClick={checkAction}>Done</button>
             </div>
 
             <div>{currentSentence}</div>

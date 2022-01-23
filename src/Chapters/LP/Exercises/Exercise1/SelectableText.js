@@ -16,7 +16,7 @@ function SelectableText({inputWords}){
     let [heighlightedText, changeHeighlightedText] = useState("");
     let [words, modifyWordsArr] = useState(inputWords.split(" ").map(word => ({word: word, heighlighted: false, partOfSomething: false, partOf: null, hovering: false})))
     let [partsCounter, changePartsCounter] = useState({props: 0, conjunctions: 0});
-    let [hoveringBUtton, changeHoveringButtonState] = useState(false);
+    let [hoveringButton, changeHoveringButtonState] = useState(false);
     let [finished, changeFinished] = useState("unchecked")
 
     let incProps = () => (changePartsCounter(partsCounter => ({...partsCounter, props: partsCounter.props + 1})))
@@ -121,6 +121,7 @@ function SelectableText({inputWords}){
 
     let buttonFunc = (buttonComponent) => (
         <button
+        type="button" className="btn btn-outline-dark"
         onMouseEnter = {() => changeHoveringButtonState(true)}
         onMouseLeave = {() => changeHoveringButtonState(false)}
         onClick = {() => selectPartForHeighlightedText(buttonComponent)}
@@ -155,13 +156,13 @@ function SelectableText({inputWords}){
             </div>
             <br/>
             
-            <span style = {hoveringBUtton? {border: "thick solid yellow"} : {}}>{heighlightedText}</span>
+            <span style = {hoveringButton? {border: "thick solid yellow"} : {}}>{heighlightedText}</span>
             <br/><br/>
 
             <div>
                 {buttonFunc("prop")}
                 {buttonFunc("conjunction")}
-                <button onClick={checkAction}>Done</button>
+                <button type="button" className="btn btn-outline-dark" onClick={checkAction}>Done</button>
                 <span style = {{color: finished === "unfinished"? "red" : "green", visibility: (finished === "unfinished" || finished === "finished")? "visible" : "hidden"}}>{finished === "unfinished"? "Try Again." : "Congratulations!"}</span>
             </div>
         </div>
