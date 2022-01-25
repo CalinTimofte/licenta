@@ -68,7 +68,8 @@ export default function SentenceCreator({operations, goalText = defaultGoalText,
             goalHandler(truthValue, exercisePart, changeExercisePart, formalSentence);
         }
         catch(e){
-            throw(e)
+            changeTruthValue("Malformed Input");
+            throw(e);
         }
     }
 
