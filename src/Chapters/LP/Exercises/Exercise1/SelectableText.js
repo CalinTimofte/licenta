@@ -11,16 +11,36 @@ function SelectableWord({word, highlighted, inactive, hover}){
     )
 }
 
+// function for reusability, goalchecker
+function DefaultheckifFinished(words){
+    if((words[0].partOf === words[1].partOf && words[2].partOf === words[3].partOf && words[1].partOf === words[2].partOf) &&
+        (words[4].partType === "conjunction") &&
+        (words[5].partOf === words[6].partOf && words[7].partOf === words[8].partOf &&  words[6].partOf === words[7].partOf) &&
+        (words[0].partType === words[5].partType && words[5].partType === "prop"))
+        return true;
+    else
+        return false;
+}
 
-function SelectableText({inputWords}){
+// What buttons to use in the exercise - reusability
+let defaultButtons = [{part: "prop", name: "Atomic Prop"}, {part: "conjunction", name: "Conjunction"}]
+
+
+function SelectableText({inputWords, checkifFinished = DefaultheckifFinished, buttons = defaultButtons}){
     let [heighlightedText, changeHeighlightedText] = useState("");
     let [words, modifyWordsArr] = useState(inputWords.split(" ").map(word => ({word: word, heighlighted: false, partOfSomething: false, partOf: null, hovering: false})))
-    let [partsCounter, changePartsCounter] = useState({props: 0, conjunctions: 0});
+    // Initiate partsCounter with the parts from the buttons prop
+    let [partsCounter, changePartsCounter] = useState((
+        () => {
+            let returnObj = {};
+            buttons.forEach(button => {returnObj[button.part] = 0});
+            return returnObj;
+        }
+    )());
     let [hoveringButton, changeHoveringButtonState] = useState(false);
     let [finished, changeFinished] = useState("unchecked")
 
-    let incProps = () => (changePartsCounter(partsCounter => ({...partsCounter, props: partsCounter.props + 1})))
-    let incConjunctions = () => (changePartsCounter(partsCounter => ({...partsCounter, conjunctions: partsCounter.conjunctions + 1})))
+    let incPart = (name) => (changePartsCounter(partsCounter => ({...partsCounter, [name]: partsCounter[name] + 1})))
 
     function recompileSelection(){
         changeHeighlightedText("");
@@ -98,14 +118,8 @@ function SelectableText({inputWords}){
     let returnWord = (wordObj, index) => (wordObj.partOfSomething? inactiveWord(wordObj, index) : activeWord(wordObj, index))
 
     let getPart = (part) => {
-        if (part === "prop"){
-            incProps();
-            return "prop" + String(partsCounter.props)
-        }
-        else if (part === "conjunction"){
-            incConjunctions();
-            return "conjunction" + String(partsCounter.conjunctions)
-        }
+        incPart(part);
+        return part + String(partsCounter[part]) 
     }
 
     let selectPartForHeighlightedText = (partType) => {
@@ -119,29 +133,20 @@ function SelectableText({inputWords}){
             })
     }
 
-    let buttonFunc = (buttonComponent) => (
+    let buttonFactory = (buttonComponent, index) => (
         <button
         type="button" className="btn btn-outline-dark"
+        key = {index}
         onMouseEnter = {() => changeHoveringButtonState(true)}
         onMouseLeave = {() => changeHoveringButtonState(false)}
-        onClick = {() => selectPartForHeighlightedText(buttonComponent)}
+        onClick = {() => selectPartForHeighlightedText(buttonComponent.part)}
         >
-            {buttonComponent === "prop"? "Atomic Prop": "Conjunction"}
+            {buttonComponent.name}
         </button>
     )
 
-    function checkifFinished(){
-        if((words[0].partOf === words[1].partOf && words[2].partOf === words[3].partOf && words[1].partOf === words[2].partOf) &&
-            (words[4].partType === "conjunction") &&
-            (words[5].partOf === words[6].partOf && words[7].partOf === words[8].partOf &&  words[6].partOf === words[7].partOf) &&
-            (words[0].partType === words[5].partType && words[5].partType === "prop"))
-            return true;
-        else
-            return false;
-    }
-
     let checkAction = () => {
-        if (checkifFinished())
+        if (checkifFinished(words))
             changeFinished("finished");
         else
             changeFinished("unfinished");
@@ -160,8 +165,8 @@ function SelectableText({inputWords}){
             <br/><br/>
 
             <div>
-                {buttonFunc("prop")}
-                {buttonFunc("conjunction")}
+                {/* Make buttons dynamically */}
+                {buttons.map((button, index) => (buttonFactory(button)))}
                 <button type="button" className="btn btn-outline-dark" onClick={checkAction}>Done</button>
                 <span style = {{color: finished === "unfinished"? "red" : "green", visibility: (finished === "unfinished" || finished === "finished")? "visible" : "hidden"}}>{finished === "unfinished"? "Try Again." : "Congratulations!"}</span>
             </div>
