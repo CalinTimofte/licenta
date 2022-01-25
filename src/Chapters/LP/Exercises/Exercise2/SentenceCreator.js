@@ -3,7 +3,31 @@ import React, {useState} from "react";
 import AtomicProp from "../../../../Reusables/LogicCheking/LP/AtomicProp";
 import computeTruthValue from "../../../../Reusables/LogicCheking/LP/Parser";
 
-export default function SentenceCreator({operations}){
+let defaultGoalText = (exercisePart) => (
+    <div>
+        {exercisePart === 0?
+            "Please enter a false sentence":
+            exercisePart === 1?
+                "Please enter a true sentence":
+                "Exercise finished!"}
+    </div>
+)
+
+let defaultGoalHandler = (currentTruthValue, exercisePart, changeExercisePart, currentState) => {
+    switch(exercisePart){
+        case 0:
+            if(currentTruthValue === false)
+                changeExercisePart(1);
+            break;
+        case 1:
+            if(currentTruthValue === true)
+                changeExercisePart(2);
+            break; 
+        default:
+    }
+}
+
+export default function SentenceCreator({operations, goalText = defaultGoalText, goalHandler = defaultGoalHandler}){
     let [currentSentence, changeCurrentSentence] = useState("");
     let [formalSentence, changeFormalSentence] = useState([]);
     let [truthValue, changeTruthValue] = useState(undefined);
@@ -39,17 +63,9 @@ export default function SentenceCreator({operations}){
         try{
             let truthValue = computeTruthValue(formalSentence);
             changeTruthValue(truthValue);
-            switch(exercisePart){
-                case 0:
-                    if(truthValue === false)
-                        changeExercisePart(1);
-                    break;
-                case 1:
-                    if(truthValue === true)
-                        changeExercisePart(2);
-                    break; 
-                default:
-            }
+            // Makes the goals flexible
+            // Needs current state for more complicated checks
+            goalHandler(truthValue, exercisePart, changeExercisePart, formalSentence);
         }
         catch(e){
             throw(e)
@@ -60,13 +76,8 @@ export default function SentenceCreator({operations}){
         <div>
             <div style= {{color: "green"}}>p is always true</div>
             <div style= {{color: "red"}}>q is always false</div>
-            <div>
-                {exercisePart === 0?
-                    "Please enter a false sentence":
-                    exercisePart === 1?
-                        "Please enter a true sentence":
-                        "Exercise finished!"}
-            </div>
+            {/* Changable goaltext for reusability */}
+            {goalText(exercisePart)}
             <div>
                 <button type="button" className="btn btn-outline-dark" onClick={buttonWordFunctionGenerator("p")}>p</button>
                 <button type="button" className="btn btn-outline-dark" onClick={buttonWordFunctionGenerator("q")}>q</button>
