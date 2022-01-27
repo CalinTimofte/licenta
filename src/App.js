@@ -280,6 +280,56 @@ export default function App(){
         return(findActiveSection().content)
     } 
 
+    let previousButton = () => {
+        let activeSectionIndex = findActiveSubchapter().content.indexOf(findActiveSection());
+        let activeSubchapterIndex = findActiveChapter().indexOf(findActiveSubchapter());
+
+        if(activeSectionIndex > 0)
+            return (<button type="button" className="btn btn-outline-dark"
+                        onClick={() => selectActiveSection(findActiveSubchapter().content[activeSectionIndex - 1].name)}
+                    >
+                    {"← " + findActiveSubchapter().content[activeSectionIndex - 1].name}
+                    </button>);
+        else
+            if(activeSubchapterIndex === 0)
+                return <></>
+            else
+                return (<button type="button" className="btn btn-outline-dark"
+                            onClick={() => {
+                                let prevSubchapter = findActiveChapter()[activeSubchapterIndex - 1];
+                                selectActiveSubchapter(prevSubchapter.name);
+                                selectActiveSection(prevSubchapter.content[prevSubchapter.content.length-1].name);
+                            }}
+                        >
+                        {"← " + findActiveChapter()[activeSubchapterIndex - 1].name }
+                        </button>);
+    }
+
+    let nextButton = () => {
+        let activeSectionIndex = findActiveSubchapter().content.indexOf(findActiveSection());
+        let activeSubchapterIndex = findActiveChapter().indexOf(findActiveSubchapter());
+
+        if(activeSectionIndex < findActiveSubchapter().content.length - 1)
+            return (<button type="button" className="btn btn-outline-dark"
+                        onClick={() => selectActiveSection(findActiveSubchapter().content[activeSectionIndex + 1].name)}
+                    >
+                    {findActiveSubchapter().content[activeSectionIndex + 1].name + " →"}
+                    </button>);
+        else
+            if(activeSubchapterIndex === findActiveChapter().length - 1)
+                return <></>
+            else
+                return (<button type="button" className="btn btn-outline-dark"
+                            onClick={() => {
+                                let nextSubchapter = findActiveChapter()[activeSubchapterIndex + 1];
+                                selectActiveSubchapter(nextSubchapter.name);
+                                selectActiveSection(nextSubchapter.content[0].name);
+                            }}
+                        >
+                        {findActiveChapter()[activeSubchapterIndex + 1].name + " →"}
+                        </button>);
+    }
+
     return(
         <>
             <Chapters chapterHandler = {selectActiveChapter} activeChapter = {activeChapter}/>
@@ -291,6 +341,10 @@ export default function App(){
                 activeSection = {activeSection}
             />
             <Content content = {displayContent()}/>
+            <div className='nav-buttons'>
+                {previousButton()}
+                {nextButton()}
+            </div>
         </>
     )
 }

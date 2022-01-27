@@ -29,7 +29,7 @@ export default function SubChapters({subchapterAndSectionNames, subchapterHandle
                                     {subchapter.sectionNames.map(sectionName => (
                                             <li className = "nav-item" id = {subchapter.sectionNames.indexOf(sectionName)}>
                                                 <button className = {activeSectionState(sectionName, subchapter.subchapterName)} onClick = {() => {sectionHandler(sectionName); subchapterHandler(subchapter.subchapterName)}}>
-                                                    {sectionName}
+                                                    {"> " + sectionName}
                                                 </button>
                                             </li>
                                         ))}
