@@ -1,6 +1,8 @@
 import React, {useState} from "react";
 
-export default function TruthTable(){
+let defaultTableValues = [["φ", "ψ", "φ ∨ ψ"], ["false", "false", "select"], ["false", "true", "select"], ["true", "false", "select"], ["true", "true", "select"]];
+
+export default function TruthTable({tableValues = defaultTableValues}){
 
     let [answerTruthValues, changeAnswerTruthValues] = useState(["true", "true", "true", "true"]);
     let [completedness, changeCompleteness] = useState("unattempted");
@@ -37,40 +39,24 @@ export default function TruthTable(){
             <table class="table">
                 <thead>
                     <tr>
-                        <th scope="col">φ</th>
-                        <th scope="col">ψ</th>
-                        <th scope="col">φ ∨ ψ</th>
+                        {tableValues[0].map((value, index) => (<th scope="col" key = {index}>{value}</th>))}
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>false</td>
-                        <td>false</td>
-                        <td>
-                            {selectFactory(0)}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>false</td>
-                        <td>true</td>
-                        <td>
-                            {selectFactory(1)}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>true</td>
-                        <td>false</td>
-                        <td>
-                            {selectFactory(2)}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>true</td>
-                        <td>true</td>
-                        <td>
-                            {selectFactory(3)} 
-                        </td>
-                    </tr>
+                        {tableValues.map((row, rowIndex) => {
+                            if(rowIndex !== 0)
+                                return (
+                                    <tr>
+                                        {row.map((value, index) => {
+                                            if(value === "select")
+                                                return (<td key = {index}>{selectFactory(rowIndex - 1)}</td>)
+                                            else
+                                                return (<td key = {index}>{value}</td>)
+                                        })}
+                                    </tr>
+                                )
+                            else return(<></>)
+                        })}
                 </tbody>
             </table>
 
