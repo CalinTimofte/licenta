@@ -2,9 +2,24 @@ import React, {useState} from "react";
 
 let defaultTableValues = [["φ", "ψ", "φ ∨ ψ"], ["false", "false", "select"], ["false", "true", "select"], ["true", "false", "select"], ["true", "true", "select"]];
 
-export default function TruthTable({tableValues = defaultTableValues}){
+let defaultCheckAnswer = (answerTruthValues, changeCompleteness) => {
+    if(answerTruthValues[0] === "false")
+        if((answerTruthValues[1] === "true" && answerTruthValues[2] === "true") && answerTruthValues[3] === "true")
+            changeCompleteness("complete");
+        else
+            changeCompleteness("incomplete");
+    else
+        changeCompleteness("incomplete");
 
-    let [answerTruthValues, changeAnswerTruthValues] = useState(["true", "true", "true", "true"]);
+}
+export default function TruthTable({tableValues = defaultTableValues, checkAnswer = defaultCheckAnswer}){
+
+    let [answerTruthValues, changeAnswerTruthValues] = useState((() => {
+        let returnArr = [];
+        for (let i = 0; i < tableValues.length - 1; i++)
+            returnArr.push("true");
+        return returnArr;
+    })());
     let [completedness, changeCompleteness] = useState("unattempted");
 
     let selectFactory = (answerIndex) => (
@@ -23,17 +38,6 @@ export default function TruthTable({tableValues = defaultTableValues}){
         </select> 
     );
 
-    let checkAnswer = () => {
-        if(answerTruthValues[0] === "false")
-            if((answerTruthValues[1] === "true" && answerTruthValues[2] === "true") && answerTruthValues[3] === "true")
-                changeCompleteness("complete");
-            else
-                changeCompleteness("incomplete");
-        else
-            changeCompleteness("incomplete");
-
-    }
-
     return(
         <div>
             <table class="table">
@@ -46,7 +50,7 @@ export default function TruthTable({tableValues = defaultTableValues}){
                         {tableValues.map((row, rowIndex) => {
                             if(rowIndex !== 0)
                                 return (
-                                    <tr>
+                                    <tr key = {rowIndex}>
                                         {row.map((value, index) => {
                                             if(value === "select")
                                                 return (<td key = {index}>{selectFactory(rowIndex - 1)}</td>)
@@ -60,7 +64,7 @@ export default function TruthTable({tableValues = defaultTableValues}){
                 </tbody>
             </table>
 
-            <button type="button" className="btn btn-outline-dark" onClick={checkAnswer}>Done</button>
+            <button type="button" className="btn btn-outline-dark" onClick={() => (checkAnswer(answerTruthValues, changeCompleteness))}>Done</button>
             <span>
                 {completedness === "complete"? <p style = {{color: "green"}}>Congratulations!</p> :
                     completedness === "incomplete"? <p style = {{color: "red"}}>Try again!</p> : <p></p>}
