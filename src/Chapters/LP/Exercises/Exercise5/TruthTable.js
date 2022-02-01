@@ -12,6 +12,7 @@ let defaultCheckAnswer = (answerTruthValues, changeCompleteness) => {
         changeCompleteness("incomplete");
 
 }
+
 export default function TruthTable({tableValues = defaultTableValues, checkAnswer = defaultCheckAnswer}){
 
     let [answerTruthValues, changeAnswerTruthValues] = useState((() => {

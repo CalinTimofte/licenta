@@ -1,7 +1,7 @@
 import React from "react";
 import TruthTable from "./TruthTable";
 
-export default function Exercise1(){
+export default function Exercise5(){
 
     return(
         <div className="exercise">
