@@ -35,12 +35,12 @@ export default function Exercise9(){
                                                     if(answerTruthValues[5] === "molecular proposition - disjunction")
                                                         if(answerTruthValues[6] === "molecular proposition - implication")
                                                             if(answerTruthValues[7] === "atomic proposition")
-                                                                if(answerTruthValues[8] === "molecular proposition - conjunction")
-                                                                    if(answerTruthValues[9] === "atomic proposition")
+                                                                if(answerTruthValues[8] === "not proposition")
+                                                                    if(answerTruthValues[9] === "not proposition")
                                                                         if(answerTruthValues[10] === "not proposition")
                                                                             if(answerTruthValues[11] === "not proposition")
-                                                                                if(answerTruthValues[12] === "atomic proposition")
-                                                                                    if(answerTruthValues[13] === "atomic proposition")
+                                                                                if(answerTruthValues[12] === "not proposition")
+                                                                                    if(answerTruthValues[13] === "not proposition")
                                                                                         changeCompleteness("complete");
                                                                                     else
                                                                                         changeCompleteness("incomplete");
