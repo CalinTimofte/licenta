@@ -1,5 +1,6 @@
 import React, {useState} from "react";
 
+//  Use select for values where you want a value to be selected
 let defaultTableValues = [["φ", "ψ", "φ ∨ ψ"], ["false", "false", "select"], ["false", "true", "select"], ["true", "false", "select"], ["true", "true", "select"]];
 
 let defaultCheckAnswer = (answerTruthValues, changeCompleteness) => {
@@ -13,12 +14,19 @@ let defaultCheckAnswer = (answerTruthValues, changeCompleteness) => {
 
 }
 
-export default function TruthTable({tableValues = defaultTableValues, checkAnswer = defaultCheckAnswer}){
-
+export default function ValueTable({tableValues = defaultTableValues, checkAnswer = defaultCheckAnswer, selectValues = ["true", "false"]}){
+    let selectIndexes = [];
     let [answerTruthValues, changeAnswerTruthValues] = useState((() => {
         let returnArr = [];
-        for (let i = 0; i < tableValues.length - 1; i++)
-            returnArr.push("true");
+
+        tableValues.forEach((row, rowIndex) => {
+            row.forEach((value, index) => {
+                if (value === "select"){
+                    returnArr.push(selectValues[0]);
+                    selectIndexes.push(String(rowIndex) + " " + String(index));
+                }
+            })
+        })
         return returnArr;
     })());
     let [completedness, changeCompleteness] = useState("unattempted");
@@ -34,8 +42,7 @@ export default function TruthTable({tableValues = defaultTableValues, checkAnswe
                 });
             }}
         >
-            <option value="true">true</option>
-            <option value="false">false</option>
+            {selectValues.map((value, index) => (<option value={value} key={index}>{value}</option>))}
         </select> 
     );
 
@@ -54,7 +61,7 @@ export default function TruthTable({tableValues = defaultTableValues, checkAnswe
                                     <tr key = {rowIndex}>
                                         {row.map((value, index) => {
                                             if(value === "select")
-                                                return (<td key = {index}>{selectFactory(rowIndex - 1)}</td>)
+                                                return (<td key = {index}>{selectFactory(selectIndexes.indexOf(String(rowIndex) + " " + String(index)))}</td>)
                                             else
                                                 return (<td key = {index}>{value}</td>)
                                         })}

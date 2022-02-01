@@ -1,5 +1,5 @@
 import React from "react";
-import TruthTable from "./TruthTable";
+import ValueTable from "./ValueTable";
 
 export default function Exercise5(){
 
@@ -7,7 +7,7 @@ export default function Exercise5(){
         <div className="exercise">
             <div className="card">
                 <div className="card-body bg-light">
-                    <TruthTable/>
+                    <ValueTable/>
                 </div>
             </div>
         </div>
