@@ -29,7 +29,7 @@ export default function ValueTable({tableValues = defaultTableValues, checkAnswe
         })
         return returnArr;
     })());
-    let [completedness, changeCompleteness] = useState("unattempted");
+    let [completedness, changeCompletedness] = useState("unattempted");
 
     let selectFactory = (answerIndex) => (
         <select class="form-select" id="truth-values" name="truth-values"
@@ -72,7 +72,7 @@ export default function ValueTable({tableValues = defaultTableValues, checkAnswe
                 </tbody>
             </table>
 
-            <button type="button" className="btn btn-outline-dark" onClick={() => (checkAnswer(answerTruthValues, changeCompleteness))}>Done</button>
+            <button type="button" className="btn btn-outline-dark" onClick={() => (checkAnswer(answerTruthValues, changeCompletedness))}>Done</button>
             <span>
                 {completedness === "complete"? <p style = {{color: "green"}}>Congratulations!</p> :
                     completedness === "incomplete"? <p style = {{color: "red"}}>Try again!</p> : <p></p>}
