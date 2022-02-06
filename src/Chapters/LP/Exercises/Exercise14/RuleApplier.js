@@ -10,6 +10,12 @@ class PropositionalVariablePart{
     }
 }
 
+class BaseCase extends PropositionalVariablePart{
+    constructor(){
+        super("Base Case")
+    }
+}
+
 class PropositionalVariable extends PropositionalVariablePart{}
 
 class Negation extends PropositionalVariablePart{
@@ -56,8 +62,9 @@ class Context{
 }
 
 class Tab{
-    constructor(contexts){
-        this._contexts = contexts; 
+    constructor(contexts, title){
+        this._contexts = contexts;
+        this._title = title;
     }
 
     get contexts(){
@@ -67,31 +74,47 @@ class Tab{
     set contexts(newcontexts){
         this._contexts = newcontexts;
     }
+
+    get title(){
+        return this._title;
+    }
 }
+
 export default function RuleApplier(){
     // array of tabs = array of contexts = array of objects -> propositional variable, negation, conjunction, disjunction 
-    let [tabs, changeTabs] = useState([[[new Brackets([new Negation(), new PropositionalVariable("p1"), new Disjunction(), new Negation(), new PropositionalVariable("q")])]]])
+    let [tabs, changeTabs] = useState([ new Tab([ new Context([new Negation(), new PropositionalVariable("q")]) ], "1"),
+                                        new Tab([ new Context([new Brackets([new PropositionalVariable("p1"), new Conjunction(), new PropositionalVariable("q")])])], "2"),
+                                        new Tab([ new Context([new Negation(), new Brackets([new PropositionalVariable("p"), new Disjunction(), new PropositionalVariable("q")])])], "3"),
+                                        new Tab([ new Context([new Brackets([new Negation(), new PropositionalVariable("p"), new Disjunction(), new Negation(), new PropositionalVariable("q")])])], "4"),
+                                        new Tab([ new Context([new Negation(), new Brackets([new Negation(), new PropositionalVariable("p"), new Disjunction(), new Brackets([new PropositionalVariable("q"), new Conjunction(), new Negation(), new PropositionalVariable("q")])])])], "5")
+                                        ])
     let [currentTabIndex, changecurrentTabIndex] = useState(0);
     let [currentContextIndex, changeCurrentContextIndex] = useState(0);
-    let [completedness, changeCompletedness] = useState("unattempted");
+    let [completedness, changeCompletedness] = useState(tabs.map(tab => "unattempted"));
 
-    let getCurrentTab = () => tabs[currentTabIndex];
+    let getCurrentTab = () => tabs[currentTabIndex].contexts;
 
-    let getCurrentContext = () => getCurrentTab()[currentContextIndex];
+    let getCurrentContext = () => getCurrentTab()[currentContextIndex].content;
 
-    let changeContexts = (changedContexts) => {
-        changeTabs(tabs => [...tabs.slice(0, currentTabIndex), changedContexts, ...tabs.slice(currentTabIndex + 1)]);
+    let setCurrentTab = (changedTab) => {
+        changeTabs(tabs => [...tabs.slice(0, currentTabIndex), new Tab(changedTab, tabs[currentTabIndex].title), ...tabs.slice(currentTabIndex + 1)]);
     }
 
     let setcurrentContext = (changedContext) => {
-        changeContexts([...getCurrentContext().slice(0, currentContextIndex), changedContext, ...getCurrentContext().slice(currentContextIndex + 1)]);
+        setCurrentTab([...getCurrentTab().slice(0, currentContextIndex), new Context(changedContext), ...getCurrentTab().slice(currentContextIndex + 1)]);
     } 
 
     let splitCurrentContext = (contextPiece1, contextPiece2) => {
-        changeContexts([...getCurrentContext().slice(0, currentContextIndex), contextPiece1, contextPiece2, ...getCurrentContext().slice(currentContextIndex + 1)]);
+        setCurrentTab([...getCurrentTab().slice(0, currentContextIndex), new Context(contextPiece1), new Context(contextPiece2), ...getCurrentTab().slice(currentContextIndex + 1)]);
+    }
+
+    let setCompletedNess = (changedCompletedness) => {
+        changeCompletedness(completedness => [...completedness.slice(0, currentTabIndex), changedCompletedness, ...completedness.slice(currentTabIndex + 1)]);
     }
 
     let switchContext = (index) => {changeCurrentContextIndex(index);}
+
+    let switchTab = (index) => {changecurrentTabIndex(index);}
 
     let getText = (context) => {
         let returnStr = "";
@@ -105,18 +128,18 @@ export default function RuleApplier(){
 
     let applyBaseCase = () => {
         if(getCurrentContext().length === 1)
-            if(getCurrentContext()[0].type === "propositional variable")
-                setcurrentContext([{symbol: "Base Case", type: "base case"}])
+            if(getCurrentContext()[0] instanceof PropositionalVariable)
+                setcurrentContext([new BaseCase()])
     }
 
     let applyInductiveStep1 = () => {
-        if(getCurrentContext()[0].type === "negation")
-            setcurrentContext(getCurrentContext().slice(1))
+        if(getCurrentContext()[0] instanceof Negation)
+            setcurrentContext(getCurrentContext().slice(1));
     }
 
     let applyInductiveStep2 = () => {
-        if(getCurrentContext()[0].type === "brackets"){
-            let andIndex = getCurrentContext()[0].content.findIndex(element => {if (element.type === "conjunction")
+        if(getCurrentContext()[0] instanceof Brackets){
+            let andIndex = getCurrentContext()[0].content.findIndex(element => {if (element instanceof Conjunction)
                                                                                      return true
                                                                                     else return undefined});
             if(andIndex !== -1)
@@ -125,8 +148,8 @@ export default function RuleApplier(){
     }
 
     let applyInductiveStep3 = () => {
-        if(getCurrentContext()[0].type === "brackets"){
-            let orIndex = getCurrentContext()[0].content.findIndex(element => {if (element.type === "disjunction")
+        if(getCurrentContext()[0] instanceof Brackets){
+            let orIndex = getCurrentContext()[0].content.findIndex(element => {if (element instanceof Disjunction)
                                                                                      return true
                                                                                     else return undefined});
             if(orIndex !== -1)
@@ -137,27 +160,36 @@ export default function RuleApplier(){
     let checkIfDone = () => {
         let ok = 1;
         getCurrentTab().forEach(context => {
-        if(context.length !== 1)
+        if(context.content.length !== 1)
             ok = 0;
-        if(context[0].type !== "base case")
-            ok = 0;  
+        if(!(context.content[0] instanceof BaseCase))
+            ok = 0;
         })
         if(ok === 1)
-            changeCompletedness("complete");
+            setCompletedNess("complete");
         else
-            changeCompletedness("incomplete");
+            setCompletedNess("incomplete");
     }
 
     return(
         <div>
-            <div className="contexts">
+            <div>
+                <ul className="nav nav-tabs">
+                    {tabs.map((tab, index) => (
+                        <li className="nav-item">
+                            <button onClick={() => switchTab(index)} className={index === currentTabIndex? "nav-link active" : "nav-link"} href="#">{tab.title}</button>
+                        </li>
+                    ))}
+                </ul>
+            </div>
+            <div className="current-tab">
                 {getCurrentTab().map((context, index) => (
                     <div className="card" key = {index} style = {index === currentContextIndex? {border: "medium solid blue", marginBottom: "1em"}: {marginBottom: "1em"}}>
                         <button className="context card-body btn btn-outline-dark" style={{width: "100%"}}
                             data-bs-toggle="tooltip" data-bs-placement="top" title="Click to switch context"
                             onClick={() => switchContext(index)}
                         >
-                            {getText(context)}
+                            {getText(context.content)}
                         </button>
                     </div>
                 ))}
@@ -171,8 +203,8 @@ export default function RuleApplier(){
                 <button className="btn btn-outline-dark" onClick={checkIfDone}>Done</button>
             </div>
             <div className="finish-text">
-                {completedness === "complete"? <p style = {{color: "green"}}>Congratulations!</p> :
-                    completedness === "incomplete"? <p style = {{color: "red"}}>Try again!</p> : <p></p>}
+                {completedness[currentTabIndex] === "complete"? <p style = {{color: "green"}}>Congratulations!</p> :
+                    completedness[currentTabIndex] === "incomplete"? <p style = {{color: "red"}}>Try again!</p> : <p></p>}
             </div>
         </div>
     )
