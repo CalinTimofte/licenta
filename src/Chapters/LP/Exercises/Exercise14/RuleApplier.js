@@ -79,7 +79,7 @@ class Tab{
         return this._title;
     }
 }
-
+ 
 export default function RuleApplier(){
     // array of tabs = array of contexts = array of objects -> propositional variable, negation, conjunction, disjunction 
     let [tabs, changeTabs] = useState([ new Tab([ new Context([new Negation(), new PropositionalVariable("q")]) ], "1"),
