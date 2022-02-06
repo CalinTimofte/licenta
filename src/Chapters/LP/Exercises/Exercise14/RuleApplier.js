@@ -1,19 +1,94 @@
 import React, {useState} from "react";
 
+class PropositionalVariablePart{
+    constructor(symbol){
+        this._symbol = symbol;
+    }
+
+    get symbol(){
+        return this._symbol;
+    }
+}
+
+class PropositionalVariable extends PropositionalVariablePart{}
+
+class Negation extends PropositionalVariablePart{
+    constructor(){
+        super("¬")
+    }
+}
+
+class Conjunction extends PropositionalVariablePart{
+    constructor(){
+        super("∧")
+    }
+}
+
+class Disjunction extends PropositionalVariablePart{
+    constructor(){
+        super("∨")
+    }
+}
+
+class Brackets extends PropositionalVariablePart{
+    constructor(content){
+        super("()");
+        this._content = content; 
+    }
+
+    get content(){
+        return this._content;
+    }
+}
+
+class Context{
+    constructor(content){
+        this._content = content; 
+    }
+
+    get content(){
+        return this._content;
+    }
+
+    set content(newContent){
+        this._content = newContent;
+    }
+}
+
+class Tab{
+    constructor(contexts){
+        this._contexts = contexts; 
+    }
+
+    get contexts(){
+        return this._contexts;
+    }
+
+    set contexts(newcontexts){
+        this._contexts = newcontexts;
+    }
+}
 export default function RuleApplier(){
-    // Array of arrays of objects -> objects are the symbols, array of objects is one context, and then we jave multiple contexts
-    let [contexts, changeContexts] = useState([[{symbol: "()", content: [{symbol: "¬", type: "negation"}, {symbol: "p1", type: "propositional variable"}, {symbol: "∨", type: "disjunction"}, {symbol: "¬", type: "negation"}, {symbol: "q", type: "propositional variable"}], type: "brackets"}]])
+    // array of tabs = array of contexts = array of objects -> propositional variable, negation, conjunction, disjunction 
+    let [tabs, changeTabs] = useState([[[new Brackets([new Negation(), new PropositionalVariable("p1"), new Disjunction(), new Negation(), new PropositionalVariable("q")])]]])
+    let [currentTabIndex, changecurrentTabIndex] = useState(0);
     let [currentContextIndex, changeCurrentContextIndex] = useState(0);
     let [completedness, changeCompletedness] = useState("unattempted");
 
-    let getCurrentContext = () => contexts[currentContextIndex];
+    let getCurrentTab = () => tabs[currentTabIndex];
+
+    let getCurrentContext = () => getCurrentTab()[currentContextIndex];
+
+    let changeContexts = (changedContexts) => {
+        changeTabs(tabs => [...tabs.slice(0, currentTabIndex), changedContexts, ...tabs.slice(currentTabIndex + 1)]);
+    }
 
     let setcurrentContext = (changedContext) => {
-        changeContexts(contexts => [...contexts.slice(0, currentContextIndex), changedContext, ...contexts.slice(currentContextIndex + 1)]);
+        changeContexts([...getCurrentContext().slice(0, currentContextIndex), changedContext, ...getCurrentContext().slice(currentContextIndex + 1)]);
     } 
 
     let splitCurrentContext = (contextPiece1, contextPiece2) => {
-        changeContexts(contexts => [...contexts.slice(0, currentContextIndex), contextPiece1, contextPiece2, ...contexts.slice(currentContextIndex + 1)]);
+        changeContexts([...getCurrentContext().slice(0, currentContextIndex), contextPiece1, contextPiece2, ...getCurrentContext().slice(currentContextIndex + 1)]);
     }
 
     let switchContext = (index) => {changeCurrentContextIndex(index);}
@@ -21,7 +96,7 @@ export default function RuleApplier(){
     let getText = (context) => {
         let returnStr = "";
         context.forEach(element => {
-            if(element.type === "brackets")
+            if(element instanceof Brackets)
                 returnStr += "( " + getText(element.content) + " ) "; 
             else returnStr += element.symbol + " ";
         });
@@ -61,7 +136,7 @@ export default function RuleApplier(){
 
     let checkIfDone = () => {
         let ok = 1;
-        contexts.forEach(context => {
+        getCurrentTab().forEach(context => {
         if(context.length !== 1)
             ok = 0;
         if(context[0].type !== "base case")
@@ -76,7 +151,7 @@ export default function RuleApplier(){
     return(
         <div>
             <div className="contexts">
-                {contexts.map((context, index) => (
+                {getCurrentTab().map((context, index) => (
                     <div className="card" key = {index} style = {index === currentContextIndex? {border: "medium solid blue", marginBottom: "1em"}: {marginBottom: "1em"}}>
                         <button className="context card-body btn btn-outline-dark" style={{width: "100%"}}
                             data-bs-toggle="tooltip" data-bs-placement="top" title="Click to switch context"

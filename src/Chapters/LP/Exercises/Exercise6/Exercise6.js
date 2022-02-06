@@ -25,7 +25,7 @@ export default function Exercise6(){
                         }}
                     />
                     <ValueTable
-                        tableValues={[["2 + 2 = 5", "the Earth is flat", "If 2 + 2 = 4, then the Earth is flat"], ["select", "select", "select"]]}
+                        tableValues={[["2 + 2 = 5", "the Earth is flat", "If 2 + 2 = 5, then the Earth is flat"], ["select", "select", "select"]]}
                         checkAnswer={
                             (answerTruthValues, changeCompleteness) => {
                                 if(answerTruthValues[0] === "false")
