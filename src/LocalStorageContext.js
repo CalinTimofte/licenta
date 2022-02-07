@@ -67,7 +67,9 @@ export function LocalStorageStore({children}){
         getStorageSubchapter,
         setStorageSubchapter,
         getStorageSection,
-        setStorageSection
+        setStorageSection,
+        storeSolution,
+        getSolutionByExerciseNumber
       }}
     >
       {children}

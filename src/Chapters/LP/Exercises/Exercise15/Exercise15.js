@@ -7,7 +7,7 @@ export default function Exercise15(){
         <div className="exercise">
             <div className="card">
                 <div className="card-body bg-light">
-                    <FileUploadAndView/>
+                    {/* <FileUploadAndView/> */}
                 </div>
             </div>
         </div>

@@ -15,6 +15,7 @@ export default function FileUploadAndViewer(){
 
     const changeHandler = (event) => {
 		setSelectedFile(event.target.files[0]);
+        console.log(event.target.files[0]);
 		setIsFilePicked(true);
         var URL = window.URL || window.webkitURL;
         setfileURL(URL.createObjectURL(event.target.files[0]));
@@ -22,8 +23,29 @@ export default function FileUploadAndViewer(){
 
 
 	const handleSubmission = () => {
-        if(isFilePicked)
-            storeSolution(15, selectedFile);
+        if(isFilePicked){
+            let xhr = new XMLHttpRequest(),
+                blob;
+
+            xhr.open("GET", "fileURL", true);
+            // Set the responseType to blob
+            xhr.responseType = "blob";
+
+            xhr.addEventListener("load", function () {
+                if (xhr.status === 200) {
+                    console.log("Image retrieved");
+                    
+                    // Blob as response
+                    blob = xhr.response;
+                    console.log("Blob:" + blob);
+
+                    // Put the received blob into IndexedDB
+                    storeSolution(15, blob);
+                }
+            }, false);
+            // Send XHR
+            xhr.send();
+        }
 	};
 
     return (
