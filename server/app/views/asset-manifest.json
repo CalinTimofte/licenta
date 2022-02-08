@@ -1,0 +1,29 @@
+{
+  "files": {
+    "main.css": "/static/css/main.53b35d8e.chunk.css",
+    "main.js": "/static/js/main.bf77df27.chunk.js",
+    "main.js.map": "/static/js/main.bf77df27.chunk.js.map",
+    "runtime-main.js": "/static/js/runtime-main.93904963.js",
+    "runtime-main.js.map": "/static/js/runtime-main.93904963.js.map",
+    "static/js/2.96d8bd70.chunk.js": "/static/js/2.96d8bd70.chunk.js",
+    "static/js/2.96d8bd70.chunk.js.map": "/static/js/2.96d8bd70.chunk.js.map",
+    "index.html": "/index.html",
+    "static/css/main.53b35d8e.chunk.css.map": "/static/css/main.53b35d8e.chunk.css.map",
+    "static/js/2.96d8bd70.chunk.js.LICENSE.txt": "/static/js/2.96d8bd70.chunk.js.LICENSE.txt",
+    "static/media/Chapter2.0ba4c349.pdf": "/static/media/Chapter2.0ba4c349.pdf",
+    "static/media/Chapter3.600a1b9b.pdf": "/static/media/Chapter3.600a1b9b.pdf",
+    "static/media/Chapter4.bdd068ea.pdf": "/static/media/Chapter4.bdd068ea.pdf",
+    "static/media/Chapter5.09aa56ec.pdf": "/static/media/Chapter5.09aa56ec.pdf",
+    "static/media/Chapter6.f8b4659e.pdf": "/static/media/Chapter6.f8b4659e.pdf",
+    "static/media/Chapter7.0f158ffd.pdf": "/static/media/Chapter7.0f158ffd.pdf",
+    "static/media/Chapter8.e1db7c87.pdf": "/static/media/Chapter8.e1db7c87.pdf",
+    "static/media/Chapter9.b2205235.pdf": "/static/media/Chapter9.b2205235.pdf",
+    "static/media/Introduction.9e6882e7.pdf": "/static/media/Introduction.9e6882e7.pdf"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.93904963.js",
+    "static/js/2.96d8bd70.chunk.js",
+    "static/css/main.53b35d8e.chunk.css",
+    "static/js/main.bf77df27.chunk.js"
+  ]
+}
