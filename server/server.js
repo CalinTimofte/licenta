@@ -2,7 +2,8 @@ require("dotenv").config({path:__dirname + '/.env'})
 const express = require('express');
 const bodyParser = require("body-parser");
 const cors = require("cors");
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
+const { Schema } = mongoose;
 
 const app = express();
 
@@ -26,9 +27,33 @@ app.use(bodyParser.json());
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({extended: true}));
 
+// Password is in plaintext for now but it will be changed later
+const userSchema = new Schema({
+    userName: {type: String, required: true},
+    password: {type: String, required: true},
+    priviledge: {type: Number, required: true}
+});
+
+let User = mongoose.model("User", userSchema);
+
+const createAndSaveTestUser = (done) => {
+    const doe = new User({userName: 'JohnDoe', password: 'johndoe1', priviledge: 3});
+    doe.save((err, data) => {
+        if (err) return console.error(err);
+        done(data, data);
+    });
+};
+
 // simple route
 app.get("/", (req, res) => {
     res.json("Welcome to thesis server.");
+});
+
+app.get("/testUser", (req, res) => {
+    createAndSaveTestUser(done => {
+        console.log(done);
+    });
+    res.json("You created John Doe.");
 });
 
 // set port, listen for requests
