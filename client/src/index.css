@@ -46,3 +46,7 @@
     margin: 2px auto;
     z-index: 1100 !important;
 }
+
+.testing > input, label, button {
+    margin-right: 1em;
+}
