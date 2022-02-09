@@ -24,22 +24,23 @@ export default function DBTest(){
     let incrementUpdates = () => {changeUpdates(updates => updates+1)};
     let overWriteJohnsList = (newList) => {changeJohnsList(newList)};
 
-    useEffect(() => {
-        setTimeout(() => {
-            http.get("/getAllUsers")
-                .then((response) => {overWriteJohnsList(response.data)})
-                .catch((error) => {console.log(error)})}, 100)
-    }, [updates])
-
-    let http = axios.create({
+    let axiosHttp = axios.create({
         baseURL: "http://localhost:3001",
         headers:{
             "Content-type": "application/json"
         }
     })
 
+    useEffect(() => {
+        setTimeout(() => {
+            axiosHttp.get("/getAllUsers")
+                .then((response) => {overWriteJohnsList(response.data)})
+                .catch((error) => {console.log(error)})}, 100)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [updates])
+
     let createHandlerFactory = (route) => (() => {
-        http.post(route, {
+        axiosHttp.post(route, {
             userName: userName,
             password: password
         }).then(() => {incrementUpdates()})
@@ -50,24 +51,30 @@ export default function DBTest(){
     let createAdmin = createHandlerFactory("/createAdmin");
 
     let deleteAllUsers = () => {
-        http.get("/deleteTestUsers").then(() => {incrementUpdates()})
+        axiosHttp.get("/deleteTestUsers").then(() => {incrementUpdates()})
     }
 
     let searchUser = () => {
-        http.post("/findUser", {
+        axiosHttp.post("/findUser", {
             userName: oldUserName
         })
     }
 
     let searchUSerSecurely = () => {
-        http.post("/findUserSecurely", {
+        axiosHttp.post("/findUserSecurely", {
             userName: oldUserName,
             password: oldPassword
         })
     }
 
+    let searchById = () => {
+        axiosHttp.post("/getOneUser", {
+            id: "6203ffd2512b0cc0df5cbc03"
+        })
+    }
+
     let update = () => {
-        http.post("/findAndUpdateUser", {
+        axiosHttp.post("/findAndUpdateUser", {
             oldUserName: oldUserName,
             newUserName: newUserName,
             newPassword: newPassword
@@ -75,7 +82,7 @@ export default function DBTest(){
     }
 
     let updateSecure = () => {
-        http.post("/findAndUpdateUserSecurely", {
+        axiosHttp.post("/findAndUpdateUserSecurely", {
             oldUserName: oldUserName,
             newUserName: newUserName,
             oldPassword: oldPassword,
@@ -130,6 +137,8 @@ export default function DBTest(){
                     </tbody>
                     </table>
             </div>
+
+            <button className="btn btn-outline-dark" onClick={searchById}>See one user</button>
         </div>
     )
 }

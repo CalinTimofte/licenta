@@ -36,8 +36,18 @@ const userSchema = new Schema({
 
 const classRoomSchema = new Schema({
     classRoomName: {type: String, required: true},
-    proffesorID: Schema.Types.ObjectId,
-    studentsIDs: [Schema.Types.ObjectID]
+    proffesorID: {type: Schema.Types.ObjectId, ref: 'User'},
+    studentsIDs: [{type: Schema.Types.ObjectID, ref: 'Student'}]
+})
+
+const studentSchema = new Schema({
+    userId: {type: Schema.Types.ObjectId, ref: 'User', required: true},
+    env: [String],
+    uploadedSolutions: [{
+        file: Buffer,
+        exerciseName: String
+    }],
+    classRoom: {type: Schema.Types.ObjectId, ref: 'ClassRoom'}
 })
 
 let User = mongoose.model("User", userSchema);
@@ -63,6 +73,13 @@ const getAllUsers = (done) => {
       done(null, data);
     });
   };
+
+const findUserById = (id, done) => {
+User.findById(id,(err, data) => {
+    if (err) return console.error(err);
+    done(null, data);
+});
+};
 
 const findUserByUserName = (userName, done) => {
     User.find({userName: userName},(err, data) => {
@@ -159,6 +176,13 @@ app.post("/findAndUpdateUserSecurely", (req, res) => {
 
 app.get("/getAllUsers", (req, res) => {
     getAllUsers((err, data) => {
+        console.log(data);
+        res.json(data);
+    });
+});
+
+app.post("/getOneUser", (req, res) => {
+    findUserById(req.body.id, (err, data) => {
         console.log(data);
         res.json(data);
     });
