@@ -59,7 +59,7 @@ export default function DBTest(){
         axiosHttp.post(route, {
             userName: userName,
             password: password
-        }).then(() => {incrementUpdates()})
+        }).then(() => {incrementUpdates()}).catch((error) => {console.log(error)});
     })
     
     let createStudent = createHandlerFactory("/createStudent");
@@ -104,6 +104,10 @@ export default function DBTest(){
         axiosHttp.get("/getTestFile")
                 .then((response) => {overWriteTestImage(arrayBufferToBase64(response.data.data.data))})
                 .catch((error) => {console.log(error)});
+    }
+
+    let deleteAllFiles = () => {
+        axiosHttp.get("/deleteAllFiles");
     }
 
     return(
@@ -188,6 +192,7 @@ export default function DBTest(){
             </div>
 
             <button className="btn btn-outline-dark" onClick={getTestImage}>Get test image from DB</button>
+            <button className="btn btn-outline-dark" onClick={deleteAllFiles}>Delete all files</button>
             <img src = {!testImage? "#" : `data:image/jpeg;base64, ${testImage}`}></img>
         </div>
     )

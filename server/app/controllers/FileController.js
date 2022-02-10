@@ -15,9 +15,17 @@ const findFileById = (id, done) => {
     });
     };
 
+const deleteAllFiles = (done) => {
+    File.deleteMany(null,(err, data) => {
+        if (err) return console.error(err);
+        done(null, data);
+    });
+};
+
 const fileController = {
     createAndSaveFile: createAndSaveFile,
-    findFileById: findFileById
+    findFileById: findFileById,
+    deleteAllFiles: deleteAllFiles
 };
 
 module.exports = fileController;

@@ -6,9 +6,8 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const fsExtra = require('fs-extra');
-const userController = require("./app/controllers/UserController");
-const studentController = require("./app/controllers/StudentController")
-const fileController = require("./app/controllers/FileController")
+const controllers = require('./app/controllers/index');
+const verifySignUp = require('./app/middlewares/verifySignUp')
 const { Schema } = mongoose;
 const multer = require('multer');
 
@@ -47,6 +46,14 @@ app.use(bodyParser.json());
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({extended: true}));
 
+app.use(function(req, res, next) {
+    res.header(
+        "Access-Control-Allow-Headers",
+        "x-access-token, Origin, COntent-Type, Accept"
+    );
+    next();
+})
+
 let ClassRoom = require('./app/models/ClassRoom')
 
 // simple route
@@ -54,32 +61,32 @@ app.get("/", (req, res) => {
     res.json("Welcome to thesis server.");
 });
 
-app.post("/createStudent", (req, res) => {
-    userController.createAndSaveUser(req.body.userName, req.body.password, 1, (err, data) => {
-        studentController.createAndSaveStudent(data.id, (err, data) => {
+app.post("/createStudent", [verifySignUp.checkDuplicateUsername],
+    (req, res) => {
+    controllers.userController.createAndSaveUser(req.body.userName, req.body.password, 1, (err, data) => {
+        controllers.studentController.createAndSaveStudent(data.id, (err, data) => {
             console.log(data)
         });
     });
-    res.json("You created a special John Doe.");
 });
 
 app.post("/createProfessor", (req, res) => {
-    userController.createAndSaveUser(req.body.userName, req.body.password, 2, (err, data) => {
+    controllers.userController.createAndSaveUser(req.body.userName, req.body.password, 2, (err, data) => {
         console.log(data);
     });
     res.json("You created a special John Doe.");
 });
 
 app.post("/createAdmin", (req, res) => {
-    userController.createAndSaveUser(req.body.userName, req.body.password, 3, (err, data) => {
+    controllers.userController.createAndSaveUser(req.body.userName, req.body.password, 3, (err, data) => {
         console.log(data);
     });
     res.json("You created a special John Doe.");
 });
 
 app.get("/deleteAllUsers", (req, res) => {
-    userController.deleteAllUsers((err, data) => {
-        studentController.deleteAllStudents((err, data) => {
+    controllers.userController.deleteAllUsers((err, data) => {
+        controllers.studentController.deleteAllStudents((err, data) => {
             console.log(data);
         })
     });
@@ -87,56 +94,56 @@ app.get("/deleteAllUsers", (req, res) => {
 });
 
 app.get("/deleteAllStudents", (req, res) => {
-    studentController.deleteAllStudents((err, data) => {
+    controllers.studentController.deleteAllStudents((err, data) => {
         console.log(data);
     });
     res.json("You killed all Students :(");
 });
 
 app.post("/findUser", (req, res) => {
-    userController.findUserByUserName(req.body.userName, (err, data) => {
+    controllers.userController.findUserByUserName(req.body.userName, (err, data) => {
         console.log(data);
     });
     res.json("You created a special John Doe.");
 });
 
 app.post("/findUserSecurely", (req, res) => {
-    userController.findUserByUserNameAndPassword(req.body.userName, req.body.password, (err, data) => {
+    controllers.userController.findUserByUserNameAndPassword(req.body.userName, req.body.password, (err, data) => {
         console.log(data);
     });
     res.json("You created a special John Doe.");
 });
 
 app.post("/findAndUpdateUser", (req, res) => {
-    userController.findUserByUserNameAndUpdate(req.body.oldUserName, req.body.newUserName, req.body.newPassword, (err, data) => {
+    controllers.userController.findUserByUserNameAndUpdate(req.body.oldUserName, req.body.newUserName, req.body.newPassword, (err, data) => {
         console.log(data);
     });
     res.json("You modified Bon Joe");
 });
 
 app.post("/findAndUpdateUserSecurely", (req, res) => {
-    userController.findUserByUserNameAndPasswordAndUpdate(req.body.oldUserName, req.body.newUserName, req.body.oldPassword, req.body.newPassword, (err, data) => {
+    controllers.userController.findUserByUserNameAndPasswordAndUpdate(req.body.oldUserName, req.body.newUserName, req.body.oldPassword, req.body.newPassword, (err, data) => {
         console.log(data);
     });
     res.json("You modified Bon Jovi");
 });
 
 app.get("/getAllUsers", (req, res) => {
-    userController.getAllUsers((err, data) => {
+    controllers.userController.getAllUsers((err, data) => {
         console.log(data);
         res.json(data);
     });
 });
 
 app.get("/getAllStudents", (req, res) => {
-    studentController.getAllStudents((err, data) => {
+    controllers.studentController.getAllStudents((err, data) => {
         console.log(data);
         res.json(data);
     });
 });
 
 app.post("/getOneUser", (req, res) => {
-    userController.findUserById(req.body.id, (err, data) => {
+    controllers.userController.findUserById(req.body.id, (err, data) => {
         console.log(data);
         res.json(data);
     });
@@ -144,7 +151,7 @@ app.post("/getOneUser", (req, res) => {
 
 //route for file submission
 app.post('/fileUpload', upload.single('solution'), (req, res) => {
-    fileController.createAndSaveFile(req.body.exerciseNumber, req.body.studentID, fs.readFileSync(path.join(__dirname + '/uploads/' + req.file.filename)), (err, data) => {
+    controllers.fileController.createAndSaveFile(req.body.exerciseNumber, req.body.studentID, fs.readFileSync(path.join(__dirname + '/uploads/' + req.file.filename)), (err, data) => {
         res.redirect('localhost:3000');
         deleteLocalUploads();
         console.log("File upload successful!");
@@ -152,9 +159,15 @@ app.post('/fileUpload', upload.single('solution'), (req, res) => {
 })
 
 app.get('/getTestFile', (req, res) => {
-    fileController.findFileById("6204a19a9f136903f74da803", (err, data) => {
+    controllers.fileController.findFileById("6204a19a9f136903f74da803", (err, data) => {
         res.json(data);
         console.log("File fetched!");
+    })
+})
+
+app.get('/deleteAllFiles', (req, res) => {
+    controllers.fileController.deleteAllFiles( (err, data) => {
+        console.log("Files deleted!");
     })
 })
 

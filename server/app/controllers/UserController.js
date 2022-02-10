@@ -31,7 +31,7 @@ User.findById(id,(err, data) => {
 
 const findUserByUserName = (userName, done) => {
     User.find({userName: userName},(err, data) => {
-      if (err) return console.error(err);
+      res.status(500).send({ message: err });
       done(null, data);
     });
   };
