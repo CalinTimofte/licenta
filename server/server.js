@@ -3,7 +3,10 @@ const express = require('express');
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const mongoose = require("mongoose");
+const fsExtra = require('fs-extra');
 const { Schema } = mongoose;
+
+let deleteLocalUploads = () => {fsExtra.emptyDirSync(__dirname + '/uploads');}
 
 const app = express();
 
@@ -27,41 +30,36 @@ app.use(bodyParser.json());
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({extended: true}));
 
-// Password is in plaintext for now but it will be changed later
-const userSchema = new Schema({
-    userName: {type: String, required: true},
-    password: {type: String, required: true},
-    priviledge: {type: Number, required: true}
-});
-
-const classRoomSchema = new Schema({
-    classRoomName: {type: String, required: true},
-    proffesorID: {type: Schema.Types.ObjectId, ref: 'User'},
-    studentsIDs: [{type: Schema.Types.ObjectID, ref: 'Student'}]
-})
-
-const studentSchema = new Schema({
-    userId: {type: Schema.Types.ObjectId, ref: 'User', required: true},
-    env: [String],
-    uploadedSolutions: [{
-        file: Buffer,
-        exerciseName: String
-    }],
-    classRoom: {type: Schema.Types.ObjectId, ref: 'ClassRoom'}
-})
-
-let User = mongoose.model("User", userSchema);
+let User = require('./app/models/User');
+let File = require('./app/models/File');
+let ClassRoom = require('./app/models/ClassRoom')
+let Student = require('./app/models/Student');
 
 const createAndSaveUser = (userName, password, priviledge, done) => {
-    const doe = new User({userName: userName, password: password, priviledge: priviledge});
-    doe.save((err, data) => {
+    const user = new User({userName: userName, password: password, priviledge: priviledge});
+    user.save((err, data) => {
         if (err) return console.error(err);
         done(null, data);
     });
 };
 
-const deleteAllTestUsers = (done) => {
+const createAndSaveStudent = (userID, done) => {
+    const student = new Student({userID: userID});
+    student.save((err, data) => {
+        if (err) return console.error(err);
+        done(null, data);
+    });
+};
+
+const deleteAllUsers = (done) => {
     User.deleteMany(null,(err, data) => {
+        if (err) return console.error(err);
+        done(null, data);
+    });
+};
+
+const deleteAllStudents = (done) => {
+    Student.deleteMany(null,(err, data) => {
         if (err) return console.error(err);
         done(null, data);
     });
@@ -69,6 +67,13 @@ const deleteAllTestUsers = (done) => {
 
 const getAllUsers = (done) => {
     User.find({},(err, data) => {
+      if (err) return console.error(err);
+      done(null, data);
+    });
+  };
+
+const getAllStudents = (done) => {
+    Student.find({},(err, data) => {
       if (err) return console.error(err);
       done(null, data);
     });
@@ -120,7 +125,9 @@ app.get("/", (req, res) => {
 
 app.post("/createStudent", (req, res) => {
     createAndSaveUser(req.body.userName, req.body.password, 1, (err, data) => {
-        console.log(data);
+        createAndSaveStudent(data.id, (err, data) => {
+            console.log(data)
+        });
     });
     res.json("You created a special John Doe.");
 });
@@ -139,11 +146,18 @@ app.post("/createAdmin", (req, res) => {
     res.json("You created a special John Doe.");
 });
 
-app.get("/deleteTestUsers", (req, res) => {
-    deleteAllTestUsers((err, data) => {
+app.get("/deleteAllUsers", (req, res) => {
+    deleteAllUsers((err, data) => {
         console.log(data);
     });
     res.json("You killed all John Does :(");
+});
+
+app.get("/deleteAllStudents", (req, res) => {
+    deleteAllStudents((err, data) => {
+        console.log(data);
+    });
+    res.json("You killed all Students :(");
 });
 
 app.post("/findUser", (req, res) => {
@@ -176,6 +190,13 @@ app.post("/findAndUpdateUserSecurely", (req, res) => {
 
 app.get("/getAllUsers", (req, res) => {
     getAllUsers((err, data) => {
+        console.log(data);
+        res.json(data);
+    });
+});
+
+app.get("/getAllStudents", (req, res) => {
+    getAllStudents((err, data) => {
         console.log(data);
         res.json(data);
     });

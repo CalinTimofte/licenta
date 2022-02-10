@@ -12,6 +12,7 @@ export default function DBTest(){
 
     let [updates, changeUpdates] = useState(0);
     let [johnsList, changeJohnsList] = useState([]);
+    let [studentsList, changeStudentsList] = useState([]);
 
     let inputChangeHandlerFactory = (stateChangeFunc) => ((event) => {stateChangeFunc(event.target.value)});
     let handleUserNameChange = inputChangeHandlerFactory(changeUserName);
@@ -23,6 +24,7 @@ export default function DBTest(){
 
     let incrementUpdates = () => {changeUpdates(updates => updates+1)};
     let overWriteJohnsList = (newList) => {changeJohnsList(newList)};
+    let overWriteStudentsList = (newList) => {changeStudentsList(newList)};
 
     let axiosHttp = axios.create({
         baseURL: "http://localhost:3001",
@@ -35,7 +37,11 @@ export default function DBTest(){
         setTimeout(() => {
             axiosHttp.get("/getAllUsers")
                 .then((response) => {overWriteJohnsList(response.data)})
-                .catch((error) => {console.log(error)})}, 100)
+                .catch((error) => {console.log(error)});
+            axiosHttp.get("/getAllStudents")
+                .then((response) => {overWriteStudentsList(response.data)})
+                .catch((error) => {console.log(error)});
+            }, 100);
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [updates])
 
@@ -51,7 +57,7 @@ export default function DBTest(){
     let createAdmin = createHandlerFactory("/createAdmin");
 
     let deleteAllUsers = () => {
-        axiosHttp.get("/deleteTestUsers").then(() => {incrementUpdates()})
+        axiosHttp.get("/deleteAllUsers").then(() => {incrementUpdates()})
     }
 
     let searchUser = () => {
@@ -113,7 +119,7 @@ export default function DBTest(){
             <button className="btn btn-outline-dark" onClick={update}>Update</button>
             <button className="btn btn-outline-dark" onClick={updateSecure}>Update after checking password</button>
             <div>
-                <p>Johns:</p>
+                <p>Users:</p>
                 <table className="table">
                     <thead>
                         <tr>
@@ -139,6 +145,28 @@ export default function DBTest(){
             </div>
 
             <button className="btn btn-outline-dark" onClick={searchById}>See one user</button>
+            <hr/>
+            <div>
+                <p>Students:</p>
+                <table className="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope = "col">id</th>
+                            <th scope="col">User id</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {studentsList.map((student, index) => (
+                            <tr key = {index}>
+                                <th scope="row">{index}</th>
+                                <td>{student._id}</td>
+                                <td>{student.userID}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                    </table>
+            </div>
         </div>
     )
 }
