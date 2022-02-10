@@ -151,6 +151,13 @@ app.post('/fileUpload', upload.single('solution'), (req, res) => {
     })
 })
 
+app.get('/getTestFile', (req, res) => {
+    fileController.findFileById("6204a19a9f136903f74da803", (err, data) => {
+        res.json(data);
+        console.log("File fetched!");
+    })
+})
+
 // set port, listen for requests
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {

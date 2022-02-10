@@ -8,8 +8,16 @@ const createAndSaveFile = (exerciseNumber, studentID, solution, done) => {
     });
 };
 
+const findFileById = (id, done) => {
+    File.findById(id,(err, data) => {
+        if (err) return console.error(err);
+        done(null, data);
+    });
+    };
+
 const fileController = {
-    createAndSaveFile: createAndSaveFile
+    createAndSaveFile: createAndSaveFile,
+    findFileById: findFileById
 };
 
 module.exports = fileController;

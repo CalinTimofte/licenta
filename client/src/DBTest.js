@@ -14,6 +14,8 @@ export default function DBTest(){
     let [johnsList, changeJohnsList] = useState([]);
     let [studentsList, changeStudentsList] = useState([]);
 
+    let [testImage, changeTestImage] = useState();
+
     let inputChangeHandlerFactory = (stateChangeFunc) => ((event) => {stateChangeFunc(event.target.value)});
     let handleUserNameChange = inputChangeHandlerFactory(changeUserName);
     let handleOldUserNameChange = inputChangeHandlerFactory(changeOldUserName);
@@ -25,6 +27,14 @@ export default function DBTest(){
     let incrementUpdates = () => {changeUpdates(updates => updates+1)};
     let overWriteJohnsList = (newList) => {changeJohnsList(newList)};
     let overWriteStudentsList = (newList) => {changeStudentsList(newList)};
+    let overWriteTestImage = (newImage) => {changeTestImage(newImage)};
+
+    function arrayBufferToBase64(buffer) {
+        var binary = '';
+        var bytes = [].slice.call(new Uint8Array(buffer));    
+        bytes.forEach((b) => binary += String.fromCharCode(b));
+        return window.btoa(binary);
+    };
 
     let axiosHttp = axios.create({
         baseURL: "http://localhost:3001",
@@ -88,6 +98,12 @@ export default function DBTest(){
             oldPassword: oldPassword,
             newPassword: newPassword
         }).then(() => {incrementUpdates()})
+    }
+
+    let getTestImage = () => {
+        axiosHttp.get("/getTestFile")
+                .then((response) => {overWriteTestImage(arrayBufferToBase64(response.data.data.data))})
+                .catch((error) => {console.log(error)});
     }
 
     return(
@@ -170,6 +186,9 @@ export default function DBTest(){
                     </tbody>
                     </table>
             </div>
+
+            <button className="btn btn-outline-dark" onClick={getTestImage}>Get test image from DB</button>
+            <img src = {!testImage? "#" : `data:image/jpeg;base64, ${testImage}`}></img>
         </div>
     )
 }
