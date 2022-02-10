@@ -113,6 +113,17 @@ export default function DBTest(){
             <button className="btn btn-outline-dark" onClick={update}>Update</button>
             <button className="btn btn-outline-dark" onClick={updateSecure}>Update after checking password</button>
             <div>
+                <p>Upload solution</p>
+                <form action="http://localhost:3001/fileUpload" method="POST" encType="multipart/form-data">
+                    <input type="hidden" name = "exerciseNumber" value = {15}/>
+                    <input type="hidden" name = "studentID" value = "62048a05cd1c8f760d04629a"/>
+                    <input type="file" className="form-control" name="solution"/>
+                    <div>
+                        <button type="submit" className="btn btn-outline-dark">Submit</button>
+                    </div>
+                </form>
+            </div>
+            <div>
                 <p>Users:</p>
                 <table className="table">
                     <thead>

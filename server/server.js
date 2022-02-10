@@ -1,4 +1,6 @@
 require("dotenv").config({path:__dirname + '/.env'})
+const fs = require('fs');
+var path = require('path');
 const express = require('express');
 const bodyParser = require("body-parser");
 const cors = require("cors");
@@ -6,7 +8,20 @@ const mongoose = require("mongoose");
 const fsExtra = require('fs-extra');
 const userController = require("./app/controllers/UserController");
 const studentController = require("./app/controllers/StudentController")
+const fileController = require("./app/controllers/FileController")
 const { Schema } = mongoose;
+const multer = require('multer');
+
+let storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'uploads');
+    },
+    filename: (req, file, cb) => {
+        cb(null, file.fieldname + '_' + Date.now())
+    }
+})
+
+let upload = multer({storage: storage});
 
 let deleteLocalUploads = () => {fsExtra.emptyDirSync(__dirname + '/uploads');}
 
@@ -32,7 +47,6 @@ app.use(bodyParser.json());
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({extended: true}));
 
-let File = require('./app/models/File');
 let ClassRoom = require('./app/models/ClassRoom')
 
 // simple route
@@ -127,6 +141,15 @@ app.post("/getOneUser", (req, res) => {
         res.json(data);
     });
 });
+
+//route for file submission
+app.post('/fileUpload', upload.single('solution'), (req, res) => {
+    fileController.createAndSaveFile(req.body.exerciseNumber, req.body.studentID, fs.readFileSync(path.join(__dirname + '/uploads/' + req.file.filename)), (err, data) => {
+        res.redirect('localhost:3000');
+        deleteLocalUploads();
+        console.log("File upload successful!");
+    })
+})
 
 // set port, listen for requests
 const PORT = process.env.PORT || 3001;
