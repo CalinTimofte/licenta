@@ -73,12 +73,6 @@ export default function DBTest(){
         })
     }
 
-    let searchById = () => {
-        axiosHttp.post("/getOneUser", {
-            id: "6203ffd2512b0cc0df5cbc03"
-        })
-    }
-
     let update = () => {
         axiosHttp.post("/findAndUpdateUser", {
             oldUserName: oldUserName,
@@ -144,8 +138,6 @@ export default function DBTest(){
                     </table>
             </div>
 
-            <button className="btn btn-outline-dark" onClick={searchById}>See one user</button>
-            <hr/>
             <div>
                 <p>Students:</p>
                 <table className="table">
