@@ -61,11 +61,20 @@ app.get("/", (req, res) => {
     res.json("Welcome to thesis server.");
 });
 
-app.post("/createStudent", [verifySignUp.checkDuplicateUsername],
+app.post("/createStudent", [verifySignUp.checkDuplicateUsername, verifySignUp.hashPassword],
     (req, res) => {
     controllers.userController.createAndSaveUser(req.body.userName, req.body.password, 1, (err, data) => {
+        if (err) {
+            res.status(err.statusCode).send({ message: err });
+            return;
+          }
         controllers.studentController.createAndSaveStudent(data.id, (err, data) => {
+            if (err) {
+                res.status(err.statusCode).send({ message: err });
+                return;
+              }
             console.log(data)
+            res.json("You created a special John Doe.");
         });
     });
 });

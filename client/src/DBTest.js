@@ -59,7 +59,7 @@ export default function DBTest(){
         axiosHttp.post(route, {
             userName: userName,
             password: password
-        }).then(() => {incrementUpdates()}).catch((error) => {console.log(error)});
+        }).then(() => {incrementUpdates()}).catch((error) => {console.log(error); window.alert(error.response.data.message); incrementUpdates()});
     })
     
     let createStudent = createHandlerFactory("/createStudent");
