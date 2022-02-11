@@ -14,7 +14,6 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const userController = require("./app/controllers/UserController");
 const cookieSession = require("cookie-session");
-const { createProxyMiddleware } = require("http-proxy-middleware");
 
 let storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -30,14 +29,6 @@ let upload = multer({storage: storage});
 let deleteLocalUploads = () => {fsExtra.emptyDirSync(__dirname + '/uploads');}
 
 const app = express();
-
-app.use(
-    "/api",
-    createProxyMiddleware({
-      target: "http://localhost:8080",
-      changeOrigin: true,
-    })
-  );
 
 // connect to DB
 mongoose.connect(process.env.MONGO_URI, {useNewUrlParser: true, useUnifiedTopology: true})

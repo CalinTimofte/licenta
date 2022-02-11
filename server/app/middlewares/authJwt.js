@@ -5,11 +5,13 @@ const User = require("../models/User");
 let verifyToken = (req, res, next) => {
     let token = req.session.token;
     if(!token){
-        return res.status(403).send({message: "No token provided!"});
+        return res.status(403).send({message: "Please log in!"});
     }
     jwt.verify(token, process.env.SECRET, (err, decoded) => {
         if(err){
-            return res.status(401).send({message: "Unauthorized!"});
+            // log user out
+            res.clearCookie('session');
+            return res.status(401).send({message: err.message});
         }
         req.userID = decoded.id;
         next();
