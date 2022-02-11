@@ -7,9 +7,12 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const fsExtra = require('fs-extra');
 const controllers = require('./app/controllers/index');
-const verifySignUp = require('./app/middlewares/verifySignUp')
-const { Schema } = mongoose;
+const verifySignUp = require('./app/middlewares/verifySignUp');
+const authJwt = require("./app/middlewares/authJwt");
 const multer = require('multer');
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
+const userController = require("./app/controllers/UserController");
 
 let storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -54,8 +57,6 @@ app.use(function(req, res, next) {
     next();
 })
 
-let ClassRoom = require('./app/models/ClassRoom')
-
 // simple route
 app.get("/", (req, res) => {
     res.json("Welcome to thesis server.");
@@ -65,12 +66,12 @@ app.post("/createStudent", [verifySignUp.checkDuplicateUsername, verifySignUp.ha
     (req, res) => {
     controllers.userController.createAndSaveUser(req.body.userName, req.body.password, 1, (err, data) => {
         if (err) {
-            res.status(err.statusCode).send({ message: err });
+            res.status(500).send({ message: err });
             return;
           }
         controllers.studentController.createAndSaveStudent(data.id, (err, data) => {
             if (err) {
-                res.status(err.statusCode).send({ message: err });
+                res.status(500).send({ message: err });
                 return;
               }
             console.log(data)
@@ -79,15 +80,55 @@ app.post("/createStudent", [verifySignUp.checkDuplicateUsername, verifySignUp.ha
     });
 });
 
-app.post("/createProfessor", (req, res) => {
+app.post("/signIn", (req, res) => {
+    userController.User.findOne({userName: req.body.userName}).exec((err, user) =>{
+        if(err){
+            res.status(500).send({message:err});
+            return;
+        }
+        if(!user){
+            return res.status(404).send({message: "User Not Found."});
+        }
+        let passwordIsValid = bcrypt.compareSync(
+            req.body.password,
+            user.password
+        )
+        if(!passwordIsValid){
+            return res.status(401).send({
+                accessToken: null,
+                message: "Invalid Password"
+            });
+        }
+        let token = jwt.sign({ id: user.id }, process.env.SECRET, {
+            expiresIn: 86400
+        });
+
+        res.status(200).send({
+            id: user._id,
+            userName: user.userName,
+            priviledge: user.priviledge,
+            accessToken: token
+    })
+    })
+})
+
+app.post("/createProfessor", [verifySignUp.checkDuplicateUsername, verifySignUp.hashPassword], (req, res) => {
     controllers.userController.createAndSaveUser(req.body.userName, req.body.password, 2, (err, data) => {
+        if (err) {
+            res.status(500).send({ message: err });
+            return;
+          }
         console.log(data);
     });
     res.json("You created a special John Doe.");
 });
 
-app.post("/createAdmin", (req, res) => {
+app.post("/createAdmin", [verifySignUp.checkDuplicateUsername, verifySignUp.hashPassword], (req, res) => {
     controllers.userController.createAndSaveUser(req.body.userName, req.body.password, 3, (err, data) => {
+        if (err) {
+            res.status(500).send({ message: err });
+            return;
+          }
         console.log(data);
     });
     res.json("You created a special John Doe.");

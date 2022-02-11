@@ -59,7 +59,7 @@ export default function DBTest(){
         axiosHttp.post(route, {
             userName: userName,
             password: password
-        }).then(() => {incrementUpdates()}).catch((error) => {console.log(error); window.alert(error.response.data.message); incrementUpdates()});
+        }).then(() => {incrementUpdates()}).catch((error) => {console.log(error); window.alert(error.response.data.message);});
     })
     
     let createStudent = createHandlerFactory("/createStudent");
@@ -110,10 +110,17 @@ export default function DBTest(){
         axiosHttp.get("/deleteAllFiles");
     }
 
+    let signIn = () => {
+        axiosHttp.post("/signIn", {
+            userName: userName,
+            password: password
+        }).catch((error) => {console.log(error); window.alert(error.response.data.message);});
+    }
+
     return(
         <div className="testing">
             <div>
-                <label>New User details:</label>
+                <label>User details:</label>
                 <input type="text" placeholder = "username" onChange = {handleUserNameChange}></input>
                 <input type="text" placeholder = "password" onChange= {handlePasswordChange}></input>
             </div>
@@ -121,6 +128,7 @@ export default function DBTest(){
             <button className="btn btn-outline-dark" onClick={createProfessor}>Spawn Professor</button>
             <button className="btn btn-outline-dark" onClick={createAdmin}>Spawn Admin</button>
             <button className="btn btn-outline-dark" onClick={deleteAllUsers}>Delete all users</button>
+            <button className="btn btn-outline-dark" onClick={signIn}>Sign In</button>
             <div>
                 <label>Modify Specific John:</label>
                 <input type="text" placeholder = "John Doe old username" onChange = {handleOldUserNameChange}></input>

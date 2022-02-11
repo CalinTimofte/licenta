@@ -61,6 +61,7 @@ const findUserByUserNameAndPasswordAndUpdate = (oldUserName, newUserName, oldPas
     });
 }
 const userController = {
+    User,
     createAndSaveUser: createAndSaveUser,
     deleteAllUsers: deleteAllUsers,
     getAllUsers: getAllUsers,
