@@ -15,6 +15,7 @@ export default function DBTest(){
     let [studentsList, changeStudentsList] = useState([]);
 
     let [testImage, changeTestImage] = useState();
+    let [userData, changeUserData] = useState();
 
     let inputChangeHandlerFactory = (stateChangeFunc) => ((event) => {stateChangeFunc(event.target.value)});
     let handleUserNameChange = inputChangeHandlerFactory(changeUserName);
@@ -28,6 +29,7 @@ export default function DBTest(){
     let overWriteJohnsList = (newList) => {changeJohnsList(newList)};
     let overWriteStudentsList = (newList) => {changeStudentsList(newList)};
     let overWriteTestImage = (newImage) => {changeTestImage(newImage)};
+    let overWriteUserData = (newData) => {changeUserData(newData)};
 
     function arrayBufferToBase64(buffer) {
         var binary = '';
@@ -114,8 +116,21 @@ export default function DBTest(){
         axiosHttp.post("/signIn", {
             userName: userName,
             password: password
-        }).catch((error) => {console.log(error); window.alert(error.response.data.message);});
+        }).then(response => {overWriteUserData(response.data);}).catch((error) => {console.log(error); window.alert(error.response.data.message);});
     }
+
+    let signOut = () => {
+        axiosHttp.get("/signOut");
+    }
+
+    let getContentFactory = (routeLink) => (() => {
+        axiosHttp.get(routeLink).catch((error) => {console.log(error.response); window.alert(error.response.data.message);});
+    })
+
+    let getPublicContent = getContentFactory("/testAll");
+    let getStudentContent = getContentFactory("/testStudent");
+    let getProfessorContent = getContentFactory("/testProfessor");
+    let getAdminContent = getContentFactory("/testAdmin");
 
     return(
         <div className="testing">
@@ -129,6 +144,11 @@ export default function DBTest(){
             <button className="btn btn-outline-dark" onClick={createAdmin}>Spawn Admin</button>
             <button className="btn btn-outline-dark" onClick={deleteAllUsers}>Delete all users</button>
             <button className="btn btn-outline-dark" onClick={signIn}>Sign In</button>
+            <button className="btn btn-outline-dark" onClick={signOut}>Sign Out</button>
+            <button className="btn btn-outline-dark" onClick={getPublicContent}>Get Public Content</button>
+            <button className="btn btn-outline-dark" onClick={getStudentContent}>Get Student Content</button>
+            <button className="btn btn-outline-dark" onClick={getProfessorContent}>Get Professor Content</button>
+            <button className="btn btn-outline-dark" onClick={getAdminContent}>Get Admin Content</button>
             <div>
                 <label>Modify Specific John:</label>
                 <input type="text" placeholder = "John Doe old username" onChange = {handleOldUserNameChange}></input>

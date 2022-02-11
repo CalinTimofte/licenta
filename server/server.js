@@ -1,6 +1,6 @@
 require("dotenv").config({path:__dirname + '/.env'})
 const fs = require('fs');
-var path = require('path');
+const path = require('path');
 const express = require('express');
 const bodyParser = require("body-parser");
 const cors = require("cors");
@@ -13,6 +13,8 @@ const multer = require('multer');
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const userController = require("./app/controllers/UserController");
+const cookieSession = require("cookie-session");
+const { createProxyMiddleware } = require("http-proxy-middleware");
 
 let storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -28,6 +30,14 @@ let upload = multer({storage: storage});
 let deleteLocalUploads = () => {fsExtra.emptyDirSync(__dirname + '/uploads');}
 
 const app = express();
+
+app.use(
+    "/api",
+    createProxyMiddleware({
+      target: "http://localhost:8080",
+      changeOrigin: true,
+    })
+  );
 
 // connect to DB
 mongoose.connect(process.env.MONGO_URI, {useNewUrlParser: true, useUnifiedTopology: true})
@@ -49,17 +59,17 @@ app.use(bodyParser.json());
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({extended: true}));
 
-app.use(function(req, res, next) {
-    res.header(
-        "Access-Control-Allow-Headers",
-        "x-access-token, Origin, COntent-Type, Accept"
-    );
-    next();
-})
+app.use(
+    cookieSession({
+        secret: "COOKIE_SECRET",
+        httpOnly: true
+    })
+)
 
+app.use(express.static(__dirname + "/app/views"));
 // simple route
 app.get("/", (req, res) => {
-    res.json("Welcome to thesis server.");
+    res.sendFile(__dirname + "/app/views/index.html");
 });
 
 app.post("/createStudent", [verifySignUp.checkDuplicateUsername, verifySignUp.hashPassword],
@@ -103,11 +113,11 @@ app.post("/signIn", (req, res) => {
             expiresIn: 86400
         });
 
+        req.session.token = token;
         res.status(200).send({
             id: user._id,
             userName: user.userName,
             priviledge: user.priviledge,
-            accessToken: token
     })
     })
 })
@@ -219,6 +229,17 @@ app.get('/deleteAllFiles', (req, res) => {
     controllers.fileController.deleteAllFiles( (err, data) => {
         console.log("Files deleted!");
     })
+})
+
+//resource routes
+
+app.get("/testAll", userController.allAccess);
+app.get("/testStudent", [authJwt.verifyToken, authJwt.isStudent], userController.studentBoard);
+app.get("/testProfessor", [authJwt.verifyToken, authJwt.isProfessor], userController.professorBoard);
+app.get("/testAdmin", [authJwt.verifyToken, authJwt.isAdmin], userController.adminBoard);
+app.get("/signOut", [authJwt.verifyToken], (req, res) =>{
+    res.clearCookie('session');
+    res.send('Logged out');
 })
 
 // set port, listen for requests

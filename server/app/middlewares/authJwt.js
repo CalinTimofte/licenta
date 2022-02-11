@@ -3,7 +3,7 @@ require("dotenv").config({path:__dirname + '/.env'});
 const User = require("../models/User");
 
 let verifyToken = (req, res, next) => {
-    let token = req.headers["x-access-token"];
+    let token = req.session.token;
     if(!token){
         return res.status(403).send({message: "No token provided!"});
     }
@@ -16,14 +16,14 @@ let verifyToken = (req, res, next) => {
     })
 }
 
-let isRoleFactory = (priviledge_number) => ((req, res, next) => {
-    User.findById(req.userId).exec((err, user) => {
+let isRoleFactory = (priviledge_number, role_name) => ((req, res, next) => {
+    User.findById(req.userID).exec((err, user) => {
         if(err){
             res.status(500).send({message: err});
             return;
         }
         if(user.priviledge !== priviledge_number){
-            res.status(403).send({message: "Require Admin Role!"});
+            res.status(403).send({message: `Requires ${role_name} Role!`});
             return;
         }
         else{
@@ -33,9 +33,9 @@ let isRoleFactory = (priviledge_number) => ((req, res, next) => {
     })
     })
 
-let isAdmin = isRoleFactory(3);
-let isProfessor = isRoleFactory(2);
-let isStudent = isRoleFactory(1);
+let isAdmin = isRoleFactory(3, "Admin");
+let isProfessor = isRoleFactory(2, "Professor");
+let isStudent = isRoleFactory(1, "Student");
 
 const authJwt = {
     verifyToken,

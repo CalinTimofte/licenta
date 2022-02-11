@@ -60,6 +60,16 @@ const findUserByUserNameAndPasswordAndUpdate = (oldUserName, newUserName, oldPas
         });
     });
 }
+
+const authTestFactory = (message) => ((req, res) => {
+    res.status(200).send(message);
+})
+
+const allAccess = authTestFactory("Public content");
+const studentBoard = authTestFactory("Student content");
+const professorBoard = authTestFactory("Professor content");
+const adminBoard = authTestFactory("Admin content");
+
 const userController = {
     User,
     createAndSaveUser: createAndSaveUser,
@@ -68,7 +78,11 @@ const userController = {
     findUserById: findUserById,
     findUserByUserName: findUserByUserName,
     findUserByUserNameAndUpdate: findUserByUserNameAndUpdate,
-    findUserByUserNameAndPasswordAndUpdate: findUserByUserNameAndPasswordAndUpdate
+    findUserByUserNameAndPasswordAndUpdate: findUserByUserNameAndPasswordAndUpdate,
+    allAccess,
+    studentBoard,
+    professorBoard,
+    adminBoard
 }
 
 module.exports = userController;
