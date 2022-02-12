@@ -14,6 +14,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const userController = require("./app/controllers/UserController");
 const cookieSession = require("cookie-session");
+const cookieParser = require("cookie-parser");
 
 
 let storage = multer.diskStorage({
@@ -51,10 +52,13 @@ app.use(bodyParser.json());
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({extended: true}));
 
+app.use(cookieParser());
+
 app.use(
     cookieSession({
         secret: "COOKIE_SECRET",
-        httpOnly: true
+        httpOnly: true,
+        sameSite: "strict"
     })
 )
 
@@ -106,6 +110,8 @@ app.post("/signIn", (req, res) => {
         });
 
         req.session.token = token;
+        // Also set a non HTTP cookie to see if user is logged in on front-end
+        res.cookie('loggedIn', true);
         res.status(200).send({
             id: user._id,
             userName: user.userName,
@@ -231,6 +237,7 @@ app.get("/testProfessor", [authJwt.verifyToken, authJwt.isProfessor], userContro
 app.get("/testAdmin", [authJwt.verifyToken, authJwt.isAdmin], userController.adminBoard);
 app.get("/signOut", [authJwt.verifyToken], (req, res) =>{
     res.clearCookie('session');
+    res.clearCookie('loggedIn');
     res.send('Logged out');
 })
 

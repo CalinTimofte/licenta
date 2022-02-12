@@ -11,6 +11,8 @@ let verifyToken = (req, res, next) => {
         if(err){
             // log user out
             res.clearCookie('session');
+            // clear loggedIn cookie
+            res.clearCookie('loggedIn');
             return res.status(401).send({message: err.message});
         }
         req.userID = decoded.id;
