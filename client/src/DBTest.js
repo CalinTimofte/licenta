@@ -120,7 +120,7 @@ export default function DBTest(){
     }
 
     let signOut = () => {
-        axiosHttp.get("/signOut");
+        axiosHttp.get("/signOut").catch((error) => {console.log(error.response); window.alert(error.response.data.message);});
     }
 
     let getContentFactory = (routeLink) => (() => {

@@ -3,7 +3,7 @@ import ArrowButton from './Reusables/ArrowButton';
 
 export default function SubChapters({subchapterAndSectionNames, subchapterHandler, activeSubChapter, sectionHandler, activeSection}){
 
-    let [open, reverseArrow] = useState(false)
+    let [open, reverseArrow] = useState(true)
 
     let reverseMenu = () => {reverseArrow(() => (!open))}
 

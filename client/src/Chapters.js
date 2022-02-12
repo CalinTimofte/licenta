@@ -3,7 +3,7 @@ import ArrowButton from './Reusables/ArrowButton';
 
 function Chapters({chapterHandler, activeChapter}){
 
-    let [open, reverseArrow] = useState(false)
+    let [open, reverseArrow] = useState(true)
 
     let reverseMenu = () => {reverseArrow(() => (!open))}
 

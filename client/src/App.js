@@ -3,6 +3,7 @@ import {LocalStorageContext} from "./LocalStorageContext.js"
 import Content from './Content';
 import Chapters from './Chapters';
 import SubChapters from './Subchapters';
+import Dashboard from './Dashboard.js';
 
 import {LPIntroduction} from './Chapters/LP/Chapter1/Introducere';
 
@@ -340,6 +341,7 @@ export default function App(){
                 sectionHandler = {selectActiveSection}
                 activeSection = {activeSection}
             />
+            <Dashboard/>
             <Content content = {displayContent()}/>
             <div className='nav-buttons'>
                 {previousButton()}

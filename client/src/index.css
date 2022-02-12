@@ -19,6 +19,13 @@
     flex-direction: row;
 }
 
+.dashboard{
+    position: fixed;
+    z-index: 1;
+    top: 0vh;
+    right: 0;
+}
+
 .content{
     width: 70vw;
     margin-top: 20vh;
@@ -49,4 +56,8 @@
 
 .testing > input, label, button {
     margin-right: 1em;
+}
+
+.login > *, .register > * {
+    margin-right: 0.5em;
 }
