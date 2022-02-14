@@ -18,6 +18,7 @@ export default function Dashboard(){
     let reverseMenu = () => {reverseArrow(() => (!open))}
 
     let retrieveUserDataPropOrEmptyString = (prop) => (getUserData()? getUserData()[prop]: "")
+    let exercisesSolved = () => (getUserData().env.length);
 
     let checkAndModifyLoggedInStatus = () => {
         if(document.cookie.indexOf("loggedIn") !== -1)
@@ -65,7 +66,7 @@ export default function Dashboard(){
             checkAndModifyLoggedInStatus();
             window.location.reload();
         }))
-        .catch((error) => {console.log(error.response); window.alert(error.response.data.message);});
+        .catch((error) => {console.log(error.response || error); window.alert(error.response.data.message || error);});
     }
 
     return(
@@ -78,7 +79,7 @@ export default function Dashboard(){
                             <p>Dashboard</p>
                             <p>UserName: {retrieveUserDataPropOrEmptyString("userName")}</p>
                             <p>Permissions: {retrieveUserDataPropOrEmptyString("priviledge") === 1? "Student" : retrieveUserDataPropOrEmptyString("priviledge") === 2? "Professor" : retrieveUserDataPropOrEmptyString("priviledge") === 3? "Admin" : "Wrong priviledge number in DB"}</p>
-                            <p>Id: {retrieveUserDataPropOrEmptyString("id")}</p>
+                            <p>Exercises Solved: {exercisesSolved()}</p>
                             <div className="logout">
                                     <button className="btn btn-outline-light" onClick={logOut}>Log Out</button>
                             </div>
@@ -86,6 +87,7 @@ export default function Dashboard(){
                     :
                         <div>
                             <p>Dashboard</p>
+                            <p style = {{color: "red"}}>Please login to keep track of progress and to upload files!</p>
                             <div className="register">
                                 <p>Register:</p>
                                 <input type="text" placeholder = "username" onChange={overwriteRegisterUser}></input>

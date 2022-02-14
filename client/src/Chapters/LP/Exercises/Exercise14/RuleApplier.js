@@ -80,7 +80,7 @@ class Tab{
     }
 }
  
-export default function RuleApplier(){
+export default function RuleApplier({isLoggedIn, isEnvPropSetArr,setEnvPropArr}){
     // array of tabs = array of contexts = array of objects -> propositional variable, negation, conjunction, disjunction 
     let [tabs, changeTabs] = useState([ new Tab([ new Context([new Negation(), new PropositionalVariable("q")]) ], "1"),
                                         new Tab([ new Context([new Brackets([new PropositionalVariable("p1"), new Conjunction(), new PropositionalVariable("q")])])], "2"),
@@ -90,7 +90,7 @@ export default function RuleApplier(){
                                         ])
     let [currentTabIndex, changecurrentTabIndex] = useState(0);
     let [currentContextIndex, changeCurrentContextIndex] = useState(0);
-    let [completedness, changeCompletedness] = useState(tabs.map(tab => "unattempted"));
+    let [completedness, changeCompletedness] = useState(tabs.map((tab, index) => (isLoggedIn()? (isEnvPropSetArr(index)? "complete" : "unattempted"): "unattempted")));
 
     let getCurrentTab = () => tabs[currentTabIndex].contexts;
 
@@ -165,8 +165,10 @@ export default function RuleApplier(){
         if(!(context.content[0] instanceof BaseCase))
             ok = 0;
         })
-        if(ok === 1)
+        if(ok === 1){
             setCompletedNess("complete");
+            setEnvPropArr(currentTabIndex);
+        }
         else
             setCompletedNess("incomplete");
     }

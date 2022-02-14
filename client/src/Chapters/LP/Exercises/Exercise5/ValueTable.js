@@ -3,10 +3,12 @@ import React, {useState} from "react";
 //  Use select for values where you want a value to be selected
 let defaultTableValues = [["φ", "ψ", "φ ∨ ψ"], ["false", "false", "select"], ["false", "true", "select"], ["true", "false", "select"], ["true", "true", "select"]];
 
-let defaultCheckAnswer = (answerTruthValues, changeCompleteness) => {
+let defaultCheckAnswer = (answerTruthValues, changeCompleteness, finishExerciseCallback) => {
     if(answerTruthValues[0] === "false")
-        if((answerTruthValues[1] === "true" && answerTruthValues[2] === "true") && answerTruthValues[3] === "true")
+        if((answerTruthValues[1] === "true" && answerTruthValues[2] === "true") && answerTruthValues[3] === "true"){
             changeCompleteness("complete");
+            finishExerciseCallback();
+        }
         else
             changeCompleteness("incomplete");
     else
@@ -14,7 +16,7 @@ let defaultCheckAnswer = (answerTruthValues, changeCompleteness) => {
 
 }
 
-export default function ValueTable({tableValues = defaultTableValues, checkAnswer = defaultCheckAnswer, selectValues = ["true", "false"]}){
+export default function ValueTable({tableValues = defaultTableValues, checkAnswer = defaultCheckAnswer, selectValues = ["true", "false"], isEnvPropSet, setEnvProp, isLoggedIn}){
     let selectIndexes = [];
     let [answerTruthValues, changeAnswerTruthValues] = useState((() => {
         let returnArr = [];
@@ -29,7 +31,12 @@ export default function ValueTable({tableValues = defaultTableValues, checkAnswe
         })
         return returnArr;
     })());
-    let [completedness, changeCompletedness] = useState("unattempted");
+    let [completedness, changeCompletedness] = useState(isLoggedIn()? (isEnvPropSet()? "complete" : "unattempted"): "unattempted");
+    let finishExerciseCallback = () => {
+        if (isLoggedIn()){
+            setEnvProp();
+        }
+    }
 
     let selectFactory = (answerIndex) => (
         <select class="form-select" id="truth-values" name="truth-values"
@@ -72,7 +79,7 @@ export default function ValueTable({tableValues = defaultTableValues, checkAnswe
                 </tbody>
             </table>
 
-            <button type="button" className="btn btn-outline-dark" onClick={() => (checkAnswer(answerTruthValues, changeCompletedness))}>Done</button>
+            <button type="button" className="btn btn-outline-dark" onClick={() => (checkAnswer(answerTruthValues, changeCompletedness, finishExerciseCallback))}>Done</button>
             <span>
                 {completedness === "complete"? <p style = {{color: "green"}}>Congratulations!</p> :
                     completedness === "incomplete"? <p style = {{color: "red"}}>Try again!</p> : <p></p>}

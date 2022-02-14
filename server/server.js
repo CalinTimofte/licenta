@@ -123,7 +123,6 @@ app.post("/logIn", (req, res) => {
                     else{
                         console.log(student.env)
                         res.status(200).send({
-                            id: user._id,
                             userName: user.userName,
                             priviledge: user.priviledge,
                             env: student.env
@@ -134,7 +133,6 @@ app.post("/logIn", (req, res) => {
         }
         else{
             res.status(200).send({
-                id: user._id,
                 userName: user.userName,
                 priviledge: user.priviledge,
             })

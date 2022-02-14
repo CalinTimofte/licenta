@@ -1,15 +1,12 @@
 import React from "react";
 import ValueTable from "./ValueTable";
+import GenericExercise from "../../../../Reusables/GenericExercise";
 
 export default function Exercise5(){
 
     return(
-        <div className="exercise">
-            <div className="card">
-                <div className="card-body bg-light">
-                    <ValueTable/>
-                </div>
-            </div>
-        </div>
+        <GenericExercise envProp={"exercise5"}>
+            <ValueTable/>
+        </GenericExercise>
     )
 }

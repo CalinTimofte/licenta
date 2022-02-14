@@ -1,14 +1,11 @@
 import React from "react";
 import SentenceCreator from "./SentenceCreator";
+import GenericExercise from "../../../../Reusables/GenericExercise";
 
 export default function Exercise2(){
     return(
-        <div className="exercise">
-            <div className="card">
-                <div className="card-body bg-light">
-                    <SentenceCreator operations={[{name: "and", symbol: "∧"}]}/>
-                </div>
-            </div>
-        </div>
+        <GenericExercise envProp={"exercise2"}>
+            <SentenceCreator operations={[{name: "and", symbol: "∧"}]}/>
+        </GenericExercise>
     )
 }

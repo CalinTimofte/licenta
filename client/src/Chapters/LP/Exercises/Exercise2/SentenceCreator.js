@@ -13,25 +13,34 @@ let defaultGoalText = (exercisePart) => (
     </div>
 )
 
-let defaultGoalHandler = (currentTruthValue, exercisePart, changeExercisePart, currentState) => {
+let defaultGoalHandler = (currentTruthValue, exercisePart, changeExercisePart, currentState, finishExerciseCallback) => {
     switch(exercisePart){
         case 0:
             if(currentTruthValue === false)
                 changeExercisePart(1);
             break;
         case 1:
-            if(currentTruthValue === true)
+            if(currentTruthValue === true){
                 changeExercisePart(2);
+                finishExerciseCallback()
+            }
             break; 
         default:
     }
 }
 
-export default function SentenceCreator({operations, goalText = defaultGoalText, goalHandler = defaultGoalHandler}){
+export default function SentenceCreator({operations, goalText = defaultGoalText, goalHandler = defaultGoalHandler, isEnvPropSet, setEnvProp, isLoggedIn}){
     let [currentSentence, changeCurrentSentence] = useState("");
     let [formalSentence, changeFormalSentence] = useState([]);
     let [truthValue, changeTruthValue] = useState(undefined);
     let [exercisePart, changeExercisePart] = useState(0);
+    let finished = isLoggedIn()? (isEnvPropSet()? true : false): false
+    let finishExerciseCallback = () => {
+        if (isLoggedIn()){
+            setEnvProp()
+            finished = true;
+        }
+    }
 
     function addToSentence(word){
         changeCurrentSentence(currentSentence => (currentSentence + " " + word));
@@ -65,7 +74,8 @@ export default function SentenceCreator({operations, goalText = defaultGoalText,
             changeTruthValue(truthValue);
             // Makes the goals flexible
             // Needs current state for more complicated checks
-            goalHandler(truthValue, exercisePart, changeExercisePart, formalSentence);
+            if (! finished)
+                goalHandler(truthValue, exercisePart, changeExercisePart, formalSentence, finishExerciseCallback);
         }
         catch(e){
             changeTruthValue("Malformed Input");
@@ -78,7 +88,7 @@ export default function SentenceCreator({operations, goalText = defaultGoalText,
             <div style= {{color: "green"}}>p is always true</div>
             <div style= {{color: "red"}}>q is always false</div>
             {/* Changable goaltext for reusability */}
-            {goalText(exercisePart)}
+            {finished? "Exercise finished!" : goalText(exercisePart)}
             <div>
                 <button type="button" className="btn btn-outline-dark" onClick={buttonWordFunctionGenerator("p")}>p</button>
                 <button type="button" className="btn btn-outline-dark" onClick={buttonWordFunctionGenerator("q")}>q</button>
