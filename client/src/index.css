@@ -58,3 +58,7 @@
 .login > *, .register > * {
     margin-right: 0.5em;
 }
+
+.dashboard-logged-in > div {
+    margin-bottom: 1em;
+}

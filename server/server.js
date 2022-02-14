@@ -283,6 +283,22 @@ app.post('/updateEnv', [authJwt.verifyToken, authJwt.isStudent], (req, res) => {
     })
 })
 
+app.post("/updateUserName", [verifySignUp.checkDuplicateUserNameOnUserNameChange, authJwt.verifyToken], (req, res) => {
+    userController.User.findOne({userName: req.body.oldUserName}).exec((err, user) => {
+        if(err){
+            res.status(500).send({message:err});
+            return;
+        }
+        userController.User.findByIdAndUpdate(user.id, {userName: req.body.newUserName}, (err, data) => {
+            if(err){
+                res.status(500).send({message:err});
+                return;
+            }
+            console.log(data);
+        })
+    })
+})
+
 // set port, listen for requests
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {

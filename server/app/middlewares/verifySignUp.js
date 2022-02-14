@@ -1,8 +1,8 @@
 const User = require('../models/User');
 const bcrypt = require("bcryptjs");
 
-let checkDuplicateUsername = (req, res, next) => {
-    User.findOne({userName: req.body.userName}).exec((err, user) => {
+let checkDuplicateUsernameFactory = (usernameFieldToCheck) => ((req, res, next) => {
+    User.findOne({userName: req.body[usernameFieldToCheck]}).exec((err, user) => {
         if (err){
             res.status(500).send({message: err});
             return;
@@ -13,7 +13,10 @@ let checkDuplicateUsername = (req, res, next) => {
         }
         next();
     });
-}
+})
+
+let checkDuplicateUsername = checkDuplicateUsernameFactory("userName");
+let checkDuplicateUserNameOnUserNameChange = checkDuplicateUsernameFactory("newUserName")
 
 let hashPassword = (req, res, next) => {
     req.body.password = bcrypt.hashSync(req.body.password, 10);
@@ -22,6 +25,7 @@ let hashPassword = (req, res, next) => {
 
 const verifySignUp = {
     checkDuplicateUsername,
+    checkDuplicateUserNameOnUserNameChange,
     hashPassword
 };
 
