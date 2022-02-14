@@ -86,7 +86,7 @@ app.post("/createStudent", [verifySignUp.checkDuplicateUsername, verifySignUp.ha
     });
 });
 
-app.post("/signIn", (req, res) => {
+app.post("/logIn", (req, res) => {
     userController.User.findOne({userName: req.body.userName}).exec((err, user) =>{
         if(err){
             res.status(500).send({message:err});
@@ -112,11 +112,33 @@ app.post("/signIn", (req, res) => {
         req.session.token = token;
         // Also set a non HTTP cookie to see if user is logged in on front-end
         res.cookie('loggedIn', true);
-        res.status(200).send({
-            id: user._id,
-            userName: user.userName,
-            priviledge: user.priviledge,
-    })
+
+        if (user.priviledge === 1){
+            controllers.studentController.getStudentByUserId(user._id,
+                (err, student) => {
+                    if(err){
+                        res.status(500).send({message:err});
+                        return;
+                    }
+                    else{
+                        console.log(student.env)
+                        res.status(200).send({
+                            id: user._id,
+                            userName: user.userName,
+                            priviledge: user.priviledge,
+                            env: student.env
+                        })
+                    }
+            }
+            );   
+        }
+        else{
+            res.status(200).send({
+                id: user._id,
+                userName: user.userName,
+                priviledge: user.priviledge,
+            })
+        }
     })
 })
 
@@ -235,10 +257,32 @@ app.get("/testAll", userController.allAccess);
 app.get("/testStudent", [authJwt.verifyToken, authJwt.isStudent], userController.studentBoard);
 app.get("/testProfessor", [authJwt.verifyToken, authJwt.isProfessor], userController.professorBoard);
 app.get("/testAdmin", [authJwt.verifyToken, authJwt.isAdmin], userController.adminBoard);
-app.get("/signOut", [authJwt.verifyToken], (req, res) =>{
+app.get("/logOut", [authJwt.verifyToken], (req, res) =>{
     res.clearCookie('session');
     res.clearCookie('loggedIn');
     res.send('Logged out');
+})
+
+app.post('/updateEnv', [authJwt.verifyToken, authJwt.isStudent], (req, res) => {
+    // console.log(req.body);
+    userController.User.findOne({userName: req.body.userName}).exec((err, user) =>{
+        if(err){
+            res.status(500).send({message:err});
+            return;
+        }
+        if(!user){
+            return res.status(404).send({message: "User Not Found."});
+        }
+
+        // console.log(user); 
+        
+        controllers.studentController.findStudentByUserIdAndUpdateEnv(user.id, req.body.env, (err, data) =>{
+            if(err){
+                res.status(500).send({message:err});
+                return;
+            }
+        })
+    })
 })
 
 // set port, listen for requests

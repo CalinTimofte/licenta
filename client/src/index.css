@@ -1,4 +1,4 @@
-#root, .chapters,.content, .subchapters{
+#root, .chapters, .content, .subchapters, .dashboard{
     display: flex;
     align-items: center;
     justify-content: center;
@@ -13,7 +13,7 @@
 
 .subchapters{
     position: fixed;
-    z-index: 1;
+    z-index: 101;
     top: 0vh;
     left: 0;
     flex-direction: row;
@@ -21,9 +21,10 @@
 
 .dashboard{
     position: fixed;
-    z-index: 1;
+    z-index: 101;
     top: 0vh;
     right: 0;
+    flex-direction: row;
 }
 
 .content{
@@ -52,10 +53,6 @@
 .modal-content {
     margin: 2px auto;
     z-index: 1100 !important;
-}
-
-.testing > input, label, button {
-    margin-right: 1em;
 }
 
 .login > *, .register > * {

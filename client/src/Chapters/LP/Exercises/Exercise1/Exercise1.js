@@ -1,17 +1,12 @@
 import React from "react";
 import SelectableText from "./SelectableText";
+import GenericExercise from "../../../../Reusables/GenericExercise";
 
 export default function Exercise1(){
-
     return(
-        <div className="exercise">
-            <div className="card">
-                <div className="card-body bg-light">
-                    <SelectableText inputWords = "I play at home and I study at school"
-                        
-                    />
-                </div>
-            </div>
-        </div>
+        <GenericExercise envProp={"exercise1"}>
+            <SelectableText inputWords = "I play at home and I study at school"
+            />
+        </GenericExercise>
     )
 }

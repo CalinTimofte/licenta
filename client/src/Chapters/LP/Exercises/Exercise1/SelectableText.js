@@ -26,7 +26,7 @@ function DefaultheckifFinished(words){
 let defaultButtons = [{part: "prop", name: "Atomic Prop"}, {part: "conjunction", name: "Conjunction"}]
 
 
-function SelectableText({inputWords, checkifFinished = DefaultheckifFinished, buttons = defaultButtons}){
+function SelectableText({inputWords, checkifFinished = DefaultheckifFinished, buttons = defaultButtons, isEnvPropSet, setEnvProp, isLoggedIn}){
     let [heighlightedText, changeHeighlightedText] = useState("");
     let [words, modifyWordsArr] = useState(inputWords.split(" ").map(word => ({word: word, heighlighted: false, partOfSomething: false, partOf: null, hovering: false})))
     // Initiate partsCounter with the parts from the buttons prop
@@ -38,7 +38,7 @@ function SelectableText({inputWords, checkifFinished = DefaultheckifFinished, bu
         }
     )());
     let [hoveringButton, changeHoveringButtonState] = useState(false);
-    let [finished, changeFinished] = useState("unchecked")
+    let [finished, changeFinished] = useState(isLoggedIn()? (isEnvPropSet()? "finished" : "unchecked"): "unchecked")
 
     let incPart = (name) => (changePartsCounter(partsCounter => ({...partsCounter, [name]: partsCounter[name] + 1})))
 
@@ -146,8 +146,10 @@ function SelectableText({inputWords, checkifFinished = DefaultheckifFinished, bu
     )
 
     let checkAction = () => {
-        if (checkifFinished(words))
+        if (checkifFinished(words)){
             changeFinished("finished");
+            if (isLoggedIn()) setEnvProp()
+        }
         else
             changeFinished("unfinished");
     }
