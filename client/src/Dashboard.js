@@ -4,7 +4,7 @@ import ArrowButton from "./Reusables/ArrowButton";
 import {LocalStorageContext} from "./LocalStorageContext.js"
 
 export default function Dashboard(){
-    let [registrationFields, changeRegistrationFields] = useState({username: "", password: ""});
+    let [registrationFields, changeRegistrationFields] = useState({username: "", password: "", checkPassword: "", classRoom: ""});
     let [loginFields, changeLoginFields] = useState({username: "", password: ""});
     let [loggedIn, changeLoggedIn] = useState(document.cookie.indexOf("loggedIn") !== -1);
     const {getUserData, setUserData} = useContext(LocalStorageContext);
@@ -12,10 +12,44 @@ export default function Dashboard(){
     let [loggedInPageNum, changeLoggedInPageNum] = useState(1);
     let [loggedOutPageNum, changeLoggedOutPageNum] = useState(1);
     let [changeUsernameField, changeChangeUsernameField] = useState("");
+    let [classRooms, changeClassRooms] = useState([]);
+
+    let initialErrorState = {
+        username: {
+            tooShort:{
+                active: false,
+                text: "Please enter at least 5 characters!"
+            },
+            tooLong: {
+                active: false,
+                text: "Please enter less than 40 characters!"
+            }
+        },
+        password: {
+            tooShort:{
+                active: false,
+                text: "Please enter at least 8 characters!"
+            },
+            tooLong: {
+                active: false,
+                text: "Please enter less than 40 characters!"
+            }
+        },
+        checkPassword: {
+            mismatched: {
+                active: false,
+                text: "Passwords entered don't match!"
+            }}
+    }
+
+    let [registerFormErrors, changeRegisterFormErrors] = useState(initialErrorState)
 
     let overwriteFieldFactory = (field, stateHandler) => ((event) => {stateHandler(oldState => ({...oldState, [field]: event.target.value}))})
     let overwriteRegisterUser = overwriteFieldFactory("username", changeRegistrationFields);
     let overwriteRegisterPass = overwriteFieldFactory("password", changeRegistrationFields);
+    let overwriteRegisterCheckPassword = overwriteFieldFactory("checkPassword", changeRegistrationFields);
+    let overwriteRegisterClassRoom = overwriteFieldFactory("classRoom", changeRegistrationFields);
+    let setInitialRegisterClassRoom = (value) => {changeRegistrationFields(oldState => ({...oldState, classRoom: value}))}
     let overwriteLoginUser = overwriteFieldFactory("username", changeLoginFields);
     let overwriteLoginPass = overwriteFieldFactory("password", changeLoginFields);
     let reverseMenu = () => {reverseArrow(() => (!open))}
@@ -32,6 +66,38 @@ export default function Dashboard(){
             changeLoggedIn(false);
     }
 
+    let setErrors = () => {
+        if (registrationFields.username.length < 5)
+            changeRegisterFormErrors(registerFormErrors => ({...registerFormErrors, username: {...registerFormErrors.username, tooShort: {...registerFormErrors.username.tooShort, active: true}}}))
+        if (registrationFields.username.length > 40)
+            changeRegisterFormErrors(registerFormErrors => ({...registerFormErrors, username: {...registerFormErrors.username, tooLong: {...registerFormErrors.username.tooLong, active: true}}}))
+        if (registrationFields.password.length < 8)
+            changeRegisterFormErrors(registerFormErrors => ({...registerFormErrors, password: {...registerFormErrors.password, tooShort: {...registerFormErrors.password.tooShort, active: true}}}))
+        if (registrationFields.password.length > 40)
+            changeRegisterFormErrors(registerFormErrors => ({...registerFormErrors, password: {...registerFormErrors.password, tooLong: {...registerFormErrors.password.tooLong, active: true}}}))
+        if (registrationFields.password !== registrationFields.checkPassword)
+            changeRegisterFormErrors(registerFormErrors => ({...registerFormErrors, checkPassword: {...registerFormErrors.checkPassword, mismatched: {...registerFormErrors.checkPassword.mismatched, active: true}}}))
+    }
+
+    let resetErrors = () => {
+        changeRegisterFormErrors(initialErrorState)
+    }
+
+    let  checkForActiveErrors = () => {
+        let err = false;
+        if (registerFormErrors.username.tooShort.active)
+            err = true;
+        if (registerFormErrors.username.tooLong.active)
+            err = true;
+        if (registerFormErrors.password.tooShort.active)
+            err = true;
+        if (registerFormErrors.password.tooShort.active)
+            err = true;
+        if (registerFormErrors.checkPassword.mismatched.active)
+            err = true;
+        return err;
+    }
+
     let axiosHttp = axios.create({
         baseURL: "http://localhost:3001",
         headers:{
@@ -40,15 +106,24 @@ export default function Dashboard(){
     })
 
     let register = () => {
+        // error check
+        resetErrors();
+        setErrors();
+        if(checkForActiveErrors()) return;
+
         axiosHttp.post("/createStudent", {
             userName: registrationFields.username,
-            password: registrationFields.password
+            password: registrationFields.password,
+            checkPassword: registrationFields.checkPassword,
+            classRoom: registrationFields.classRoom,
         })
         .then((() => {
-            changeLoggedInPageNum(1);
-            window.location.reload();
+            changeLoggedOutPageNum(1);
         })())
-        .catch((error) => {console.log(error); window.alert(error.response.data.message);});
+        .catch((error) => {
+            let message = typeof error.response !== "undefined" ? error.response.data.message : error.message;
+            console.log(error); window.alert(message);
+        });
     } 
 
     let logIn = () => {
@@ -92,6 +167,15 @@ export default function Dashboard(){
             let message = typeof error.response !== "undefined" ? error.response.data.message : error.message;
             console.log(error); window.alert(message);
         })
+    }
+
+    let getAllClassRoomNames = () => {
+        axiosHttp.get("/getAllClassroomNames")
+        .then((response) => {changeClassRooms(response.data.classRoomNames); setInitialRegisterClassRoom(response.data.classRoomNames[0]);})
+        .catch((error) => {
+            let message = typeof error.response !== "undefined" ? error.response.data.message : error.message;
+            console.log(error); window.alert(message);
+        });
     }
 
     return(
@@ -142,19 +226,50 @@ export default function Dashboard(){
                             <div className="login">
                                 <p>Log in:</p>
                                 <input type="text" placeholder = "username" onChange={overwriteLoginUser}></input>
-                                <input type="text" placeholder = "password" onChange={overwriteLoginPass}></input>
+                                <input type="password" placeholder = "password" onChange={overwriteLoginPass}></input>
                                 <button className="btn btn-outline-light" onClick={logIn}>Log In</button>
                             </div>
-                            <button className="btn btn-outline-light" onClick={() => {changeLoggedOutPageNum(2)}}>Register</button>
+                            <button className="btn btn-outline-light" onClick={() => {getAllClassRoomNames(); changeLoggedOutPageNum(2);}}>Register</button>
                         </div>
                         :
                         <div>
                             <p>Dashboard</p>
                             <div className="register">
                                 <p>Register:</p>
-                                <input type="text" placeholder = "username" onChange={overwriteRegisterUser}></input>
-                                <input type="text" placeholder = "password" onChange={overwriteRegisterPass}></input>
+                                <input type="text" placeholder = "username" onChange={overwriteRegisterUser} 
+                                style = {registerFormErrors.username.tooShort.active || registerFormErrors.username.tooLong.active? {borderColor: "red"} : {}}></input>
+                                {registerFormErrors.username.tooShort.active?
+                                    <p style = {{color: "red"}}>{registerFormErrors.username.tooShort.text}</p>:
+                                registerFormErrors.username.tooLong.active? 
+                                    <p style = {{color: "red"}}>{registerFormErrors.username.tooLong.text}</p>:
+                                    ""
+                                }
+                                <br/>
+                                <input type="password" placeholder = "password" onChange={overwriteRegisterPass}
+                                style = {registerFormErrors.password.tooShort.active || registerFormErrors.password.tooLong.active? {borderColor: "red"} : {}}></input>
+                                {registerFormErrors.password.tooShort.active?
+                                    <p style = {{color: "red"}}>{registerFormErrors.password.tooShort.text}</p>:
+                                registerFormErrors.password.tooLong.active? 
+                                    <p style = {{color: "red"}}>{registerFormErrors.password.tooLong.text}</p>:
+                                    ""
+                                }
+                                <br/>
+                                <input type="password" placeholder = "password check" onChange={overwriteRegisterCheckPassword}
+                                style = {registerFormErrors.checkPassword.mismatched.active? {borderColor: "red"} : {}}></input>
+                                {registerFormErrors.checkPassword.mismatched.active?
+                                    <p style = {{color: "red"}}>{registerFormErrors.checkPassword.mismatched.text}</p>:
+                                    ""
+                                }
+                                <br/>
+                                <div>
+                                    <label for = "classRooms">Choose a classRoom:</label>
+                                    <select class="form-select" id="classRooms" name="classRooms"
+                                        onChange={overwriteRegisterClassRoom}>
+                                        {classRooms.map((classRoomName, index) => (<option value={classRoomName} key={index}>{classRoomName}</option>))}
+                                    </select> 
+                                </div>
                                 <button className="btn btn-outline-light" onClick={register}>Submit</button>
+                                <br/>
                                 <button className="btn btn-outline-light" onClick={() => {changeLoggedOutPageNum(1)}}>Go back</button>
                             </div>
                         </div>

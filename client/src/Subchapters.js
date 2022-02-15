@@ -24,7 +24,7 @@ export default function SubChapters({subchapterAndSectionNames, subchapterHandle
                         <a class= {activeSubChapterState(subchapter.subchapterName)} data-bs-toggle="collapse" href={"#collapse-" + subchapterAndSectionNames.indexOf(subchapter)}> 
                             {subchapter.subchapterName} 
                         </a>
-                        <div id={"collapse-" + subchapterAndSectionNames.indexOf(subchapter)} class="collapse" data-bs-parent="#accordion">
+                        <div id={"collapse-" + subchapterAndSectionNames.indexOf(subchapter)} className="collapse" data-bs-parent="#accordion">
                             <ul className = "subchapter-section nav nav-pills flex-column">
                                     {subchapter.sectionNames.map(sectionName => (
                                             <li className = "nav-item" id = {subchapter.sectionNames.indexOf(sectionName)}>

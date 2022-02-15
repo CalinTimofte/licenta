@@ -68,7 +68,7 @@ app.get("/", (req, res) => {
     res.sendFile(__dirname + "/app/views/index.html");
 });
 
-app.post("/createStudent", [verifySignUp.checkDuplicateUsername, verifySignUp.hashPassword],
+app.post("/createStudent", [verifySignUp.checkDuplicateUsername, verifySignUp.checkPasswordLength ,verifySignUp.hashPassword],
     (req, res) => {
     controllers.userController.createAndSaveUser(req.body.userName, req.body.password, 1, (err, data) => {
         if (err) {
@@ -80,8 +80,13 @@ app.post("/createStudent", [verifySignUp.checkDuplicateUsername, verifySignUp.ha
                 res.status(500).send({ message: err });
                 return;
               }
-            console.log(data)
-            res.json("You created a special John Doe.");
+            controllers.classRoomController.addStudentToClassRoomByName(req.body.classRoom, data.id, (err, data)=> {
+                if (err) {
+                res.status(500).send({ message: err });
+                return;
+                }
+                console.log(data);
+            })
         });
     });
 });
@@ -148,7 +153,6 @@ app.post("/createProfessor", [verifySignUp.checkDuplicateUsername, verifySignUp.
           }
         console.log(data);
     });
-    res.json("You created a special John Doe.");
 });
 
 app.post("/createAdmin", [verifySignUp.checkDuplicateUsername, verifySignUp.hashPassword], (req, res) => {
@@ -159,8 +163,17 @@ app.post("/createAdmin", [verifySignUp.checkDuplicateUsername, verifySignUp.hash
           }
         console.log(data);
     });
-    res.json("You created a special John Doe.");
 });
+
+app.post("/createClassRoom", [authJwt.verifyToken, authJwt.isAdmin], (req, res) => {
+    controllers.classRoomController.createAndSaveClassRoom(req.body.classRoomName, (err, data) => {
+        if (err) {
+            res.status(500).send({ message: err });
+            return;
+          }
+        console.log(data);
+    })
+})
 
 app.get("/deleteAllUsers", (req, res) => {
     controllers.userController.deleteAllUsers((err, data) => {
@@ -168,42 +181,36 @@ app.get("/deleteAllUsers", (req, res) => {
             console.log(data);
         })
     });
-    res.json("You killed all John Does :(");
 });
 
 app.get("/deleteAllStudents", (req, res) => {
     controllers.studentController.deleteAllStudents((err, data) => {
         console.log(data);
     });
-    res.json("You killed all Students :(");
 });
 
 app.post("/findUser", (req, res) => {
     controllers.userController.findUserByUserName(req.body.userName, (err, data) => {
         console.log(data);
     });
-    res.json("You created a special John Doe.");
 });
 
 app.post("/findUserSecurely", (req, res) => {
     controllers.userController.findUserByUserNameAndPassword(req.body.userName, req.body.password, (err, data) => {
         console.log(data);
     });
-    res.json("You created a special John Doe.");
 });
 
 app.post("/findAndUpdateUser", (req, res) => {
     controllers.userController.findUserByUserNameAndUpdate(req.body.oldUserName, req.body.newUserName, req.body.newPassword, (err, data) => {
         console.log(data);
     });
-    res.json("You modified Bon Joe");
 });
 
 app.post("/findAndUpdateUserSecurely", (req, res) => {
     controllers.userController.findUserByUserNameAndPasswordAndUpdate(req.body.oldUserName, req.body.newUserName, req.body.oldPassword, req.body.newPassword, (err, data) => {
         console.log(data);
     });
-    res.json("You modified Bon Jovi");
 });
 
 app.get("/getAllUsers", (req, res) => {
@@ -297,6 +304,19 @@ app.post("/updateUserName", [verifySignUp.checkDuplicateUserNameOnUserNameChange
             console.log(data);
         })
     })
+})
+
+app.get("/getAllClassroomNames", (req, res) => {
+    controllers.classRoomController.retrieveAllClassRoomNames((err, classRooms) => {
+        if(err){
+            res.status(500).send({message:err});
+            return;
+        }
+        
+        res.status(200).send({
+            classRoomNames: classRooms,
+        })
+    });
 })
 
 // set port, listen for requests

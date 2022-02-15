@@ -15,6 +15,19 @@ let checkDuplicateUsernameFactory = (usernameFieldToCheck) => ((req, res, next) 
     });
 })
 
+let checkPasswordLength = (req, res, next) => {
+    if (req.body.password < 8){
+        res.status(500).send({message: "Password too short!"});
+            return;
+    }
+
+    if (req.body.password > 40){
+        res.status(500).send({message: "Password too long!"});
+            return;
+    }
+    next()
+};
+
 let checkDuplicateUsername = checkDuplicateUsernameFactory("userName");
 let checkDuplicateUserNameOnUserNameChange = checkDuplicateUsernameFactory("newUserName")
 
@@ -26,7 +39,8 @@ let hashPassword = (req, res, next) => {
 const verifySignUp = {
     checkDuplicateUsername,
     checkDuplicateUserNameOnUserNameChange,
-    hashPassword
+    hashPassword,
+    checkPasswordLength
 };
 
 module.exports = verifySignUp

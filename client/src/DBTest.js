@@ -13,6 +13,7 @@ export default function DBTest(){
     let [updates, changeUpdates] = useState(0);
     let [johnsList, changeJohnsList] = useState([]);
     let [studentsList, changeStudentsList] = useState([]);
+    let [classRoomName, changeClassRoomName] = useState('');
 
     let [testImage, changeTestImage] = useState();
     let [userData, changeUserData] = useState();
@@ -24,6 +25,7 @@ export default function DBTest(){
     let handlePasswordChange = inputChangeHandlerFactory(changePassword);
     let handleOldPasswordChange = inputChangeHandlerFactory(changeOldPassword);
     let handleNewPasswordChange = inputChangeHandlerFactory(changeNewPassword);
+    let handleClassRoomNameChange = inputChangeHandlerFactory(changeClassRoomName);
 
     let incrementUpdates = () => {changeUpdates(updates => updates+1)};
     let overWriteJohnsList = (newList) => {changeJohnsList(newList)};
@@ -132,6 +134,13 @@ export default function DBTest(){
     let getProfessorContent = getContentFactory("/testProfessor");
     let getAdminContent = getContentFactory("/testAdmin");
 
+    let createClassRoom = () => {
+        axiosHttp.post("createClassRoom", {
+            classRoomName: classRoomName
+        })
+        .catch((error) => {console.log(error); window.alert(error.response.data.message);});
+    }
+
     return(
         <div className="testing">
             <div>
@@ -222,6 +231,10 @@ export default function DBTest(){
             <button className="btn btn-outline-dark" onClick={getTestImage}>Get test image from DB</button>
             <button className="btn btn-outline-dark" onClick={deleteAllFiles}>Delete all files</button>
             <img src = {!testImage? "#" : `data:image/jpeg;base64, ${testImage}`}></img>
+
+
+            <input type="text" placeholder = "New Classroom Name" onChange = {handleClassRoomNameChange}></input>
+            <button className="btn btn-outline-dark" onClick={createClassRoom}>Create Class Room</button>
         </div>
     )
 }
