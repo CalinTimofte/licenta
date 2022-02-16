@@ -15,6 +15,10 @@ const bcrypt = require("bcryptjs");
 const userController = require("./app/controllers/UserController");
 const cookieSession = require("cookie-session");
 const cookieParser = require("cookie-parser");
+let mmm = require('mmmagic'),
+      Magic = mmm.Magic;
+
+let magic = new Magic(mmm.MAGIC_MIME_TYPE);
 
 
 let storage = multer.diskStorage({
@@ -235,20 +239,79 @@ app.post("/getOneUser", (req, res) => {
 });
 
 //route for file submission
-app.post('/fileUpload', upload.single('solution'), (req, res) => {
-    controllers.fileController.createAndSaveFile(req.body.exerciseNumber, req.body.studentID, fs.readFileSync(path.join(__dirname + '/uploads/' + req.file.filename)), (err, data) => {
-        res.redirect('localhost:3000');
-        deleteLocalUploads();
-        console.log("File upload successful!");
+app.post('/fileUpload', [authJwt.verifyToken, authJwt.isStudent], upload.single('solution'), (req, res) => {
+    
+    controllers.userController.User.findById(req.userID, (err, data) =>{
+        if(err){
+            res.status(500).send({message:err});
+            return;
+        }
+        controllers.studentController.Student.findOne({userID: data.id}, (err, student) =>{
+            if(err){
+                res.status(500).send({message:err});
+                return;
+            }
+            magic.detectFile(__dirname + '/uploads/' + req.file.filename, (err, result) => {
+                if (err) throw err;
+                if(result !== "image/jpeg" && result !== "image/png"){
+                    res.status(500).send({message:"Unaccepted file type"});
+                    return;
+                }
+                controllers.fileController.File.find({exerciseNumber: req.body.exerciseNumber, studentID: student.id}, (err, result) => {
+                    if(result.length === 0){
+                        controllers.fileController.createAndSaveFile(req.body.exerciseNumber, student.id, fs.readFileSync(path.join(__dirname + '/uploads/' + req.file.filename)), (err, data) => {
+                            if(err){
+                                res.status(500).send({message:err});
+                                return;
+                            }
+                            res.redirect('localhost:3001');
+                            deleteLocalUploads();
+                            console.log("File upload successful!");
+                        })
+                    }
+                    else{
+                        controllers.fileController.File.findByIdAndUpdate(result[0].id, {data: fs.readFileSync(path.join(__dirname + '/uploads/' + req.file.filename))}, (err, data) =>{
+                            if(err){
+                                res.status(500).send({message:err});
+                                return;
+                            }
+                            res.redirect('localhost:3001');
+                            deleteLocalUploads();
+                            console.log("File upload successful!");
+                        })
+                    }
+                })
+            })
+        })
     })
 })
 
-app.get('/getTestFile', (req, res) => {
-    controllers.fileController.findFileById("6204a19a9f136903f74da803", (err, data) => {
-        res.json(data);
-        console.log("File fetched!");
+app.post('/getFile', [authJwt.verifyToken, authJwt.isStudent], (req, res) => {
+    controllers.userController.User.findById(req.userID, (err, data) =>{
+        if(err){
+            res.status(500).send({message:err});
+            return;
+        }
+        controllers.studentController.Student.findOne({userID: data.id}, (err, student) =>{
+            if(err){
+                res.status(500).send({message:err});
+                return;
+            }
+
+            controllers.fileController.File.find({exerciseNumber: req.body.exerciseNumber, studentID: student.id}, (err, result) => {
+                    if(result.length === 0){
+                        res.status(500).send({message:"No file was uploaded yet!"});
+                    }
+                    else{
+                        res.status(200).send({
+                            fileData: result[0].data,
+                        })
+                        console.log("File fetched!");
+                    }
+                })
+            })
+        })
     })
-})
 
 app.get('/deleteAllFiles', (req, res) => {
     controllers.fileController.deleteAllFiles( (err, data) => {

@@ -23,6 +23,7 @@ const deleteAllFiles = (done) => {
 };
 
 const fileController = {
+    File,
     createAndSaveFile: createAndSaveFile,
     findFileById: findFileById,
     deleteAllFiles: deleteAllFiles

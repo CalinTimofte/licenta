@@ -1,5 +1,5 @@
 import React from "react";
-// import FileUploadAndView from "./FileUploadAndView";
+import FileUploadAndView from "./FileUploadAndView";
 
 export default function Exercise15(){
 
@@ -7,7 +7,7 @@ export default function Exercise15(){
         <div className="exercise">
             <div className="card">
                 <div className="card-body bg-light">
-                    {/* <FileUploadAndView/> */}
+                    <FileUploadAndView exerciseNumber={15}/>
                 </div>
             </div>
         </div>
