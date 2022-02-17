@@ -3,7 +3,7 @@ import axios from "axios";
 import ArrowButton from "./Reusables/ArrowButton";
 import {LocalStorageContext} from "./LocalStorageContext.js"
 
-export default function Dashboard(){
+export default function Dashboard({changePage}){
     let [registrationFields, changeRegistrationFields] = useState({username: "", password: "", checkPassword: "", classRoom: ""});
     let [loginFields, changeLoginFields] = useState({username: "", password: ""});
     let [loggedIn, changeLoggedIn] = useState(document.cookie.indexOf("loggedIn") !== -1);
@@ -13,6 +13,7 @@ export default function Dashboard(){
     let [loggedOutPageNum, changeLoggedOutPageNum] = useState(1);
     let [changeUsernameField, changeChangeUsernameField] = useState("");
     let [classRooms, changeClassRooms] = useState([]);
+    let priviledge = loggedIn? getUserData().priviledge : 1;
 
     let initialErrorState = {
         username: {
@@ -55,9 +56,15 @@ export default function Dashboard(){
     let reverseMenu = () => {reverseArrow(() => (!open))}
 
     let retrieveUserDataPropOrEmptyString = (prop) => (getUserData()? getUserData()[prop]: "")
-    let exercisesSolved = () => (getUserData().env.length);
+    let exercisesSolved = () => (priviledge !== 1? "" : getUserData().env.length);
     let clearEnv = () => {setUserData({...getUserData(), env: []}); window.location.reload();}
     let changeLocalUserName = (newUserName) => {setUserData({...getUserData(), userName: newUserName})}
+    let setUserDataByPriviledge = (userData) => {
+        if (priviledge === 1)
+            setUserData(userData);
+        else
+            setUserData({...userData, env: []})
+    }
 
     let checkAndModifyLoggedInStatus = () => {
         if(document.cookie.indexOf("loggedIn") !== -1)
@@ -132,26 +139,39 @@ export default function Dashboard(){
             password: loginFields.password
         })
         .then((response) => {
-            setUserData(response.data);
+            priviledge = response.data.priviledge;
+            setUserDataByPriviledge(response.data);
             checkAndModifyLoggedInStatus();
             window.location.reload();
         })
-        .catch((error) => {console.log(error); window.alert(error.response.data.message);});
+        .catch((error) => {
+            let message = typeof error.response !== "undefined" ? error.response.data.message : error.message;
+            console.log(error); window.alert(message);
+        });
     } 
 
     let logOut = () => {
-        axiosHttp.post("/updateEnv", {
-            userName: getUserData().userName,
-            env: getUserData().env
-        })
-        .then(
-        axiosHttp.get("/logOut")
-        .then(() => {
-            setUserData({}); 
-            checkAndModifyLoggedInStatus();
-            window.location.reload();
-        }))
-        .catch((error) => {console.log(error.response || error); window.alert(error.response.data.message || error);});
+        if (priviledge === 1){
+            axiosHttp.post("/updateEnv", {
+                userName: getUserData().userName,
+                env: getUserData().env
+            })
+            .then(
+            axiosHttp.get("/logOut")
+            .then(() => {
+                setUserData({}); 
+                checkAndModifyLoggedInStatus();
+                window.location.reload();
+            }))
+            .catch((error) => {console.log(error.response || error); window.alert(error.response.data.message || error);});}
+        else
+            {axiosHttp.get("/logOut")
+            .then(() => {
+                setUserData({}); 
+                checkAndModifyLoggedInStatus();
+                window.location.reload();
+            })
+            .catch((error) => {console.log(error.response || error); window.alert(error.response.data.message || error);});}
     }
 
     let changeUsername = () => {
@@ -189,7 +209,7 @@ export default function Dashboard(){
                             <div className="dashboard-logged-in">
                                 <p>Dashboard</p>
                                 <p>UserName: {retrieveUserDataPropOrEmptyString("userName")}</p>
-                                <p>Exercises Solved: {exercisesSolved()} out of 18</p>
+                                {priviledge === 1? <p>Exercises Solved: {exercisesSolved()} out of 18</p> : ""}
                                 <div className="change-uname">
                                         <button className="btn btn-outline-light" onClick={() => {changeLoggedInPageNum(2)}}>Change user name</button>
                                 </div>
@@ -202,6 +222,14 @@ export default function Dashboard(){
                                 <div className="logout">
                                         <button className="btn btn-outline-light" onClick={logOut}>Log Out</button>
                                 </div>
+                                {
+                                    priviledge === 2? 
+                                        <button className="btn btn-outline-light" onClick={() => {changePage(2)}}>Professor dashboard</button>
+                                    :
+                                    priviledge === 3?
+                                        <button className="btn btn-outline-light" onClick={() => {changePage(3)}}>Admin dashboard</button>
+                                    : ""
+                                }
                             </div>
                         :
                         loggedInPageNum === 2?
@@ -230,6 +258,7 @@ export default function Dashboard(){
                                 <button className="btn btn-outline-light" onClick={logIn}>Log In</button>
                             </div>
                             <button className="btn btn-outline-light" onClick={() => {getAllClassRoomNames(); changeLoggedOutPageNum(2);}}>Register</button>
+                            <button className="btn btn-outline-light" onClick={() => {changePage(4)}}>Super admin dash</button>
                         </div>
                         :
                         <div>

@@ -1,12 +1,11 @@
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App'
-import DBTest from './DBTest';
+import Router from './Router';
 import {LocalStorageStore} from "./LocalStorageContext.js"
 
 ReactDOM.render(
   <LocalStorageStore>
-    <App/>
+    <Router/>
   </LocalStorageStore>,
   document.getElementById('root')
 );
