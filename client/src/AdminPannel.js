@@ -73,17 +73,6 @@ export default function AdminPannel({changePage}){
         })
     }
 
-    let getUserName = (userID) => {
-        axiosHttp.post("/getUserName", {
-            userID: userID
-        })
-        .then((response)  => {return response.data.userName})
-        .catch((error) => {
-            let message = typeof error.response !== "undefined" ? error.response.data.message : error.message;
-            console.log(error); window.alert(message);
-        })
-    }
-
     let getStoredUserName = (prof_ID) => {
         let name_in_arr = professorList.filter(professor => professor._id === prof_ID);
         if (name_in_arr.length === 0)
@@ -92,14 +81,14 @@ export default function AdminPannel({changePage}){
             return(name_in_arr[0].userName)
     }
 
-    let deleteClassRoom = (classRoomID) => {
-        axiosHttp.delete("/deleteClassRoom", {
-            classRoomID: classRoomID
+    let deleteClassRoom = (classRoomName) => {
+        axiosHttp.put("/deleteClassRoom", {
+            classRoomName: classRoomName
         })
-        .then(setTimeout(() => {
+        .then(() => {
             getClassRooms();
             resetSelectedField();
-        }, 200), (error) => {
+        }, (error) => {
             let message = typeof error.response !== "undefined" ? error.response.data.message : error.message;
             console.log(error); window.alert(message);
         })
@@ -143,7 +132,7 @@ export default function AdminPannel({changePage}){
 
                         <ReactangleDivider>
                             <p>Delete this class room</p>
-                            <p><button className="btn btn-outline-danger" onClick={() => {deleteClassRoom(selectedField.data._id)}}>Delete</button></p>
+                            <p><button className="btn btn-outline-danger" onClick={() => {deleteClassRoom(selectedField.data.classRoomName)}}>Delete</button></p>
                         </ReactangleDivider>
 
                         <button className="btn btn-outline-dark" onClick={resetSelectedField}>Go back</button>

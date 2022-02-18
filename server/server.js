@@ -72,29 +72,7 @@ app.get("/", (req, res) => {
     res.sendFile(__dirname + "/app/views/index.html");
 });
 
-app.post("/createStudent", [verifySignUp.checkDuplicateUsername, verifySignUp.checkPasswordLength ,verifySignUp.hashPassword],
-    (req, res) => {
-    controllers.userController.createAndSaveUser(req.body.userName, req.body.password, 1, (err, data) => {
-        if (err) {
-            res.status(500).send({ message: err });
-            return;
-          }
-        controllers.studentController.createAndSaveStudent(data.id, (err, data) => {
-            if (err) {
-                res.status(500).send({ message: err });
-                return;
-              }
-            controllers.classRoomController.addStudentToClassRoomByName(req.body.classRoom, data.id, (err, data)=> {
-                if (err) {
-                res.status(500).send({ message: err });
-                return;
-                }
-                console.log(data);
-                res.status(200).send();
-            })
-        });
-    });
-});
+// General routes
 
 app.post("/logIn", (req, res) => {
     userController.User.findOne({userName: req.body.userName}).exec((err, user) =>{
@@ -135,7 +113,8 @@ app.post("/logIn", (req, res) => {
                         res.status(200).send({
                             userName: user.userName,
                             priviledge: user.priviledge,
-                            env: student.env
+                            env: student.env,
+                            classRoomName: student.classRoomName
                         })
                     }
             }
@@ -149,51 +128,6 @@ app.post("/logIn", (req, res) => {
         }
     })
 })
-
-app.post("/createProfessor", [verifySignUp.checkDuplicateUsername, verifySignUp.hashPassword], (req, res) => {
-    controllers.userController.createAndSaveUser(req.body.userName, req.body.password, 2, (err, data) => {
-        if (err) {
-            res.status(500).send({ message: err });
-            return;
-          }
-        console.log(data);
-    });
-});
-
-app.post("/createAdmin", [verifySignUp.checkDuplicateUsername, verifySignUp.hashPassword], (req, res) => {
-    controllers.userController.createAndSaveUser(req.body.userName, req.body.password, 3, (err, data) => {
-        if (err) {
-            res.status(500).send({ message: err });
-            return;
-          }
-        console.log(data);
-    });
-});
-
-app.post("/createClassRoom", [authJwt.verifyToken, authJwt.isAdmin], (req, res) => {
-    controllers.classRoomController.createAndSaveClassRoom(req.body.classRoomName, (err, data) => {
-        if (err) {
-            res.status(500).send({ message: err });
-            return;
-          }
-        res.status(200).send();
-        console.log(data);
-    })
-})
-
-app.get("/deleteAllUsers", (req, res) => {
-    controllers.userController.deleteAllUsers((err, data) => {
-        controllers.studentController.deleteAllStudents((err, data) => {
-            console.log(data);
-        })
-    });
-});
-
-app.get("/deleteAllStudents", (req, res) => {
-    controllers.studentController.deleteAllStudents((err, data) => {
-        console.log(data);
-    });
-});
 
 app.post("/findUser", (req, res) => {
     controllers.userController.findUserByUserName(req.body.userName, (err, data) => {
@@ -219,9 +153,72 @@ app.post("/findAndUpdateUserSecurely", (req, res) => {
     });
 });
 
+app.post("/getOneUser", (req, res) => {
+    controllers.userController.findUserById(req.body.id, (err, data) => {
+        res.json(data);
+    });
+});
+
+// Admin routes
+
+app.post("/createProfessor", [verifySignUp.checkDuplicateUsername, verifySignUp.hashPassword, authJwt.isAdmin], (req, res) => {
+    controllers.userController.createAndSaveUser(req.body.userName, req.body.password, 2, (err, data) => {
+        if (err) {
+            res.status(500).send({ message: err });
+            return;
+          }
+        console.log(data);
+    });
+});
+
+app.post("/createAdmin", [verifySignUp.checkDuplicateUsername, verifySignUp.hashPassword, authJwt.isAdmin], (req, res) => {
+    controllers.userController.createAndSaveUser(req.body.userName, req.body.password, 3, (err, data) => {
+        if (err) {
+            res.status(500).send({ message: err });
+            return;
+          }
+        console.log(data);
+    });
+});
+
+app.post("/createClassRoom", [authJwt.verifyToken, authJwt.isAdmin], (req, res) => {
+    controllers.classRoomController.createAndSaveClassRoom(req.body.classRoomName, (err, data) => {
+        if (err) {
+            res.status(500).send({ message: err });
+            return;
+          }
+        res.status(200).send();
+        console.log(data);
+    })
+})
+
+app.get("/deleteAllUsers", [authJwt.verifyToken, authJwt.isAdmin], (req, res) => {
+    controllers.userController.deleteAllUsers((err, data) => {
+        controllers.studentController.deleteAllStudents((err, data) => {
+            if (err) {
+                res.status(500).send({ message: err });
+                return;
+              }
+        })
+    });
+});
+
+app.get("/deleteAllStudents", [authJwt.verifyToken, authJwt.isAdmin], (req, res) => {
+    controllers.studentController.deleteAllStudents((err, data) => {
+        if (err) {
+            res.status(500).send({ message: err });
+            return;
+          }
+    });
+});
+
 app.get("/getAllUsers", [authJwt.verifyToken, authJwt.isAdmin], (req, res) => {
     controllers.userController.getAllUsers((err, data) => {
-        console.log(data);
+        if (err) {
+            res.status(500).send({ message: err });
+            return;
+          }
+          
         res.json(data);
     });
 });
@@ -243,25 +240,20 @@ app.put("/updateClassRoomProfessor", [authJwt.verifyToken, authJwt.isAdmin], (re
     })
 })
 
-app.delete("/deleteClassRoom", [authJwt.verifyToken, authJwt.isAdmin], (req, res) => {
-    controllers.classRoomController.ClassRoom.deleteOne({id : req.body.classRoomID}, (err, data) => {
+app.put("/deleteClassRoom", [authJwt.verifyToken, authJwt.isAdmin], (req, res) => {
+    console.log(req.body);
+    controllers.classRoomController.ClassRoom.deleteOne({classRoomName : req.body.classRoomName}, (err, data) => {
         if(err){
             res.status(500).send({message:err});
             return;
         }
-        
-        controllers.studentController.Student.find({classRoomID: req.body.classRoomID}, (err, students) => {
+
+        controllers.studentController.Student.updateMany({classRoomName: req.body.classRoomName}, {classRoomName: null}, (err, data) => {
             if(err){
                 res.status(500).send({message:err});
                 return;
             }
-
-            controllers.studentController.Student.updateMany({_id: {$in: students.map(student => student._id)}}, {classRoomID: null}, (err, data) => {
-                if(err){
-                    res.status(500).send({message:err});
-                    return;
-                }
-            })
+            res.status(200).send()
         })
     })
 })
@@ -279,9 +271,54 @@ app.get("/getAllClassRooms", [authJwt.verifyToken, authJwt.isAdmin], (req, res) 
     });
 });
 
-app.post("/getOneUser", (req, res) => {
-    controllers.userController.findUserById(req.body.id, (err, data) => {
-        res.json(data);
+app.get('/deleteAllFiles', [authJwt.verifyToken, authJwt.isAdmin], (req, res) => {
+    controllers.fileController.deleteAllFiles( (err, data) => {
+        console.log("Files deleted!");
+    })
+})
+
+app.post("/getUserName", [authJwt.verifyToken, authJwt.isAdmin], (req, res) => {
+    controllers.userController.findUserById(req.body.userID, (err, data) => {
+        if(err){
+            res.status(500).send({message:err});
+            return;
+        }
+
+        if(!data){
+            res.status(500).send({message:"No user found"});
+            return;
+        }
+        
+        res.status(200).send({
+            userName: data.userName
+        })
+    })
+})
+
+
+// Student routes
+
+app.post("/createStudent", [verifySignUp.checkDuplicateUsername, verifySignUp.checkPasswordLength ,verifySignUp.hashPassword],
+    (req, res) => {
+    controllers.userController.createAndSaveUser(req.body.userName, req.body.password, 1, (err, data) => {
+        if (err) {
+            res.status(500).send({ message: err });
+            return;
+          }
+        controllers.studentController.createAndSaveStudent(data.id, req.body.classRoom, (err, data) => {
+            if (err) {
+                res.status(500).send({ message: err });
+                return;
+              }
+            controllers.classRoomController.addStudentToClassRoomByName(req.body.classRoom, data.id, (err, data)=> {
+                if (err) {
+                res.status(500).send({ message: err });
+                return;
+                }
+                console.log(data);
+                res.status(200).send();
+            })
+        });
     });
 });
 
@@ -360,24 +397,6 @@ app.post('/getFile', [authJwt.verifyToken, authJwt.isStudent], (req, res) => {
         })
     })
 
-app.get('/deleteAllFiles', (req, res) => {
-    controllers.fileController.deleteAllFiles( (err, data) => {
-        console.log("Files deleted!");
-    })
-})
-
-//resource routes
-
-app.get("/testAll", userController.allAccess);
-app.get("/testStudent", [authJwt.verifyToken, authJwt.isStudent], userController.studentBoard);
-app.get("/testProfessor", [authJwt.verifyToken, authJwt.isProfessor], userController.professorBoard);
-app.get("/testAdmin", [authJwt.verifyToken, authJwt.isAdmin], userController.adminBoard);
-app.get("/logOut", [authJwt.verifyToken], (req, res) =>{
-    res.clearCookie('session');
-    res.clearCookie('loggedIn');
-    res.send('Logged out');
-})
-
 app.post('/updateEnv', [authJwt.verifyToken, authJwt.isStudent], (req, res) => {
     // console.log(req.body);
     userController.User.findOne({userName: req.body.userName}).exec((err, user) =>{
@@ -411,7 +430,32 @@ app.post("/updateUserName", [verifySignUp.checkDuplicateUserNameOnUserNameChange
                 res.status(500).send({message:err});
                 return;
             }
-            console.log(data);
+            res.status(200).send()
+        })
+    })
+})
+
+app.post("/updateClassRoom", [verifySignUp.checkDuplicateUserNameOnUserNameChange, authJwt.verifyToken], (req, res) => {
+    userController.User.findOne({userName: req.body.userName}).exec((err, user) => {
+        if(err){
+            res.status(500).send({message:err});
+            return;
+        }
+
+        controllers.studentController.Student.findOne({userID: user.id}, (err, student) => {
+            if(err){
+                res.status(500).send({message:err});
+                return;
+            }
+
+            controllers.studentController.Student.findByIdAndUpdate(student.id, {classRoomName: req.body.classRoomName}, (err, data) => {
+                if(err){
+                    res.status(500).send({message:err});
+                    return;
+                }
+                res.status(200).send()
+            })
+
         })
     })
 })
@@ -429,22 +473,21 @@ app.get("/getAllClassroomNames", (req, res) => {
     });
 })
 
-app.post("/getUserName", [authJwt.verifyToken, authJwt.isAdmin], (req, res) => {
-    controllers.userController.findUserById(req.body.userID, (err, data) => {
-        if(err){
-            res.status(500).send({message:err});
-            return;
-        }
+// Professor routes
 
-        if(!data){
-            res.status(500).send({message:"No user found"});
-            return;
-        }
-        
-        res.status(200).send({
-            userName: data.userName
-        })
-    })
+
+
+//misc
+//resource test routes
+
+app.get("/testAll", userController.allAccess);
+app.get("/testStudent", [authJwt.verifyToken, authJwt.isStudent], userController.studentBoard);
+app.get("/testProfessor", [authJwt.verifyToken, authJwt.isProfessor], userController.professorBoard);
+app.get("/testAdmin", [authJwt.verifyToken, authJwt.isAdmin], userController.adminBoard);
+app.get("/logOut", [authJwt.verifyToken], (req, res) =>{
+    res.clearCookie('session');
+    res.clearCookie('loggedIn');
+    res.send('Logged out');
 })
 
 // set port, listen for requests

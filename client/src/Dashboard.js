@@ -13,6 +13,7 @@ export default function Dashboard({changePage}){
     let [loggedOutPageNum, changeLoggedOutPageNum] = useState(1);
     let [changeUsernameField, changeChangeUsernameField] = useState("");
     let [classRooms, changeClassRooms] = useState([]);
+    let [changeClassRoomField, changeChangeClassRoomField] = useState();
     let priviledge = loggedIn? getUserData().priviledge : 1;
 
     let initialErrorState = {
@@ -55,13 +56,15 @@ export default function Dashboard({changePage}){
     let overwriteLoginPass = overwriteFieldFactory("password", changeLoginFields);
     let reverseMenu = () => {reverseArrow(() => (!open))};
 
-    let retrieveUserDataPropOrEmptyString = (prop) => (getUserData()? getUserData()[prop]: "")
+    let retrieveUserDataPropOrEmptyString = (prop) => {let userDataLocal = getUserData(); return(userDataLocal? (userDataLocal[prop] === null? "unassigned" : userDataLocal[prop]): "")}
     let exercisesSolved = () => (priviledge !== 1? "" : getUserData().env.length);
     let clearEnv = () => {setUserData({...getUserData(), env: []}); window.location.reload();}
     let changeLocalUserName = (newUserName) => {setUserData({...getUserData(), userName: newUserName})}
+    let changeLocalClassRoomName = (newClassRoomName) => {setUserData({...getUserData(), classRoomName: newClassRoomName})}
     let setUserDataByPriviledge = (userData) => {
-        if (priviledge === 1)
+        if (priviledge === 1){
             setUserData(userData);
+        }
         else
             setUserData({...userData, env: []})
     }
@@ -191,11 +194,26 @@ export default function Dashboard({changePage}){
 
     let getAllClassRoomNames = () => {
         axiosHttp.get("/getAllClassroomNames")
-        .then((response) => {changeClassRooms(response.data.classRoomNames); setInitialRegisterClassRoom(response.data.classRoomNames[0]);})
+        .then((response) => {changeClassRooms(response.data.classRoomNames); setInitialRegisterClassRoom(response.data.classRoomNames[0]); changeChangeClassRoomField(response.data.classRoomNames[0])})
         .catch((error) => {
             let message = typeof error.response !== "undefined" ? error.response.data.message : error.message;
             console.log(error); window.alert(message);
         });
+    }
+
+    let updateClassRoom = () => {
+        axiosHttp.post("/updateClassRoom", {
+            userName : getUserData().userName,
+            classRoomName : changeClassRoomField
+        })
+        .then(() => {
+            changeLocalClassRoomName(changeClassRoomField);
+            changeLoggedInPageNum(1);
+            window.location.reload();
+        }, (error) => {
+            let message = typeof error.response !== "undefined" ? error.response.data.message : error.message;
+            console.log(error); window.alert(message);
+        })
     }
 
     return(
@@ -209,6 +227,7 @@ export default function Dashboard({changePage}){
                             <div className="dashboard-logged-in">
                                 <p>Dashboard</p>
                                 <p>UserName: {retrieveUserDataPropOrEmptyString("userName")}</p>
+                                <p>ClassRoom: {retrieveUserDataPropOrEmptyString("classRoomName")}</p>
                                 {priviledge === 1? <p>Exercises Solved: {exercisesSolved()} out of 18</p> : ""}
                                 <div className="change-uname">
                                         <button className="btn btn-outline-light" onClick={() => {changeLoggedInPageNum(2)}}>Change user name</button>
@@ -216,6 +235,12 @@ export default function Dashboard({changePage}){
                                 <div className="change-pass">
                                         <button className="btn btn-outline-light" onClick={() => {changeLoggedInPageNum(3)}}>Change password</button>
                                 </div>
+                                
+                                {priviledge === 1? 
+                                <div className="change-class">
+                                        <button className="btn btn-outline-light" onClick={() => {getAllClassRoomNames(); changeLoggedInPageNum(4)}}>Change class room</button>
+                                </div> : ""}
+                                
                                 <div className="reset-progress">
                                     <button className="btn btn-outline-light" onClick={clearEnv}>Reset Progress</button>
                                 </div>
@@ -243,8 +268,21 @@ export default function Dashboard({changePage}){
                                 <button className="btn btn-outline-light" onClick={() => {changeLoggedInPageNum(1)}}>Go back</button>
                             </div>
                         :
+                        loggedInPageNum === 3?
                             <div>
                                 <p>Change password:</p>
+                                <button className="btn btn-outline-light" onClick={() => {changeLoggedInPageNum(1)}}>Go back</button>
+                            </div>
+                        :
+                            <div>
+                                <div>
+                                <label for = "classRooms">Choose a classRoom:</label>
+                                    <select class="form-select" id="classRooms" name="classRooms"
+                                        onChange={(event) => {changeChangeClassRoomField(event.target.value)}}>
+                                        {classRooms.map((classRoomName, index) => (<option value={classRoomName} key={index}>{classRoomName}</option>))}
+                                    </select> 
+                                </div>
+                                <button className="btn btn-outline-light" onClick={updateClassRoom}>Submit</button>
                                 <button className="btn btn-outline-light" onClick={() => {changeLoggedInPageNum(1)}}>Go back</button>
                             </div>
                         )

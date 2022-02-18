@@ -1,7 +1,7 @@
 let Student = require('../models/Student');
 
-const createAndSaveStudent = (userID, done) => {
-    const student = new Student({userID: userID});
+const createAndSaveStudent = (userID, classRoomName, done) => {
+    const student = new Student({userID: userID, classRoomName: classRoomName});
     student.save((err, data) => {
         if (err) return console.error(err);
         done(null, data);
