@@ -109,7 +109,6 @@ app.post("/logIn", (req, res) => {
                         return;
                     }
                     else{
-                        console.log(student.env)
                         res.status(200).send({
                             userName: user.userName,
                             priviledge: user.priviledge,
@@ -191,7 +190,7 @@ app.post("/createProfessor", [verifySignUp.checkDuplicateUsername, verifySignUp.
             res.status(500).send({ message: err });
             return;
           }
-        console.log(data);
+        res.status(200).send();
     });
 });
 
@@ -201,7 +200,7 @@ app.post("/createAdmin", [verifySignUp.checkDuplicateUsername, verifySignUp.hash
             res.status(500).send({ message: err });
             return;
           }
-        console.log(data);
+          res.status(200).send();
     });
 });
 
@@ -212,7 +211,6 @@ app.post("/createClassRoom", [authJwt.verifyToken, authJwt.isAdmin], (req, res) 
             return;
           }
         res.status(200).send();
-        console.log(data);
     })
 })
 
@@ -223,6 +221,7 @@ app.get("/deleteAllUsers", [authJwt.verifyToken, authJwt.isAdmin], (req, res) =>
                 res.status(500).send({ message: err });
                 return;
               }
+            res.status(200).send();
         })
     });
 });
@@ -260,12 +259,10 @@ app.put("/updateClassRoomProfessor", [authJwt.verifyToken, authJwt.isAdmin], (re
             res.status(500).send({message:err});
             return;
         }
-        console.log(data);
     })
 })
 
 app.put("/deleteClassRoom", [authJwt.verifyToken, authJwt.isAdmin], (req, res) => {
-    console.log(req.body);
     controllers.classRoomController.ClassRoom.deleteOne({classRoomName : req.body.classRoomName}, (err, data) => {
         if(err){
             res.status(500).send({message:err});
@@ -282,9 +279,68 @@ app.put("/deleteClassRoom", [authJwt.verifyToken, authJwt.isAdmin], (req, res) =
     })
 })
 
+app.put("/deleteUser", [authJwt.verifyToken, authJwt.isAdmin], (req, res) => {
+    controllers.userController.User.findByIdAndDelete(req.body.data._id, (err, data) => {
+        if(err){
+            res.status(500).send({message:err});
+            return;
+        }
+
+        if (req.body.data.priviledge === 1){
+            controllers.studentController.Student.findOne({userID: req.body.data._id}, (err, student) => {
+                if(err){
+                    res.status(500).send({message:err});
+                    return;
+                }
+
+                controllers.classRoomController.ClassRoom.find({classRoomName: student.classRoomName}, (err, classRoom) => {
+                    if(err){
+                        res.status(500).send({message:err});
+                        return;
+                    }
+
+                    if(classRoom.length === 0)
+                        return res.status(200).send();
+
+                    console.log(classRoom[0]);
+                    console.log(" ")
+                    console.log(classRoom[0].studentsIDs.indexOf(student.id));
+                    let sliceIndex = classRoom[0].studentsIDs.indexOf(student.id);
+                    controllers.classRoomController.ClassRoom.findByIdAndUpdate(classRoom[0]._id, {studentsIDs: [...classRoom[0].studentsIDs.slice(0, sliceIndex), ...classRoom[0].studentsIDs.slice(sliceIndex + 1)]}, (err, data) => {
+                        if(err){
+                            res.status(500).send({message:err});
+                            return;
+                        }
+
+                        controllers.studentController.Student.deleteOne({userID: req.body.data._id}, (err, data) => {
+                            if(err){
+                                res.status(500).send({message:err});
+                                return;
+                            }
+
+                            res.status(200).send();
+                        })
+                        
+                    })
+                })
+            })
+        }
+
+        else if (req.body.data.priviledge === 2){
+            controllers.classRoomController.ClassRoom.updateMany({proffesorID: req.body.data._id}, {proffesorID: null}, (err, data) =>{
+                if(err){
+                    res.status(500).send({message:err});
+                    return;
+                }
+
+                res.status(200).send();
+            })
+        }
+    })
+})
+
 app.get("/getAllStudents", [authJwt.verifyToken, authJwt.isAdmin], (req, res) => {
     controllers.studentController.getAllStudents((err, data) => {
-        console.log(data);
         res.json(data);
     });
 });
@@ -414,7 +470,6 @@ app.post('/getFile', [authJwt.verifyToken, authJwt.isStudent], (req, res) => {
     })
 
 app.post('/updateEnv', [authJwt.verifyToken, authJwt.isStudent], (req, res) => {
-    // console.log(req.body);
     userController.User.findOne({userName: req.body.userName}).exec((err, user) =>{
         if(err){
             res.status(500).send({message:err});
@@ -423,8 +478,6 @@ app.post('/updateEnv', [authJwt.verifyToken, authJwt.isStudent], (req, res) => {
         if(!user){
             return res.status(404).send({message: "User Not Found."});
         }
-
-        // console.log(user); 
         
         controllers.studentController.findStudentByUserIdAndUpdateEnv(user.id, req.body.env, (err, data) =>{
             if(err){
@@ -446,12 +499,26 @@ app.post("/updateUserName", [verifySignUp.checkDuplicateUserNameOnUserNameChange
 })
 
 app.post("/updateUserPassword", [authJwt.verifyToken,  verifySignUp.checkPasswordLength ,verifySignUp.hashPassword], (req, res) => {
-    userController.User.findByIdAndUpdate(req.userID, {password: req.body.password}, (err, data) => {
-        if(err){
-            res.status(500).send({message:err});
-            return;
+
+    userController.User.findById(req.userID, (err, user) => {
+        let passwordIsValid = bcrypt.compareSync(
+            req.body.oldPassword,
+            user.password
+        )
+        if(!passwordIsValid){
+            return res.status(401).send({
+                accessToken: null,
+                message: "Invalid old Password"
+            });
         }
-        res.status(200).send()
+
+        userController.User.findByIdAndUpdate(req.userID, {password: req.body.password}, (err, data) => {
+            if(err){
+                res.status(500).send({message:err});
+                return;
+            }
+            res.status(200).send()
+        })
     })
 })
 
@@ -473,7 +540,16 @@ app.post("/updateClassRoom", [verifySignUp.checkDuplicateUserNameOnUserNameChang
                     res.status(500).send({message:err});
                     return;
                 }
-                res.status(200).send()
+
+                controllers.classRoomController.addStudentToClassRoomByName(req.body.classRoomName, student.id, (err, data) => {
+                    if(err){
+                        res.status(500).send({message:err});
+                        return;
+                    }
+
+                    res.status(200).send();
+                })
+                
             })
 
         })

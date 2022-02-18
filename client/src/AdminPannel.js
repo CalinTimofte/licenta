@@ -4,7 +4,7 @@ import axios from "axios";
 
 export default function AdminPannel({changePage}){
     let [usersList, changeUsersList] = useState([]);
-    let [professorList, chagneProfessorList] = useState([]);
+    let [professorList, changeProfessorList] = useState([]);
     let [studentsList, changeStudentsList] = useState([]);
     let [classRoomList, changeClassRoomList] = useState([]);
     let [showing, changeShowing] = useState({users: false, students: false, classRooms: false})
@@ -34,7 +34,13 @@ export default function AdminPannel({changePage}){
 
     let getStudents = () => {
         axiosHttp.get("/getAllStudents")
-                .then((response) => {changeStudentsList(response.data); showStudents()})
+                .then((response) => {
+                    changeStudentsList(response.data);
+                    axiosHttp.get("/getAllUsers")
+                        .then((response) => {changeUsersList(response.data);})
+                        .catch((error) => {console.log(error)})
+                })
+                .then(showStudents())
                 .catch((error) => {console.log(error)});
     }
 
@@ -43,7 +49,7 @@ export default function AdminPannel({changePage}){
                 .then((response) => {changeClassRoomList(response.data); showClassRooms()})
                     .then(() => 
                         {(axiosHttp.get("/getAllProfessors")
-                        .then((response) => {chagneProfessorList(response.data); changeSelectedProfessorID(response.data[0]._id);})
+                        .then((response) => {changeProfessorList(response.data); changeSelectedProfessorID(response.data[0]._id);})
                         .catch((error) => {console.log(error)}))}
                         )
                 .catch((error) => {console.log(error)});
@@ -55,6 +61,14 @@ export default function AdminPannel({changePage}){
         setSelectedField({
             selected: true,
             type: "classRoom",
+            data: data
+        })
+    }
+
+    let selectUser = (data) => {
+        setSelectedField({
+            selected: true,
+            type: "user",
             data: data
         })
     }
@@ -73,12 +87,21 @@ export default function AdminPannel({changePage}){
         })
     }
 
-    let getStoredUserName = (prof_ID) => {
-        let name_in_arr = professorList.filter(professor => professor._id === prof_ID);
+    let getStoredUserNameProfessor = (profID) => {
+        let name_in_arr = professorList.filter(professor => professor._id === profID);
         if (name_in_arr.length === 0)
             return "";
         else
             return(name_in_arr[0].userName)
+    }
+    
+    let getStoredUserNameStudent = (studentUserID) => {
+        let name_in_arr = usersList.filter(user => user._id === studentUserID);
+        console.log(name_in_arr);
+        if (name_in_arr.length === 0)
+            return "";
+        else
+            return(name_in_arr[0].userName);
     }
 
     let deleteClassRoom = (classRoomName) => {
@@ -86,6 +109,22 @@ export default function AdminPannel({changePage}){
             classRoomName: classRoomName
         })
         .then(() => {
+            getClassRooms();
+            getStudents();
+            resetSelectedField();
+        }, (error) => {
+            let message = typeof error.response !== "undefined" ? error.response.data.message : error.message;
+            console.log(error); window.alert(message);
+        })
+    }
+
+    let deleteUser = (data) => {
+        axiosHttp.put("/deleteUser", {
+            data: data
+        })
+        .then(() => {
+            getUsers();
+            getStudents();
             getClassRooms();
             resetSelectedField();
         }, (error) => {
@@ -116,7 +155,7 @@ export default function AdminPannel({changePage}){
                     <div class = "admin-classroom">
                         <ReactangleDivider>
                             <p>Classroom : {selectedField.data.classRoomName}</p>
-                            <p>Proffessor : {selectedField.data.proffesorID === undefined? "Professor not yet assigned" : getStoredUserName(selectedField.data.proffesorID)}</p>
+                            <p>Proffessor : {(selectedField.data.proffesorID === undefined || selectedField.data.proffesorID === null)? "Professor not yet assigned" : getStoredUserNameProfessor(selectedField.data.proffesorID)}</p>
                         </ReactangleDivider>
 
                         <ReactangleDivider>
@@ -137,7 +176,19 @@ export default function AdminPannel({changePage}){
 
                         <button className="btn btn-outline-dark" onClick={resetSelectedField}>Go back</button>
                     </div>:
-                    ""
+                selectedField.type === "user" ?
+                <div class = "admin-user">
+                    <ReactangleDivider>
+                        <p>User : {selectedField.data.userName}</p>
+                        <p>type : {selectedField.data.priviledge === 1? "Student" : selectedField.data.priviledge === 2? "Professor" : selectedField.data.priviledge === 3 ? "Admin" : "Wrong Value"}</p>
+                    </ReactangleDivider>
+                    <ReactangleDivider>
+                        <p>Delete this user</p>
+                        <p><button className="btn btn-outline-danger" onClick={() => {deleteUser(selectedField.data)}}>Delete</button></p>
+                    </ReactangleDivider>
+
+                    <button className="btn btn-outline-dark" onClick={resetSelectedField}>Go back</button>
+                </div> : ""
              )
             :
             <div>
@@ -156,13 +207,13 @@ export default function AdminPannel({changePage}){
                             </tr>
                         </thead>
                         <tbody>
-                            {usersList.map((john, index) => (
-                                <tr key = {index}>
+                            {usersList.map((user, index) => (
+                                    <tr className = "clickable-tr" key = {index} onClick = {() => {selectUser(user)}}>
                                     <th scope="row">{index}</th>
-                                    <td>{john._id}</td>
-                                    <td>{john.userName}</td>
-                                    <td>{john.password}</td>
-                                    <td>{john.priviledge}</td>
+                                    <td>{user._id}</td>
+                                    <td>{user.userName}</td>
+                                    <td>{user.password}</td>
+                                    <td>{user.priviledge}</td>
                                 </tr>
                             ))}
                         </tbody>
@@ -179,6 +230,8 @@ export default function AdminPannel({changePage}){
                                 <th scope="col">#</th>
                                 <th scope = "col">id</th>
                                 <th scope="col">User id</th>
+                                <th scope="col">ClassRoom name</th>
+                                <th scope="col">User name</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -187,6 +240,8 @@ export default function AdminPannel({changePage}){
                                     <th scope="row">{index}</th>
                                     <td>{student._id}</td>
                                     <td>{student.userID}</td>
+                                    <td>{student.classRoomName}</td>
+                                    <td>{getStoredUserNameStudent(student.userID)}</td>
                                 </tr>
                             ))}
                         </tbody>
@@ -211,7 +266,7 @@ export default function AdminPannel({changePage}){
                                 <tr className = "clickable-tr" key = {index} onClick = {() => {selectClassRoom(classRoom)}}>
                                     <th scope="row">{index}</th>
                                     <td>{classRoom.classRoomName}</td>
-                                    <td>{classRoom.proffesorID === undefined? "Professor not yet assigned" : getStoredUserName(classRoom.proffesorID)}</td>
+                                    <td>{(classRoom.proffesorID === undefined || classRoom.proffesorID === null)? "Professor not yet assigned" : getStoredUserNameProfessor(classRoom.proffesorID)}</td>
                                 </tr>
                             ))}
                         </tbody>

@@ -15,6 +15,7 @@ export default function Dashboard({changePage}){
     let [classRooms, changeClassRooms] = useState([]);
     let [changeClassRoomField, changeChangeClassRoomField] = useState();
     let [changePasswordField, changeChangePasswordField] = useState("");
+    let [changeOldPasswordField, changeOldChangePasswordField] = useState("");
     let priviledge = loggedIn? getUserData().priviledge : 1;
 
     let initialErrorState = {
@@ -218,6 +219,7 @@ export default function Dashboard({changePage}){
 
     let updatePassword = () => {
         axiosHttp.post("/updateUserPassword", {
+            oldPassword : changeOldPasswordField,
             password : changePasswordField
         })
         .then(() => {
@@ -287,7 +289,8 @@ export default function Dashboard({changePage}){
                         loggedInPageNum === 3?
                             <div>
                                 <p>Change password:</p>
-                                <input type="password" placeholder = "password" onChange={(event) => {changeChangePasswordField(event.target.value)}}></input>
+                                <input type="password" placeholder = "old password" onChange={(event) => {changeOldChangePasswordField(event.target.value)}}></input>
+                                <input type="password" placeholder = "new password" onChange={(event) => {changeChangePasswordField(event.target.value)}}></input>
                                 <button className="btn btn-outline-light" onClick={updatePassword}>Submit</button>
                                 <button className="btn btn-outline-light" onClick={() => {changeLoggedInPageNum(1)}}>Go back</button>
                             </div>
