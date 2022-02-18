@@ -43,17 +43,17 @@ export default function Dashboard({changePage}){
             }}
     }
 
-    let [registerFormErrors, changeRegisterFormErrors] = useState(initialErrorState)
+    let [registerFormErrors, changeRegisterFormErrors] = useState(initialErrorState);
 
-    let overwriteFieldFactory = (field, stateHandler) => ((event) => {stateHandler(oldState => ({...oldState, [field]: event.target.value}))})
+    let overwriteFieldFactory = (field, stateHandler) => ((event) => {stateHandler(oldState => ({...oldState, [field]: event.target.value}))});
     let overwriteRegisterUser = overwriteFieldFactory("username", changeRegistrationFields);
     let overwriteRegisterPass = overwriteFieldFactory("password", changeRegistrationFields);
     let overwriteRegisterCheckPassword = overwriteFieldFactory("checkPassword", changeRegistrationFields);
     let overwriteRegisterClassRoom = overwriteFieldFactory("classRoom", changeRegistrationFields);
-    let setInitialRegisterClassRoom = (value) => {changeRegistrationFields(oldState => ({...oldState, classRoom: value}))}
+    let setInitialRegisterClassRoom = (value) => {changeRegistrationFields(oldState => ({...oldState, classRoom: value}))};
     let overwriteLoginUser = overwriteFieldFactory("username", changeLoginFields);
     let overwriteLoginPass = overwriteFieldFactory("password", changeLoginFields);
-    let reverseMenu = () => {reverseArrow(() => (!open))}
+    let reverseMenu = () => {reverseArrow(() => (!open))};
 
     let retrieveUserDataPropOrEmptyString = (prop) => (getUserData()? getUserData()[prop]: "")
     let exercisesSolved = () => (priviledge !== 1? "" : getUserData().env.length);
@@ -224,10 +224,13 @@ export default function Dashboard({changePage}){
                                 </div>
                                 {
                                     priviledge === 2? 
-                                        <button className="btn btn-outline-light" onClick={() => {changePage(2)}}>Professor dashboard</button>
+                                        <button className="btn btn-outline-light" onClick={() => {changePage(2)}}>Professor pannel</button>
                                     :
                                     priviledge === 3?
-                                        <button className="btn btn-outline-light" onClick={() => {changePage(3)}}>Admin dashboard</button>
+                                        <div>
+                                            <button className="btn btn-outline-light" onClick={() => {changePage(3)}}>Admin pannel</button>
+                                            <button className="btn btn-outline-light" onClick={() => {changePage(4)}}>Super admin dash</button>
+                                        </div>
                                     : ""
                                 }
                             </div>
@@ -258,7 +261,6 @@ export default function Dashboard({changePage}){
                                 <button className="btn btn-outline-light" onClick={logIn}>Log In</button>
                             </div>
                             <button className="btn btn-outline-light" onClick={() => {getAllClassRoomNames(); changeLoggedOutPageNum(2);}}>Register</button>
-                            <button className="btn btn-outline-light" onClick={() => {changePage(4)}}>Super admin dash</button>
                         </div>
                         :
                         <div>

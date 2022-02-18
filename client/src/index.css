@@ -62,3 +62,11 @@
 .dashboard-logged-in > div {
     margin-bottom: 1em;
 }
+
+.clickable-tr:hover{
+    border: solid thin black;
+}
+
+.rectangle-divider{
+    margin-bottom: 1em;
+}

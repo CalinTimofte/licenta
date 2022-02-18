@@ -1,4 +1,5 @@
 let ClassRoom = require('../models/ClassRoom');
+
 const createAndSaveClassRoom = (classRoomName, done) => {
     const classRoom = new ClassRoom({classRoomName: classRoomName});
     classRoom.save((err, data) => {
@@ -24,10 +25,19 @@ const addStudentToClassRoomByName = (classRoomName, studentID, done) => {
     })
 }
 
+const getAllClassRooms = (done) => {
+    ClassRoom.find({}, (err, data) => {
+        if(err) return res.status(500).send({ message: err });
+        done(null, data);
+    })
+  };
+
 const classRoomController = {
     createAndSaveClassRoom,
     retrieveAllClassRoomNames,
-    addStudentToClassRoomByName
+    addStudentToClassRoomByName,
+    getAllClassRooms,
+    ClassRoom
 };
 
 module.exports = classRoomController

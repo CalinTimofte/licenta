@@ -217,23 +217,45 @@ app.post("/findAndUpdateUserSecurely", (req, res) => {
     });
 });
 
-app.get("/getAllUsers", (req, res) => {
+app.get("/getAllUsers", [authJwt.verifyToken, authJwt.isAdmin], (req, res) => {
     controllers.userController.getAllUsers((err, data) => {
         console.log(data);
         res.json(data);
     });
 });
 
-app.get("/getAllStudents", (req, res) => {
+app.get("/getAllProfessors", [authJwt.verifyToken, authJwt.isAdmin], (req, res) => {
+    controllers.userController.User.find({priviledge: 2},(err, data) => {
+        if (err) return console.error(err);
+        res.json(data);
+      });
+});
+
+app.put("/updateClassRoomProfessor", [authJwt.verifyToken, authJwt.isAdmin], (req, res) => {
+    controllers.classRoomController.ClassRoom.findByIdAndUpdate(req.body.classRoomID, {proffesorID: req.body.professorID}, (err, data) =>{
+        if(err){
+            res.status(500).send({message:err});
+            return;
+        }
+        console.log(data);
+    })
+})
+
+app.get("/getAllStudents", [authJwt.verifyToken, authJwt.isAdmin], (req, res) => {
     controllers.studentController.getAllStudents((err, data) => {
         console.log(data);
         res.json(data);
     });
 });
 
+app.get("/getAllClassRooms", [authJwt.verifyToken, authJwt.isAdmin], (req, res) => {
+    controllers.classRoomController.getAllClassRooms((err, data) => {
+        res.json(data);
+    });
+});
+
 app.post("/getOneUser", (req, res) => {
     controllers.userController.findUserById(req.body.id, (err, data) => {
-        console.log(data);
         res.json(data);
     });
 });
@@ -380,6 +402,24 @@ app.get("/getAllClassroomNames", (req, res) => {
             classRoomNames: classRooms,
         })
     });
+})
+
+app.post("/getUserName", [authJwt.verifyToken, authJwt.isAdmin], (req, res) => {
+    controllers.userController.findUserById(req.body.userID, (err, data) => {
+        if(err){
+            res.status(500).send({message:err});
+            return;
+        }
+
+        if(!data){
+            res.status(500).send({message:"No user found"});
+            return;
+        }
+        
+        res.status(200).send({
+            userName: data.userName
+        })
+    })
 })
 
 // set port, listen for requests
