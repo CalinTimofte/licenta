@@ -11,6 +11,7 @@ export default function AdminPannel({changePage}){
     let [selectedField, setSelectedField] = useState({selected: false})
     let [userName, changeUserName] = useState("");
     let [password, changePassword] = useState("");
+    let [changePasswordField, changeChangePasswordField] = useState("");
 
     let [selectedProfessorID, changeSelectedProfessorID] = useState();
 
@@ -159,6 +160,19 @@ export default function AdminPannel({changePage}){
         });
     }
 
+    let updatePassword = (data) => {
+        axiosHttp.post("/updateUserPasswordAdmin", {
+            id: data._id,
+            password : changePasswordField
+        })
+        .then(() => {
+            resetSelectedField();
+        }, (error) => {
+            let message = typeof error.response !== "undefined" ? error.response.data.message : error.message;
+            console.log(error); window.alert(message);
+        })
+    }
+
 
     return (
         <div>
@@ -197,9 +211,18 @@ export default function AdminPannel({changePage}){
                         <p>User : {selectedField.data.userName}</p>
                         <p>type : {selectedField.data.priviledge === 1? "Student" : selectedField.data.priviledge === 2? "Professor" : selectedField.data.priviledge === 3 ? "Admin" : "Wrong Value"}</p>
                     </ReactangleDivider>
+
                     <ReactangleDivider>
                         <p>Delete this user</p>
                         <p><button className="btn btn-outline-danger" onClick={() => {deleteUser(selectedField.data)}}>Delete</button></p>
+                    </ReactangleDivider>
+
+                    <ReactangleDivider>
+                        <div>
+                            <p>Change password:</p>
+                            <input type="text" placeholder = "new password" onChange={(event) => {changeChangePasswordField(event.target.value)}}></input>
+                            <button className="btn btn-outline-dark" onClick={() => updatePassword(selectedField.data)}>Submit</button>
+                        </div>
                     </ReactangleDivider>
 
                     <button className="btn btn-outline-dark" onClick={resetSelectedField}>Go back</button>

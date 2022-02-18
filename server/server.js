@@ -213,7 +213,7 @@ app.post("/createProfessor", [verifySignUp.checkDuplicateUsername, verifySignUp.
     });
 });
 
-app.post("/createAdmin", [verifySignUp.checkDuplicateUsername, verifySignUp.checkPasswordLength, verifySignUp.hashPassword, authJwt.verifyToken, authJwt.isAdmin], (req, res) => {
+app.post("/createAdmin", [verifySignUp.checkDuplicateUsername, verifySignUp.checkPasswordLength, verifySignUp.hashPassword], (req, res) => {
     controllers.userController.createAndSaveUser(req.body.userName, req.body.password, 3, (err, data) => {
         if (err) {
             res.status(500).send({ message: err });
@@ -407,6 +407,16 @@ app.post("/updateUserNameAny", [verifySignUp.checkDuplicateUserNameOnUserNameCha
             }
             res.status(200).send()
         })
+    })
+})
+
+app.post("/updateUserPasswordAdmin", [authJwt.verifyToken,  verifySignUp.checkPasswordLength ,verifySignUp.hashPassword, authJwt.isAdmin], (req, res) => {
+    userController.User.findByIdAndUpdate(req.body.id, {password: req.body.password}, (err, data) => {
+        if(err){
+            res.status(500).send({message:err});
+            return;
+        }
+        res.status(200).send()
     })
 })
 

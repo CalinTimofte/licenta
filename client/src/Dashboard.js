@@ -272,7 +272,6 @@ export default function Dashboard({changePage}){
                                     priviledge === 3?
                                         <div>
                                             <button className="btn btn-outline-light" onClick={() => {changePage(3)}}>Admin pannel</button>
-                                            <button className="btn btn-outline-light" onClick={() => {changePage(4)}}>Super admin dash</button>
                                         </div>
                                     : ""
                                 }
@@ -320,7 +319,6 @@ export default function Dashboard({changePage}){
                                 <button className="btn btn-outline-light" onClick={logIn}>Log In</button>
                             </div>
                             <button className="btn btn-outline-light" onClick={() => {getAllClassRoomNames(); changeLoggedOutPageNum(2);}}>Register</button>
-                            <button className="btn btn-outline-light" onClick={() => {changePage(4)}}>Super admin dash</button>
                         </div>
                         :
                         <div>
