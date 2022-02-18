@@ -3,7 +3,7 @@ let User = require('../models/User');
 const createAndSaveUser = (userName, password, priviledge, done) => {
     const user = new User({userName: userName, password: password, priviledge: priviledge});
     user.save((err, data) => {
-        if (err) return console.error(err);
+        if (err) return done(err, null);
         done(null, data);
     });
 };
@@ -31,7 +31,7 @@ User.findById(id,(err, data) => {
 
 const findUserByUserName = (userName, done) => {
     User.find({userName: userName},(err, data) => {
-        if(err) res.status(500).send({ message: err });
+        if(err) return res.status(500).send({ message: err });
         done(null, data);
     });
   };

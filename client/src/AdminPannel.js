@@ -9,6 +9,8 @@ export default function AdminPannel({changePage}){
     let [classRoomList, changeClassRoomList] = useState([]);
     let [showing, changeShowing] = useState({users: false, students: false, classRooms: false})
     let [selectedField, setSelectedField] = useState({selected: false})
+    let [userName, changeUserName] = useState("");
+    let [password, changePassword] = useState("");
 
     let [selectedProfessorID, changeSelectedProfessorID] = useState();
 
@@ -31,6 +33,20 @@ export default function AdminPannel({changePage}){
                 .then((response) => {changeUsersList(response.data); showUsers()})
                 .catch((error) => {console.log(error)});
     }
+
+    let createHandlerFactory = (route) => (() => {
+        axiosHttp.post(route, {
+            userName: userName,
+            password: password
+        }).then(() => {getUsers()}).catch((error) => {
+            let message = typeof error.response !== "undefined" ? error.response.data.message : error.message;
+            console.log(error); window.alert(message);
+        });
+    })
+    
+    let createStudent = createHandlerFactory("/createStudentAdmin");
+    let createProfessor = createHandlerFactory("/createProfessor");
+    let createAdmin = createHandlerFactory("/createAdmin");
 
     let getStudents = () => {
         axiosHttp.get("/getAllStudents")
@@ -97,7 +113,6 @@ export default function AdminPannel({changePage}){
     
     let getStoredUserNameStudent = (studentUserID) => {
         let name_in_arr = usersList.filter(user => user._id === studentUserID);
-        console.log(name_in_arr);
         if (name_in_arr.length === 0)
             return "";
         else
@@ -218,6 +233,18 @@ export default function AdminPannel({changePage}){
                             ))}
                         </tbody>
                         </table>
+                        
+                        <ReactangleDivider>
+                            <div>
+                                <label>User details:</label>
+                                <input type="text" placeholder = "username" onChange = {(event) => {changeUserName(event.target.value)}}></input>
+                                <input type="text" placeholder = "password" onChange= {(event) => {changePassword(event.target.value)}}></input>
+                            </div>
+                            <button className="btn btn-outline-success" onClick={createStudent}>Create Student</button>
+                            <button className="btn btn-outline-success" onClick={createProfessor}>Create Professor</button>
+                            <button className="btn btn-outline-success" onClick={createAdmin}>Create Admin</button>
+                        </ReactangleDivider>
+
                     </div>: ""}
 
                 <button className="btn btn-outline-dark" onClick={getStudents}>Show Students</button>

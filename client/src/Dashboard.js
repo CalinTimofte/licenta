@@ -242,7 +242,7 @@ export default function Dashboard({changePage}){
                             <div className="dashboard-logged-in">
                                 <p>Dashboard</p>
                                 <p>UserName: {retrieveUserDataPropOrEmptyString("userName")}</p>
-                                <p>ClassRoom: {retrieveUserDataPropOrEmptyString("classRoomName")}</p>
+                                {priviledge === 1? <p>ClassRoom: {retrieveUserDataPropOrEmptyString("classRoomName")}</p>: ""}
                                 {priviledge === 1? <p>Exercises Solved: {exercisesSolved()} out of 18</p> : ""}
                                 <div className="change-uname">
                                         <button className="btn btn-outline-light" onClick={() => {changeLoggedInPageNum(2)}}>Change user name</button>

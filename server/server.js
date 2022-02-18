@@ -132,7 +132,7 @@ app.post("/createStudent", [verifySignUp.checkDuplicateUsername, verifySignUp.ch
     (req, res) => {
     controllers.userController.createAndSaveUser(req.body.userName, req.body.password, 1, (err, data) => {
         if (err) {
-            res.status(500).send({ message: err });
+            res.status(500).send({ message: "Probably username is less than 5 characters or more than 40" });
             return;
           }
         controllers.studentController.createAndSaveStudent(data.id, req.body.classRoom, (err, data) => {
@@ -184,7 +184,26 @@ app.post("/getOneUser", (req, res) => {
 
 // Admin routes
 
-app.post("/createProfessor", [verifySignUp.checkDuplicateUsername, verifySignUp.hashPassword, authJwt.verifyToken, authJwt.isAdmin], (req, res) => {
+app.post("/createStudentAdmin", [verifySignUp.checkDuplicateUsername, verifySignUp.checkPasswordLength ,verifySignUp.hashPassword, authJwt.verifyToken, authJwt.isAdmin],
+    (req, res) => {
+    controllers.userController.createAndSaveUser(req.body.userName, req.body.password, 1, (err, data) => {
+        if (err) {
+            console.log(err)
+            res.status(500).send({ message: "Probably username is less than 5 characters or more than 40" });
+            return;
+          }
+        controllers.studentController.Student.create({userID : data.id}, (err, data) => {
+            if (err) {
+                res.status(500).send({ message: err });
+                return;
+              }
+
+            res.status(200).send()
+        });
+    });
+});
+
+app.post("/createProfessor", [verifySignUp.checkDuplicateUsername, verifySignUp.checkPasswordLength, verifySignUp.hashPassword, authJwt.verifyToken, authJwt.isAdmin], (req, res) => {
     controllers.userController.createAndSaveUser(req.body.userName, req.body.password, 2, (err, data) => {
         if (err) {
             res.status(500).send({ message: err });
@@ -194,7 +213,7 @@ app.post("/createProfessor", [verifySignUp.checkDuplicateUsername, verifySignUp.
     });
 });
 
-app.post("/createAdmin", [verifySignUp.checkDuplicateUsername, verifySignUp.hashPassword, authJwt.verifyToken, authJwt.isAdmin], (req, res) => {
+app.post("/createAdmin", [verifySignUp.checkDuplicateUsername, verifySignUp.checkPasswordLength, verifySignUp.hashPassword, authJwt.verifyToken, authJwt.isAdmin], (req, res) => {
     controllers.userController.createAndSaveUser(req.body.userName, req.body.password, 3, (err, data) => {
         if (err) {
             res.status(500).send({ message: err });
