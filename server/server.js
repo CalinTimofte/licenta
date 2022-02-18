@@ -90,6 +90,7 @@ app.post("/createStudent", [verifySignUp.checkDuplicateUsername, verifySignUp.ch
                 return;
                 }
                 console.log(data);
+                res.status(200).send();
             })
         });
     });
@@ -175,6 +176,7 @@ app.post("/createClassRoom", [authJwt.verifyToken, authJwt.isAdmin], (req, res) 
             res.status(500).send({ message: err });
             return;
           }
+        res.status(200).send();
         console.log(data);
     })
 })
@@ -238,6 +240,29 @@ app.put("/updateClassRoomProfessor", [authJwt.verifyToken, authJwt.isAdmin], (re
             return;
         }
         console.log(data);
+    })
+})
+
+app.delete("/deleteClassRoom", [authJwt.verifyToken, authJwt.isAdmin], (req, res) => {
+    controllers.classRoomController.ClassRoom.deleteOne({id : req.body.classRoomID}, (err, data) => {
+        if(err){
+            res.status(500).send({message:err});
+            return;
+        }
+        
+        controllers.studentController.Student.find({classRoomID: req.body.classRoomID}, (err, students) => {
+            if(err){
+                res.status(500).send({message:err});
+                return;
+            }
+
+            controllers.studentController.Student.updateMany({_id: {$in: students.map(student => student._id)}}, {classRoomID: null}, (err, data) => {
+                if(err){
+                    res.status(500).send({message:err});
+                    return;
+                }
+            })
+        })
     })
 })
 

@@ -124,13 +124,13 @@ export default function Dashboard({changePage}){
             checkPassword: registrationFields.checkPassword,
             classRoom: registrationFields.classRoom,
         })
-        .then((() => {
+        .then(() => {
             changeLoggedOutPageNum(1);
-        })())
-        .catch((error) => {
+        },
+        (error) => {
             let message = typeof error.response !== "undefined" ? error.response.data.message : error.message;
             console.log(error); window.alert(message);
-        });
+        })
     } 
 
     let logIn = () => {
@@ -261,6 +261,7 @@ export default function Dashboard({changePage}){
                                 <button className="btn btn-outline-light" onClick={logIn}>Log In</button>
                             </div>
                             <button className="btn btn-outline-light" onClick={() => {getAllClassRoomNames(); changeLoggedOutPageNum(2);}}>Register</button>
+                            <button className="btn btn-outline-light" onClick={() => {changePage(4)}}>Super admin dash</button>
                         </div>
                         :
                         <div>

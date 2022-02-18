@@ -16,16 +16,16 @@ let checkDuplicateUsernameFactory = (usernameFieldToCheck) => ((req, res, next) 
 })
 
 let checkPasswordLength = (req, res, next) => {
-    if (req.body.password < 8){
+    if (req.body.password.length < 8){
         res.status(500).send({message: "Password too short!"});
             return;
     }
 
-    if (req.body.password > 40){
+    if (req.body.password.length > 40){
         res.status(500).send({message: "Password too long!"});
             return;
     }
-    next()
+    next();
 };
 
 let checkDuplicateUsername = checkDuplicateUsernameFactory("userName");

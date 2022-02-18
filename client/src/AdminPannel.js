@@ -12,6 +12,8 @@ export default function AdminPannel({changePage}){
 
     let [selectedProfessorID, changeSelectedProfessorID] = useState();
 
+    let [newClassRoomName, changenewClassRoomName] = useState('');
+
     let axiosHttp = axios.create({
         baseURL: "http://localhost:3001",
         headers:{
@@ -90,6 +92,30 @@ export default function AdminPannel({changePage}){
             return(name_in_arr[0].userName)
     }
 
+    let deleteClassRoom = (classRoomID) => {
+        axiosHttp.delete("/deleteClassRoom", {
+            classRoomID: classRoomID
+        })
+        .then(setTimeout(() => {
+            getClassRooms();
+            resetSelectedField();
+        }, 200), (error) => {
+            let message = typeof error.response !== "undefined" ? error.response.data.message : error.message;
+            console.log(error); window.alert(message);
+        })
+    }
+
+    let createClassRoom = () => {
+        axiosHttp.post("/createClassRoom", {
+            classRoomName: newClassRoomName
+        })
+        .then(() => {getClassRooms()},
+        (error) => {
+            let message = typeof error.response !== "undefined" ? error.response.data.message : error.message;
+            console.log(error); window.alert(message);
+        });
+    }
+
 
     return (
         <div>
@@ -113,6 +139,11 @@ export default function AdminPannel({changePage}){
                             </select> 
                             <button className="btn btn-outline-dark" onClick={submitProfessorChange}>Assign</button>
                         </div>
+                        </ReactangleDivider>
+
+                        <ReactangleDivider>
+                            <p>Delete this class room</p>
+                            <p><button className="btn btn-outline-danger" onClick={() => {deleteClassRoom(selectedField.data._id)}}>Delete</button></p>
                         </ReactangleDivider>
 
                         <button className="btn btn-outline-dark" onClick={resetSelectedField}>Go back</button>
@@ -196,6 +227,11 @@ export default function AdminPannel({changePage}){
                             ))}
                         </tbody>
                         </table>
+                    
+                    <ReactangleDivider>
+                        <input type="text" placeholder = "New Classroom Name" onChange = {(event) => {changenewClassRoomName(event.target.value)}}></input>
+                        <button className="btn btn-outline-success" onClick={createClassRoom}>Create Class Room</button>
+                    </ReactangleDivider>
                     </div>: ""}
                 
 
