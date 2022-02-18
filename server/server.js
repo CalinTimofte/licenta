@@ -129,6 +129,30 @@ app.post("/logIn", (req, res) => {
     })
 })
 
+app.post("/createStudent", [verifySignUp.checkDuplicateUsername, verifySignUp.checkPasswordLength ,verifySignUp.hashPassword],
+    (req, res) => {
+    controllers.userController.createAndSaveUser(req.body.userName, req.body.password, 1, (err, data) => {
+        if (err) {
+            res.status(500).send({ message: err });
+            return;
+          }
+        controllers.studentController.createAndSaveStudent(data.id, req.body.classRoom, (err, data) => {
+            if (err) {
+                res.status(500).send({ message: err });
+                return;
+              }
+            controllers.classRoomController.addStudentToClassRoomByName(req.body.classRoom, data.id, (err, data)=> {
+                if (err) {
+                res.status(500).send({ message: err });
+                return;
+                }
+                console.log(data);
+                res.status(200).send();
+            })
+        });
+    });
+});
+
 app.post("/findUser", (req, res) => {
     controllers.userController.findUserByUserName(req.body.userName, (err, data) => {
         console.log(data);
@@ -161,7 +185,7 @@ app.post("/getOneUser", (req, res) => {
 
 // Admin routes
 
-app.post("/createProfessor", [verifySignUp.checkDuplicateUsername, verifySignUp.hashPassword, authJwt.isAdmin], (req, res) => {
+app.post("/createProfessor", [verifySignUp.checkDuplicateUsername, verifySignUp.hashPassword, authJwt.verifyToken, authJwt.isAdmin], (req, res) => {
     controllers.userController.createAndSaveUser(req.body.userName, req.body.password, 2, (err, data) => {
         if (err) {
             res.status(500).send({ message: err });
@@ -171,7 +195,7 @@ app.post("/createProfessor", [verifySignUp.checkDuplicateUsername, verifySignUp.
     });
 });
 
-app.post("/createAdmin", [verifySignUp.checkDuplicateUsername, verifySignUp.hashPassword, authJwt.isAdmin], (req, res) => {
+app.post("/createAdmin", [verifySignUp.checkDuplicateUsername, verifySignUp.hashPassword, authJwt.verifyToken, authJwt.isAdmin], (req, res) => {
     controllers.userController.createAndSaveUser(req.body.userName, req.body.password, 3, (err, data) => {
         if (err) {
             res.status(500).send({ message: err });
@@ -295,32 +319,24 @@ app.post("/getUserName", [authJwt.verifyToken, authJwt.isAdmin], (req, res) => {
     })
 })
 
+app.post("/updateUserNameAny", [verifySignUp.checkDuplicateUserNameOnUserNameChange, authJwt.verifyToken, authJwt.isAdmin], (req, res) => {
+    userController.User.findOne({userName: req.body.oldUserName}).exec((err, user) => {
+        if(err){
+            res.status(500).send({message:err});
+            return;
+        }
+        userController.User.findByIdAndUpdate(user.id, {userName: req.body.newUserName}, (err, data) => {
+            if(err){
+                res.status(500).send({message:err});
+                return;
+            }
+            res.status(200).send()
+        })
+    })
+})
+
 
 // Student routes
-
-app.post("/createStudent", [verifySignUp.checkDuplicateUsername, verifySignUp.checkPasswordLength ,verifySignUp.hashPassword],
-    (req, res) => {
-    controllers.userController.createAndSaveUser(req.body.userName, req.body.password, 1, (err, data) => {
-        if (err) {
-            res.status(500).send({ message: err });
-            return;
-          }
-        controllers.studentController.createAndSaveStudent(data.id, req.body.classRoom, (err, data) => {
-            if (err) {
-                res.status(500).send({ message: err });
-                return;
-              }
-            controllers.classRoomController.addStudentToClassRoomByName(req.body.classRoom, data.id, (err, data)=> {
-                if (err) {
-                res.status(500).send({ message: err });
-                return;
-                }
-                console.log(data);
-                res.status(200).send();
-            })
-        });
-    });
-});
 
 //route for file submission
 app.post('/fileUpload', [authJwt.verifyToken, authJwt.isStudent], upload.single('solution'), (req, res) => {
@@ -420,18 +436,22 @@ app.post('/updateEnv', [authJwt.verifyToken, authJwt.isStudent], (req, res) => {
 })
 
 app.post("/updateUserName", [verifySignUp.checkDuplicateUserNameOnUserNameChange, authJwt.verifyToken], (req, res) => {
-    userController.User.findOne({userName: req.body.oldUserName}).exec((err, user) => {
+    userController.User.findByIdAndUpdate(req.userID, {userName: req.body.newUserName}, (err, data) => {
         if(err){
             res.status(500).send({message:err});
             return;
         }
-        userController.User.findByIdAndUpdate(user.id, {userName: req.body.newUserName}, (err, data) => {
-            if(err){
-                res.status(500).send({message:err});
-                return;
-            }
-            res.status(200).send()
-        })
+        res.status(200).send()
+    })
+})
+
+app.post("/updateUserPassword", [authJwt.verifyToken,  verifySignUp.checkPasswordLength ,verifySignUp.hashPassword], (req, res) => {
+    userController.User.findByIdAndUpdate(req.userID, {password: req.body.password}, (err, data) => {
+        if(err){
+            res.status(500).send({message:err});
+            return;
+        }
+        res.status(200).send()
     })
 })
 

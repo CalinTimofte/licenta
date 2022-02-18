@@ -14,6 +14,7 @@ export default function Dashboard({changePage}){
     let [changeUsernameField, changeChangeUsernameField] = useState("");
     let [classRooms, changeClassRooms] = useState([]);
     let [changeClassRoomField, changeChangeClassRoomField] = useState();
+    let [changePasswordField, changeChangePasswordField] = useState("");
     let priviledge = loggedIn? getUserData().priviledge : 1;
 
     let initialErrorState = {
@@ -179,7 +180,6 @@ export default function Dashboard({changePage}){
 
     let changeUsername = () => {
         axiosHttp.post("/updateUserName", {
-            oldUserName : getUserData().userName,
             newUserName : changeUsernameField
         })
         .then(() => {
@@ -216,6 +216,19 @@ export default function Dashboard({changePage}){
         })
     }
 
+    let updatePassword = () => {
+        axiosHttp.post("/updateUserPassword", {
+            password : changePasswordField
+        })
+        .then(() => {
+            changeLoggedInPageNum(1);
+            window.location.reload();
+        }, (error) => {
+            let message = typeof error.response !== "undefined" ? error.response.data.message : error.message;
+            console.log(error); window.alert(message);
+        })
+    }
+
     return(
         <div className="dashboard">
             <ArrowButton iconNames = {{open: "right", closed: "left"}} tooltipName = "Dashboard" menuStateVar = {open} menuStateHandler = {reverseMenu}/>
@@ -241,9 +254,12 @@ export default function Dashboard({changePage}){
                                         <button className="btn btn-outline-light" onClick={() => {getAllClassRoomNames(); changeLoggedInPageNum(4)}}>Change class room</button>
                                 </div> : ""}
                                 
+                                {priviledge === 1? 
                                 <div className="reset-progress">
                                     <button className="btn btn-outline-light" onClick={clearEnv}>Reset Progress</button>
                                 </div>
+                                : ""}
+
                                 <div className="logout">
                                         <button className="btn btn-outline-light" onClick={logOut}>Log Out</button>
                                 </div>
@@ -271,6 +287,8 @@ export default function Dashboard({changePage}){
                         loggedInPageNum === 3?
                             <div>
                                 <p>Change password:</p>
+                                <input type="password" placeholder = "password" onChange={(event) => {changeChangePasswordField(event.target.value)}}></input>
+                                <button className="btn btn-outline-light" onClick={updatePassword}>Submit</button>
                                 <button className="btn btn-outline-light" onClick={() => {changeLoggedInPageNum(1)}}>Go back</button>
                             </div>
                         :
