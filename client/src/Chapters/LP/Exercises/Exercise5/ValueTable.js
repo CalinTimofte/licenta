@@ -1,4 +1,5 @@
 import React, {useState} from "react";
+import ReactangleDivider from "../../../../Reusables/RectangleDivider";
 
 //  Use select for values where you want a value to be selected
 let defaultTableValues = [["φ", "ψ", "φ ∨ ψ"], ["false", "false", "select"], ["false", "true", "select"], ["true", "false", "select"], ["true", "true", "select"]];
@@ -55,6 +56,9 @@ export default function ValueTable({tableValues = defaultTableValues, checkAnswe
 
     return(
         <div>
+            <ReactangleDivider>
+                <p>Select values from the table. Once you are satisfied with your selection, click done.</p>
+            </ReactangleDivider>
             <table class="table">
                 <thead>
                     <tr>

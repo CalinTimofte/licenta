@@ -1,4 +1,5 @@
 import React, {useState} from "react";
+import ReactangleDivider from "../../../../Reusables/RectangleDivider";
 
 function SelectableWord({word, highlighted, inactive, hover}){
     let selectedStyle = {backgroundColor: "yellow"}
@@ -156,6 +157,12 @@ function SelectableText({inputWords, checkifFinished = DefaultheckifFinished, bu
 
     return(
         <div>
+            <ReactangleDivider>
+                <p>
+                    Click on the words below to select them. Once you selected enough, click one of the buttons below to asign a propositional part to them. You can double click a selected part to unassign it. Click done when you are finished 
+                </p>
+            </ReactangleDivider>
+
             <div>
                 {words.map(
                     (wordObj, index) => (returnWord(wordObj, index))

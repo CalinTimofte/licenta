@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-
+import ReactangleDivider from "../../../../Reusables/RectangleDivider";
 import AtomicProp from "../../../../Reusables/LogicCheking/LP/AtomicProp";
 import computeTruthValue from "../../../../Reusables/LogicCheking/LP/Parser";
 
@@ -85,6 +85,11 @@ export default function SentenceCreator({operations, goalText = defaultGoalText,
 
     return(
         <div>
+            <ReactangleDivider>
+                <p>
+                    First lines are the values of the atomic props provided. The line right anove the buttons is your goal. Use the buttons to create an appropriate proposition for your goal.
+                </p>
+            </ReactangleDivider>
             <div style= {{color: "green"}}>p is always true</div>
             <div style= {{color: "red"}}>q is always false</div>
             {/* Changable goaltext for reusability */}

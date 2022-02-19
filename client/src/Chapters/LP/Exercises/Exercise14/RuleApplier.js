@@ -1,4 +1,5 @@
 import React, {useState} from "react";
+import ReactangleDivider from "../../../../Reusables/RectangleDivider";
 
 class PropositionalVariablePart{
     constructor(symbol){
@@ -175,6 +176,11 @@ export default function RuleApplier({isLoggedIn, isEnvPropSetArr,setEnvPropArr})
 
     return(
         <div>
+            <ReactangleDivider>
+                <p>
+                    Click on the tabs on top to select a sub-exercise. Click on one of the rectangles in display to select a goal to focuse on. Once selected, you can use the buttons labeled "Actions" to apply rules on the goal. Click done when you are finished.
+                </p>
+            </ReactangleDivider>
             <div>
                 <ul className="nav nav-tabs">
                     {tabs.map((tab, index) => (
