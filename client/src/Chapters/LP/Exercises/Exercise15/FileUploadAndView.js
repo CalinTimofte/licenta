@@ -1,6 +1,7 @@
 import React, {useState} from "react";
 import Modal from 'react-bootstrap/Modal';
 import axios from 'axios';
+import ReactangleDivider from "../../../../Reusables/RectangleDivider";
 
 export default function FileUploadAndViewer({exerciseNumber}){
     const [show, setShow] = useState(false);
@@ -38,9 +39,11 @@ export default function FileUploadAndViewer({exerciseNumber}){
     return (
         
         <div>
-            <p>Upload a solution (jpeg or png), or see current uploaded solution.</p>
-            <p>If you upload a solution after you've already uploaded, your old solution will be overwritten.</p>
-            <p>Please wait a few seconds after upload for the changes to take effect</p>
+            <ReactangleDivider>
+                <p>Upload a solution (jpeg or png), or see current uploaded solution.
+                If you upload a solution after you've already uploaded, your old solution will be overwritten.
+                Please wait a few seconds after upload for the changes to take effect!</p>
+            </ReactangleDivider>
             <div>
                 <form action="http://localhost:3001/fileUpload" method="POST" encType="multipart/form-data">
                     <input type="hidden" name = "exerciseNumber" value = {exerciseNumber}/>
