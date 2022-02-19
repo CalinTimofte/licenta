@@ -80,7 +80,6 @@ export default function ProfessorPannel({changePage}){
             studentID: student
         })
         .then((response) => {
-            console.log(response.data);
             setFiles(response.data.files);
             selectUser({student: student, userName: findUserLocal(student.userID).userName})
         },

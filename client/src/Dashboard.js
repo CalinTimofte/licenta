@@ -134,7 +134,7 @@ export default function Dashboard({changePage}){
         },
         (error) => {
             let message = typeof error.response !== "undefined" ? error.response.data.message : error.message;
-            console.log(error); window.alert(message);
+            window.alert(message);
         })
     } 
 
@@ -151,7 +151,7 @@ export default function Dashboard({changePage}){
         })
         .catch((error) => {
             let message = typeof error.response !== "undefined" ? error.response.data.message : error.message;
-            console.log(error); window.alert(message);
+            window.alert(message);
         });
     } 
 
@@ -168,7 +168,10 @@ export default function Dashboard({changePage}){
                 checkAndModifyLoggedInStatus();
                 window.location.reload();
             }))
-            .catch((error) => {console.log(error.response || error); window.alert(error.response.data.message || error);});}
+            .catch((error) => {
+                let message = typeof error.response !== "undefined" ? error.response.data.message : error.message;
+                window.alert(message);
+            });}
         else
             {axiosHttp.get("/logOut")
             .then(() => {
@@ -176,7 +179,10 @@ export default function Dashboard({changePage}){
                 checkAndModifyLoggedInStatus();
                 window.location.reload();
             })
-            .catch((error) => {console.log(error.response || error); window.alert(error.response.data.message || error);});}
+            .catch((error) => {
+                let message = typeof error.response !== "undefined" ? error.response.data.message : error.message;
+                window.alert(message);
+            });}
     }
 
     let changeUsername = () => {
@@ -189,7 +195,7 @@ export default function Dashboard({changePage}){
             window.location.reload();
         }, (error) => {
             let message = typeof error.response !== "undefined" ? error.response.data.message : error.message;
-            console.log(error); window.alert(message);
+            window.alert(message);
         })
     }
 
@@ -198,7 +204,7 @@ export default function Dashboard({changePage}){
         .then((response) => {changeClassRooms(response.data.classRoomNames); setInitialRegisterClassRoom(response.data.classRoomNames[0]); changeChangeClassRoomField(response.data.classRoomNames[0])})
         .catch((error) => {
             let message = typeof error.response !== "undefined" ? error.response.data.message : error.message;
-            console.log(error); window.alert(message);
+             window.alert(message);
         });
     }
 
@@ -213,7 +219,7 @@ export default function Dashboard({changePage}){
             window.location.reload();
         }, (error) => {
             let message = typeof error.response !== "undefined" ? error.response.data.message : error.message;
-            console.log(error); window.alert(message);
+             window.alert(message);
         })
     }
 
@@ -227,7 +233,7 @@ export default function Dashboard({changePage}){
             window.location.reload();
         }, (error) => {
             let message = typeof error.response !== "undefined" ? error.response.data.message : error.message;
-            console.log(error); window.alert(message);
+            window.alert(message);
         })
     }
 

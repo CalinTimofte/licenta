@@ -30,7 +30,6 @@ export default function FileUploadAndViewer({exerciseNumber}){
         (response) => {setSelectedFile(arrayBufferToBase64(response.data.fileData.data))},
         (error) => {
             let message = typeof error.response !== "undefined" ? error.response.data.message : error.message;
-            console.log(error); 
             window.alert(message);}
         )
         .then(() => {setShow(true);})

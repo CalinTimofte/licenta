@@ -32,7 +32,10 @@ export default function AdminPannel({changePage}){
     let getUsers = () => {
         axiosHttp.get("/getAllUsers")
                 .then((response) => {changeUsersList(response.data); showUsers()})
-                .catch((error) => {console.log(error)});
+                .catch((error) => {
+                    let message = typeof error.response !== "undefined" ? error.response.data.message : error.message;
+                    window.alert(message);
+                });
     }
 
     let createHandlerFactory = (route) => (() => {
@@ -41,7 +44,7 @@ export default function AdminPannel({changePage}){
             password: password
         }).then(() => {getUsers(); getStudents(); getClassRooms();}).catch((error) => {
             let message = typeof error.response !== "undefined" ? error.response.data.message : error.message;
-            console.log(error); window.alert(message);
+            window.alert(message);
         });
     })
     
@@ -55,10 +58,16 @@ export default function AdminPannel({changePage}){
                     changeStudentsList(response.data);
                     axiosHttp.get("/getAllUsers")
                         .then((response) => {changeUsersList(response.data);})
-                        .catch((error) => {console.log(error)})
+                        .catch((error) => {
+                            let message = typeof error.response !== "undefined" ? error.response.data.message : error.message;
+                            window.alert(message);
+                        })
                 })
                 .then(showStudents())
-                .catch((error) => {console.log(error)});
+                .catch((error) => {
+                    let message = typeof error.response !== "undefined" ? error.response.data.message : error.message;
+                    window.alert(message);
+                });
     }
 
     let getClassRooms = () => {
@@ -67,9 +76,15 @@ export default function AdminPannel({changePage}){
                     .then(() => 
                         {(axiosHttp.get("/getAllProfessors")
                         .then((response) => {changeProfessorList(response.data); changeSelectedProfessorID(response.data[0]._id);})
-                        .catch((error) => {console.log(error)}))}
+                        .catch((error) => {
+                            let message = typeof error.response !== "undefined" ? error.response.data.message : error.message;
+                            window.alert(message);
+                        }))}
                         )
-                .catch((error) => {console.log(error)});
+                .catch((error) => {
+                    let message = typeof error.response !== "undefined" ? error.response.data.message : error.message;
+                    window.alert(message);
+                });
     }
 
     let resetSelectedField = () => {setSelectedField({selected: false})};
@@ -100,7 +115,7 @@ export default function AdminPannel({changePage}){
             resetSelectedField();
         }, 200), (error) => {
             let message = typeof error.response !== "undefined" ? error.response.data.message : error.message;
-            console.log(error); window.alert(message);
+            window.alert(message);
         })
     }
 
@@ -130,7 +145,7 @@ export default function AdminPannel({changePage}){
             resetSelectedField();
         }, (error) => {
             let message = typeof error.response !== "undefined" ? error.response.data.message : error.message;
-            console.log(error); window.alert(message);
+            window.alert(message);
         })
     }
 
@@ -145,7 +160,7 @@ export default function AdminPannel({changePage}){
             resetSelectedField();
         }, (error) => {
             let message = typeof error.response !== "undefined" ? error.response.data.message : error.message;
-            console.log(error); window.alert(message);
+            window.alert(message);
         })
     }
 
@@ -156,7 +171,7 @@ export default function AdminPannel({changePage}){
         .then(() => {getClassRooms()},
         (error) => {
             let message = typeof error.response !== "undefined" ? error.response.data.message : error.message;
-            console.log(error); window.alert(message);
+            window.alert(message);
         });
     }
 
@@ -169,7 +184,7 @@ export default function AdminPannel({changePage}){
             resetSelectedField();
         }, (error) => {
             let message = typeof error.response !== "undefined" ? error.response.data.message : error.message;
-            console.log(error); window.alert(message);
+            window.alert(message);
         })
     }
 
