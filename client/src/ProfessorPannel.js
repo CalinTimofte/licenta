@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from "react";
 import axios from "axios";
 import Modal from 'react-bootstrap/Modal';
+import ReactangleDivider from "./Reusables/RectangleDivider";
 
 export default function ProfessorPannel({changePage}){
 
@@ -92,6 +93,9 @@ export default function ProfessorPannel({changePage}){
     return (
         <div>
             <p>Professor content</p>
+            <ReactangleDivider>
+                <p>If you hover over a table row and it is highlighted, you can click on it. Sometimes you have to wait a few seconds for changes to the page to render.</p> 
+            </ReactangleDivider>
             {professorData === "init"? "" :
 
             (professorData.classRoomName === "No class Room"? <p>No classRoom assigned yet</p> : 

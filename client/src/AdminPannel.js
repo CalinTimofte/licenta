@@ -178,6 +178,10 @@ export default function AdminPannel({changePage}){
         <div>
             <p>Admin content</p>
 
+            <ReactangleDivider>
+                <p>If you hover over a table row and it is highlighted, you can click on it.</p> 
+            </ReactangleDivider>
+
             {selectedField.selected? 
              (
                  selectedField.type === "classRoom" ? 
