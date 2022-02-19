@@ -39,7 +39,7 @@ export default function AdminPannel({changePage}){
         axiosHttp.post(route, {
             userName: userName,
             password: password
-        }).then(() => {getUsers()}).catch((error) => {
+        }).then(() => {getUsers(); getStudents(); getClassRooms();}).catch((error) => {
             let message = typeof error.response !== "undefined" ? error.response.data.message : error.message;
             console.log(error); window.alert(message);
         });

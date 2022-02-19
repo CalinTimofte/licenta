@@ -45,7 +45,7 @@ mongoose.connect(process.env.MONGO_URI, {useNewUrlParser: true, useUnifiedTopolo
     })
 
 let corsOptions = {
-    origin: ["http://localhost:3001", "http://localhost:3000"]
+    origin: ["http://localhost:3001"]
 };
 
 app.use(cors(corsOptions));
@@ -312,26 +312,33 @@ app.put("/deleteUser", [authJwt.verifyToken, authJwt.isAdmin], (req, res) => {
                     return;
                 }
 
+                console.log(student)
                 controllers.classRoomController.ClassRoom.find({classRoomName: student.classRoomName}, (err, classRoom) => {
                     if(err){
                         res.status(500).send({message:err});
                         return;
                     }
 
-                    if(classRoom.length === 0)
+                    if(classRoom.length === 0){
+                        controllers.studentController.Student.findByIdAndDelete(student._id, (err, data) => {
+                            if(err){
+                                res.status(500).send({message:err});
+                                return;
+                            }
+                            return res.status(200).send();
+                        })
                         return res.status(200).send();
+                    }
 
-                    console.log(classRoom[0]);
-                    console.log(" ")
-                    console.log(classRoom[0].studentsIDs.indexOf(student.id));
-                    let sliceIndex = classRoom[0].studentsIDs.indexOf(student.id);
+                    else
+                    {let sliceIndex = classRoom[0].studentsIDs.indexOf(student.id);
                     controllers.classRoomController.ClassRoom.findByIdAndUpdate(classRoom[0]._id, {studentsIDs: [...classRoom[0].studentsIDs.slice(0, sliceIndex), ...classRoom[0].studentsIDs.slice(sliceIndex + 1)]}, (err, data) => {
                         if(err){
                             res.status(500).send({message:err});
                             return;
                         }
 
-                        controllers.studentController.Student.deleteOne({userID: req.body.data._id}, (err, data) => {
+                        controllers.studentController.Student.findByIdAndDelete(student._id, (err, data) => {
                             if(err){
                                 res.status(500).send({message:err});
                                 return;
@@ -340,7 +347,7 @@ app.put("/deleteUser", [authJwt.verifyToken, authJwt.isAdmin], (req, res) => {
                             res.status(200).send();
                         })
                         
-                    })
+                    })}
                 })
             })
         }
