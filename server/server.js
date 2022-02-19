@@ -662,6 +662,24 @@ app.post('/getStudentFiles', [authJwt.verifyToken, authJwt.isProfessor], (req, r
     })
 })
 
+app.post('/getProfessorDataStudents', [authJwt.verifyToken, authJwt.isProfessor], (req, res) => {
+    controllers.userController.User.find({_id: {$in: req.body.studentUserIDList}}, (err, data) => {
+        if(err){
+            res.status(500).send({message:err});
+            return;
+        }
+
+        else{
+            let returnArr = [];
+            returnArr = data.map(student => ({userName: student.userName, _id: student._id}))
+            console.log(returnArr);
+            res.status(200).send({
+                users: returnArr,
+            })
+        }
+    })
+})
+
 //misc
 //resource test routes
 

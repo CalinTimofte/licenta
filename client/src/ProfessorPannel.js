@@ -47,8 +47,13 @@ export default function ProfessorPannel({changePage}){
     useEffect(() => {
         axiosHttp.get('/getProfessorData')
         .then((response) => {
-            console.log(response)
             setProfessorData(response.data);
+            let studentUserIDList = response.data.students.map(student => student.userID)
+            axiosHttp.post("/getProfessorDataStudents", {
+                studentUserIDList: studentUserIDList
+            })
+                        .then((response) => {setUserList(response.data);})
+                        .catch((error) => {console.log(error)})
         },
         (error) => {
             let message = typeof error.response !== "undefined" ? error.response.data.message : error.message;
@@ -56,6 +61,8 @@ export default function ProfessorPannel({changePage}){
         })
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
+    let findUserLocal = (studentUserID) => (userList.users.filter(user => user._id === studentUserID)[0])
 
     let handleClose = () => {
         setSelectedFile("");
@@ -67,13 +74,14 @@ export default function ProfessorPannel({changePage}){
         setShow(true);
     }
 
-    let getFiles = (studentID) => {
+    let getStudentWithFiles = (student) => {
         axiosHttp.post("/getStudentFiles", {
-            studentID: studentID
+            studentID: student
         })
         .then((response) => {
             console.log(response.data);
             setFiles(response.data.files);
+            selectUser({student: student, userName: findUserLocal(student.userID).userName})
         },
         (error) => {
             let message = typeof error.response !== "undefined" ? error.response.data.message : error.message;
@@ -127,7 +135,7 @@ export default function ProfessorPannel({changePage}){
                 <div>
                     <p>ClassRoom: {professorData.classRoomName}</p>
 
-                    <button className="btn btn-outline-dark" onClick={() => {getUsers(professorData.students); console.log(userList)}}>See Students</button>
+                    <button className="btn btn-outline-dark" onClick={() => {setSeeStudents(1)}}>See Students</button>
                     {seeStudents === 1?
                     <div>
                         <p>Students:</p>
@@ -142,11 +150,11 @@ export default function ProfessorPannel({changePage}){
                             </thead>
                             <tbody>
                                 {professorData.students.map((student, index) => (
-                                    <tr className = "clickable-tr" key = {index} onClick = {() => {getFiles(student._id); selectUser({student: student, userName: userList[index]});}}>
+                                    <tr className = "clickable-tr" key = {index} onClick = {() => {getStudentWithFiles(student)}}>
                                         <th scope="row">{index}</th>
                                         <td>{student._id}</td>
                                         <td>{student.userID}</td>
-                                        <td>{userList[index]}</td>
+                                        <td>{findUserLocal(student.userID).userName}</td>
                                     </tr>
                                 ))}
                             </tbody>
