@@ -55,7 +55,7 @@ export default function FileUploadAndViewer({exerciseNumber}){
 
             <Modal show={show} onHide={handleClose} centered = {true} size = {"xl"}>
                 <Modal.Header closeButton>
-                <Modal.Title>Modal heading</Modal.Title>
+                <Modal.Title>Solution:</Modal.Title>
                 </Modal.Header>
                 <Modal.Body><img src = {!selectedFile? "#" : `data:image/jpeg;base64, ${selectedFile}`} className="img-fluid"/></Modal.Body>
                 <Modal.Footer>

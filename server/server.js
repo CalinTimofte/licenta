@@ -600,7 +600,60 @@ app.get("/getAllClassroomNames", (req, res) => {
 
 // Professor routes
 
+app.get("/getProfessorData", [authJwt.verifyToken, authJwt.isProfessor], (req, res) => {
+    controllers.classRoomController.ClassRoom.find({proffesorID: req.userID}, (err, classRoom) => {
+        if(err){
+            res.status(500).send({message:err});
+            return;
+        }
 
+        if(classRoom.length === 0){
+            res.status(200).send({
+                classRoomName: "No class Room"
+            })
+        }
+
+        else controllers.studentController.Student.find({classRoomName: classRoom[0].classRoomName}, (err, students) => {
+            if(err){
+                res.status(500).send({message:err});
+                return;
+            }
+
+            res.status(200).send({
+                classRoomName: classRoom[0].classRoomName,
+                students: students
+            })
+        })
+    })
+})
+
+app.post("/getStudentUserFromProfessor", [authJwt.verifyToken, authJwt.isProfessor], (req, res) => {
+    controllers.userController.User.findById(req.body.userID, (err, user) => {
+        if(err){
+            res.status(500).send({message:err});
+            return;
+        }
+
+        res.status(200).send({
+            userName: user.userName,
+        })
+    })
+})
+
+app.post('/getStudentFiles', [authJwt.verifyToken, authJwt.isProfessor], (req, res) => {
+    controllers.fileController.File.find({studentID: req.body.studentID}, (err, files) => {
+        if(err){
+            res.status(500).send({message:err});
+            return;
+        }
+        else{
+            res.status(200).send({
+                files: files,
+            })
+            console.log("Files fetched!");
+        }
+    })
+})
 
 //misc
 //resource test routes
