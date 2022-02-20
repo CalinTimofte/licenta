@@ -6,7 +6,7 @@ import SubChapters from './Subchapters';
 
 import {LPIntroduction} from './Chapters/LP/Chapter1/Introducere';
 
-import {LP1Introduction} from './Chapters/LP1/Chapter1/Introducere';
+import { LP1_1_0 } from './Chapters/LP1/Chapter1/Layouts/Introducere';
 
 import { LP2_0 } from './Chapters/LP/Chapter2/Layouts/2.0';
 import { LP2_1 } from './Chapters/LP/Chapter2/Layouts/2.1';
@@ -224,7 +224,7 @@ export default function App(){
         lp1 : [
             {
                 name: "Introduction",
-                content:[{name:"Introduction", content: LP1Introduction}]
+                content:[{name:"Introduction", content: LP1_1_0}]
             }
         ]
     }
