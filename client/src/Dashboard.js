@@ -158,7 +158,6 @@ export default function Dashboard({changePage}){
     let logOut = () => {
         if (priviledge === 1){
             axiosHttp.post("/updateEnv", {
-                userName: getUserData().userName,
                 env: getUserData().env
             })
             .then(

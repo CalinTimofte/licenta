@@ -128,6 +128,12 @@ app.post("/logIn", (req, res) => {
     })
 })
 
+app.get("/logOut", [authJwt.verifyToken], (req, res) =>{
+    res.clearCookie('session');
+    res.clearCookie('loggedIn');
+    res.status(200).send('Logged out');
+})
+
 app.post("/createStudent", [verifySignUp.checkDuplicateUsername, verifySignUp.checkPasswordLength ,verifySignUp.hashPassword],
     (req, res) => {
     controllers.userController.createAndSaveUser(req.body.userName, req.body.password, 1, (err, data) => {
@@ -213,7 +219,7 @@ app.post("/createProfessor", [verifySignUp.checkDuplicateUsername, verifySignUp.
     });
 });
 
-app.post("/createAdmin", [verifySignUp.checkDuplicateUsername, verifySignUp.checkPasswordLength, verifySignUp.hashPassword], (req, res) => {
+app.post("/createAdmin", [verifySignUp.checkDuplicateUsername, verifySignUp.checkPasswordLength, verifySignUp.hashPassword, authJwt.verifyToken, authJwt.isAdmin], (req, res) => {
     controllers.userController.createAndSaveUser(req.body.userName, req.body.password, 3, (err, data) => {
         if (err) {
             res.status(500).send({ message: err });
@@ -506,7 +512,7 @@ app.post('/getFile', [authJwt.verifyToken, authJwt.isStudent], (req, res) => {
     })
 
 app.post('/updateEnv', [authJwt.verifyToken, authJwt.isStudent], (req, res) => {
-    userController.User.findOne({userName: req.body.userName}).exec((err, user) =>{
+    userController.User.findById({_id: req.userID}).exec((err, user) =>{
         if(err){
             res.status(500).send({message:err});
             return;
@@ -634,19 +640,6 @@ app.get("/getProfessorData", [authJwt.verifyToken, authJwt.isProfessor], (req, r
     })
 })
 
-app.post("/getStudentUserFromProfessor", [authJwt.verifyToken, authJwt.isProfessor], (req, res) => {
-    controllers.userController.User.findById(req.body.userID, (err, user) => {
-        if(err){
-            res.status(500).send({message:err});
-            return;
-        }
-
-        res.status(200).send({
-            userName: user.userName,
-        })
-    })
-})
-
 app.post('/getStudentFiles', [authJwt.verifyToken, authJwt.isProfessor], (req, res) => {
     controllers.fileController.File.find({studentID: req.body.studentID}, (err, files) => {
         if(err){
@@ -678,19 +671,6 @@ app.post('/getProfessorDataStudents', [authJwt.verifyToken, authJwt.isProfessor]
             })
         }
     })
-})
-
-//misc
-//resource test routes
-
-app.get("/testAll", userController.allAccess);
-app.get("/testStudent", [authJwt.verifyToken, authJwt.isStudent], userController.studentBoard);
-app.get("/testProfessor", [authJwt.verifyToken, authJwt.isProfessor], userController.professorBoard);
-app.get("/testAdmin", [authJwt.verifyToken, authJwt.isAdmin], userController.adminBoard);
-app.get("/logOut", [authJwt.verifyToken], (req, res) =>{
-    res.clearCookie('session');
-    res.clearCookie('loggedIn');
-    res.send('Logged out');
 })
 
 // set port, listen for requests
