@@ -3,10 +3,10 @@ import axios from "axios";
 import Modal from 'react-bootstrap/Modal';
 import ReactangleDivider from "./Reusables/RectangleDivider";
 
-export default function ProfessorPannel({changePage}){
+export default function ProfessorPanel({changePage}){
 
     let axiosHttp = axios.create({
-        baseURL: "http://localhost:3001",
+        baseURL: "http://localhost:3001/",
         headers:{
             "Content-type": "application/json"
         }
@@ -29,21 +29,6 @@ export default function ProfessorPannel({changePage}){
 
     let selectUser = (data) => {setSelectedUser({selected: true, data: data})}
     let resetSelection = () => {setSelectedUser({selected: false})};
-
-    let getUsers = (students) => {
-        students.forEach(student => {
-            axiosHttp.post("/getStudentUserFromProfessor", {
-                userID: student.userID
-            })
-            .then((res) => {setUserList(oldUserList => ([...oldUserList, res.data.userName]))}, 
-            (error) => {
-                let message = typeof error.response !== "undefined" ? error.response.data.message : error.message;
-                console.log(error); window.alert(message);
-            }
-            )
-            .then(setSeeStudents(1));
-        });
-    }
 
     useEffect(() => {
         axiosHttp.get('/getProfessorData')
@@ -125,7 +110,7 @@ export default function ProfessorPannel({changePage}){
                                 <Modal.Header closeButton>
                                     <Modal.Title>Solution:</Modal.Title>
                                 </Modal.Header>
-                                    <Modal.Body><img src = {!selectedFile? "#" : `data:image/jpeg;base64, ${selectedFile}`} className="img-fluid"/></Modal.Body>
+                                    <Modal.Body><img src = {!selectedFile? "#" : `data:image/jpeg;base64, ${selectedFile}`} alt = "user uploaded solution" className="img-fluid"/></Modal.Body>
                                 <Modal.Footer>
                                     <button className="btn btn-secondary" onClick={handleClose}>Close</button>
                                 </Modal.Footer>

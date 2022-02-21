@@ -111,14 +111,14 @@ export default function Dashboard({changePage}){
     }
 
     let axiosHttp = axios.create({
-        baseURL: "http://localhost:3001",
+        baseURL: "http://localhost:3001/",
         headers:{
             "Content-type": "application/json"
         }
     })
 
     let register = () => {
-        // error check
+        // front end register field check
         resetErrors();
         setErrors();
         if(checkForActiveErrors()) return;
@@ -272,11 +272,11 @@ export default function Dashboard({changePage}){
                                 </div>
                                 {
                                     priviledge === 2? 
-                                        <button className="btn btn-outline-light" onClick={() => {changePage(2)}}>Professor pannel</button>
+                                        <button className="btn btn-outline-light" onClick={() => {changePage(2)}}>Professor panel</button>
                                     :
                                     priviledge === 3?
                                         <div>
-                                            <button className="btn btn-outline-light" onClick={() => {changePage(3)}}>Admin pannel</button>
+                                            <button className="btn btn-outline-light" onClick={() => {changePage(3)}}>Admin panel</button>
                                         </div>
                                     : ""
                                 }

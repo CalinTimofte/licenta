@@ -10,9 +10,12 @@ function checkFormatting(input: Array<AtomicProp|string>){
     if((typeof input[0] === "string" && input[0] !== "not") || typeof input[input.length-1] === "string")
         throw new Error("Malformed input");
     for(let i = 0; i < input.length - 1; i++){
-        if(typeof(input[i]) === typeof(input[i+1]))
+        if(typeof(input[i]) === typeof(input[i+1])){
             if(input[i] !== "not" && input[i+1] !== "not")
                 throw new Error("Malformed input");
+        }
+        else if(typeof input[i] !== "string" && input[i+1] === "not")
+        throw new Error("Malformed input");
     }
 }
 

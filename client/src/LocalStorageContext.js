@@ -3,7 +3,7 @@ import React from 'react';
 export const LocalStorageContext = React.createContext();
 
 export function LocalStorageStore({children}){
-  // Set local storage variables
+  // Set local storage variables init value
   (() => {
     if(localStorage.getItem("activeChapter") === null)
         localStorage.setItem("activeChapter", "LP");
@@ -13,6 +13,7 @@ export function LocalStorageStore({children}){
         localStorage.setItem("activeSection", "Introduction");
   })();
 
+  // State hooks
   const getStorageChapter = () => localStorage.getItem("activeChapter");
   const setStorageChapter = (chapter) => {localStorage.setItem("activeChapter", chapter);}
 

@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import ReactangleDivider from "./Reusables/RectangleDivider";
 import axios from "axios";
 
-export default function AdminPannel({changePage}){
+export default function AdminPanel({changePage}){
     let [usersList, changeUsersList] = useState([]);
     let [professorList, changeProfessorList] = useState([]);
     let [studentsList, changeStudentsList] = useState([]);
@@ -18,7 +18,7 @@ export default function AdminPannel({changePage}){
     let [newClassRoomName, changenewClassRoomName] = useState('');
 
     let axiosHttp = axios.create({
-        baseURL: "http://localhost:3001",
+        baseURL: "http://localhost:3001/",
         headers:{
             "Content-type": "application/json"
         }

@@ -87,7 +87,7 @@ export default function SentenceCreator({operations, goalText = defaultGoalText,
         <div>
             <ReactangleDivider>
                 <p>
-                    First lines are the values of the atomic props provided. The line right anove the buttons is your goal. Use the buttons to create an appropriate proposition for your goal.
+                    First lines are the values of the atomic props provided. The line right anove the buttons is your goal. Use the buttons to create an appropriate sentence for your goal.
                 </p>
             </ReactangleDivider>
             <div style= {{color: "green"}}>p is always true</div>

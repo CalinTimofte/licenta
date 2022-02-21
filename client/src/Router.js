@@ -1,10 +1,11 @@
 import React, {useState} from "react";
 import Dashboard from './Dashboard.js';
 import App from "./App.js";
-import AdminPannel from "./AdminPannel.js";
-import ProfessorPannel from "./ProfessorPannel.js";
+import AdminPanel from "./AdminPanel.js";
+import ProfessorPanel from "./ProfessorPanel.js";
 
 export default function Router(){
+    // State used to display different pages accessible by different types of users
     let [pageNum, changePageNum] = useState(1);
 
     return(
@@ -15,9 +16,9 @@ export default function Router(){
                 pageNum === 1? 
                     <App/> :
                 pageNum === 2?
-                    <ProfessorPannel changePage={changePageNum}/>:
+                    <ProfessorPanel changePage={changePageNum}/>:
                 pageNum === 3?
-                    <AdminPannel changePage = {changePageNum}/>:
+                    <AdminPanel changePage = {changePageNum}/>:
                 <p>Wrong page number in state</p>
             }
         </>

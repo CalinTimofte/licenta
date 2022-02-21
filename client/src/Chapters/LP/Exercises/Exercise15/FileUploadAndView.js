@@ -15,7 +15,7 @@ export default function FileUploadAndViewer({exerciseNumber}){
     };
 
     let axiosHttp = axios.create({
-        baseURL: "http://localhost:3001",
+        baseURL: "http://localhost:3001/",
         headers:{
             "Content-type": "application/json"
         }
@@ -44,7 +44,7 @@ export default function FileUploadAndViewer({exerciseNumber}){
                 Please wait a few seconds after upload for the changes to take effect!</p>
             </ReactangleDivider>
             <div>
-                <form action="http://localhost:3001/fileUpload" method="POST" encType="multipart/form-data">
+                <form action="http://localhost:3001/" method="POST" encType="multipart/form-data">
                     <input type="hidden" name = "exerciseNumber" value = {exerciseNumber}/>
                     <input type="file" className="form-control" name="solution"/>
                     <div>
@@ -59,7 +59,7 @@ export default function FileUploadAndViewer({exerciseNumber}){
                 <Modal.Header closeButton>
                 <Modal.Title>Modal heading</Modal.Title>
                 </Modal.Header>
-                <Modal.Body><img src = {!selectedFile? "#" : `data:image/jpeg;base64, ${selectedFile}`} className="img-fluid"/></Modal.Body>
+                <Modal.Body><img src = {!selectedFile? "#" : `data:image/jpeg;base64, ${selectedFile}`} alt = "User uploaded solution" className="img-fluid"/></Modal.Body>
                 <Modal.Footer>
                 <button className="btn btn-secondary" onClick={handleClose}>Close</button>
                 </Modal.Footer>

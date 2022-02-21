@@ -229,7 +229,7 @@ app.post("/createAdmin", [verifySignUp.checkDuplicateUsername, verifySignUp.chec
     });
 });
 
-app.post("/createClassRoom", [authJwt.verifyToken, authJwt.isAdmin], (req, res) => {
+app.post("/createClassRoom", [verifySignUp.checkDuplicateClassRoomName ,authJwt.verifyToken, authJwt.isAdmin], (req, res) => {
     controllers.classRoomController.createAndSaveClassRoom(req.body.classRoomName, (err, data) => {
         if (err) {
             res.status(500).send({ message: err });

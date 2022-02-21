@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const ClassRoom = require('../models/ClassRoom');
 const bcrypt = require("bcryptjs");
 
 let checkDuplicateUsernameFactory = (usernameFieldToCheck) => ((req, res, next) => {
@@ -14,6 +15,20 @@ let checkDuplicateUsernameFactory = (usernameFieldToCheck) => ((req, res, next) 
         next();
     });
 })
+
+let checkDuplicateClassRoomName = (req, res, next) => {
+    ClassRoom.findOne({classRoomName: req.body.classRoomName}).exec((err, classRoom) => {
+        if (err){
+            res.status(500).send({message: err});
+            return;
+        }
+        if (classRoom){
+            res.status(400).send({message: "Failed! ClassRoomName is already in use!"});
+            return;
+        }
+        next();
+    });
+}
 
 let checkPasswordLength = (req, res, next) => {
     if (req.body.password.length < 8){
@@ -40,7 +55,8 @@ const verifySignUp = {
     checkDuplicateUsername,
     checkDuplicateUserNameOnUserNameChange,
     hashPassword,
-    checkPasswordLength
+    checkPasswordLength,
+    checkDuplicateClassRoomName
 };
 
 module.exports = verifySignUp
